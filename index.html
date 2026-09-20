@@ -56,7 +56,6 @@
       background-size: 5px 5px;
     }
 
-    /* HEADER */
     header {
       display: flex;
       align-items: center;
@@ -66,10 +65,9 @@
     }
 
     .brand {
-      font-size: 30px;
+      font-size: 24px;
       font-weight: 900;
-      letter-spacing: -2.2px;
-      line-height: 1;
+      letter-spacing: -1.8px;
     }
 
     .header-meta {
@@ -108,7 +106,6 @@
       }
     }
 
-    /* HERO */
     .hero {
       flex: 1;
       display: flex;
@@ -196,7 +193,6 @@
       font-weight: 900;
     }
 
-    /* FORM */
     .subscribe {
       width: min(820px, 100%);
       margin: 28px auto 0;
@@ -296,7 +292,6 @@
       text-transform: uppercase;
     }
 
-    /* SIDE TEXT */
     .side-note {
       position: absolute;
       left: 0;
@@ -321,7 +316,6 @@
       opacity: .55;
     }
 
-    /* MARQUEE */
     .marquee {
       position: absolute;
       left: 0;
@@ -368,7 +362,6 @@
       }
     }
 
-    /* FOOTER */
     footer {
       display: flex;
       justify-content: space-between;
@@ -395,7 +388,6 @@
       text-decoration: underline;
     }
 
-    /* ANIMATIONS */
     @keyframes appear {
       from {
         opacity: 0;
@@ -420,7 +412,6 @@
       }
     }
 
-    /* TABLET */
     @media (max-width: 800px) {
 
       .page {
@@ -428,8 +419,7 @@
       }
 
       .brand {
-        font-size: 24px;
-        letter-spacing: -1.7px;
+        font-size: 20px;
       }
 
       .header-meta {
@@ -499,13 +489,7 @@
       }
     }
 
-    /* MOBILE */
     @media (max-width: 450px) {
-
-      .brand {
-        font-size: 21px;
-        letter-spacing: -1.4px;
-      }
 
       .header-meta .year {
         display: none;
@@ -689,15 +673,21 @@
 
           CHEAT WITHOUT REGRET
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
           THIS NAVRATRI
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
           CHEATCODE™
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
         </div>
 
@@ -706,15 +696,21 @@
 
           CHEAT WITHOUT REGRET
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
           THIS NAVRATRI
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
           CHEATCODE™
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
         </div>
 
@@ -723,15 +719,21 @@
 
           CHEAT WITHOUT REGRET
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
           THIS NAVRATRI
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
           CHEATCODE™
 
-          <span class="star">✦</span>
+          <span class="star">
+            ✦
+          </span>
 
         </div>
 
@@ -772,7 +774,7 @@
   </main>
 
 
-  <!-- GOOGLE SHEETS SUBMISSION -->
+  <!-- GOOGLE SHEETS FORM SUBMISSION -->
   <script>
 
     const form =
@@ -832,6 +834,7 @@
           await fetch(
             GOOGLE_SCRIPT_URL,
             {
+
               method: "POST",
 
               mode: "no-cors",
@@ -843,12 +846,14 @@
 
               body:
                 JSON.stringify(data)
+
             }
           );
 
 
           form.style.display =
             "none";
+
 
           success.style.display =
             "block";
@@ -865,8 +870,10 @@
           submitButton.disabled =
             false;
 
+
           submitButton.textContent =
             "I'M IN →";
+
 
           errorMessage.style.display =
             "block";
