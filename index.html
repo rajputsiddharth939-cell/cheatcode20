@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 
   <title>CHEATCODE™ — Launching This Navratri</title>
 
@@ -10,9 +10,9 @@
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
 
     :root {
-      --red: #FF0000;
+      --red: #ff0000;
       --black: #050505;
-      --white: #FFFFFF;
+      --white: #ffffff;
     }
 
     * {
@@ -22,24 +22,30 @@
     }
 
     html {
-      scroll-behavior: smooth;
+      width: 100%;
+      overflow-x: hidden;
     }
 
     body {
-      min-height: 100vh;
+      width: 100%;
+      min-height: 100%;
       background: var(--red);
       color: var(--black);
       font-family: "Inter", Arial, sans-serif;
       overflow-x: hidden;
     }
 
+    /* =========================================
+       PAGE
+    ========================================= */
+
     .page {
-      min-height: 100vh;
-      padding: 25px 34px 18px;
+      width: 100%;
+      min-height: 100svh;
+      padding: 24px 34px 18px;
       display: flex;
       flex-direction: column;
       position: relative;
-      overflow: hidden;
     }
 
     .texture {
@@ -47,16 +53,21 @@
       inset: 0;
       pointer-events: none;
       z-index: 100;
-      opacity: 0.035;
+      opacity: .035;
       background-image:
         radial-gradient(
-          rgba(0,0,0,.7) .5px,
+          rgba(0, 0, 0, .7) .5px,
           transparent .5px
         );
       background-size: 5px 5px;
     }
 
+    /* =========================================
+       HEADER
+    ========================================= */
+
     header {
+      width: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -65,9 +76,11 @@
     }
 
     .brand {
-      font-size: 24px;
+      font-size: 30px;
+      line-height: 1;
       font-weight: 900;
-      letter-spacing: -1.8px;
+      letter-spacing: -2.2px;
+      white-space: nowrap;
     }
 
     .header-meta {
@@ -78,6 +91,7 @@
       font-weight: 800;
       letter-spacing: 1.4px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .live {
@@ -89,6 +103,7 @@
     .live-dot {
       width: 7px;
       height: 7px;
+      flex: 0 0 7px;
       border-radius: 50%;
       background: #000;
       animation: pulse 1.5s infinite;
@@ -106,17 +121,81 @@
       }
     }
 
+    /* =========================================
+       TOP SLIDER
+    ========================================= */
+
+    .top-slider {
+      width: 100%;
+      height: 30px;
+      margin-top: 16px;
+      background: #000;
+      color: #fff;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      position: relative;
+      z-index: 5;
+    }
+
+    .top-slider-track {
+      display: flex;
+      width: max-content;
+      animation: topSlide 24s linear infinite;
+    }
+
+    .top-slider-group {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .top-slider-item {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      padding-right: 20px;
+      font-size: 8px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 1.7px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .top-slider-star {
+      color: var(--red);
+      font-size: 11px;
+    }
+
+    @keyframes topSlide {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(-50%);
+      }
+    }
+
+    /* =========================================
+       HERO
+    ========================================= */
+
     .hero {
+      width: 100%;
       flex: 1;
+      min-height: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 65px 0 95px;
       position: relative;
+      padding: 48px 0 88px;
     }
 
     .hero-inner {
       width: min(1150px, 100%);
+      margin: 0 auto;
       text-align: center;
       position: relative;
       z-index: 2;
@@ -125,12 +204,13 @@
     .eyebrow {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
+      margin-bottom: 24px;
       font-size: 10px;
       font-weight: 900;
       letter-spacing: 2px;
+      line-height: 1;
       text-transform: uppercase;
-      margin-bottom: 25px;
       opacity: 0;
       animation: appear .7s ease forwards;
     }
@@ -138,12 +218,13 @@
     .eyebrow-dot {
       width: 6px;
       height: 6px;
-      background: #000;
       border-radius: 50%;
+      background: #000;
     }
 
     h1 {
-      font-size: clamp(62px, 9.4vw, 145px);
+      margin: 0;
+      font-size: clamp(60px, 9.3vw, 145px);
       line-height: .82;
       letter-spacing: -7px;
       font-weight: 900;
@@ -181,7 +262,7 @@
 
     .description {
       max-width: 500px;
-      margin: 32px auto 0;
+      margin: 30px auto 0;
       font-size: 15px;
       line-height: 1.5;
       font-weight: 600;
@@ -193,48 +274,49 @@
       font-weight: 900;
     }
 
+    /* =========================================
+       FORM
+    ========================================= */
+
     .subscribe {
       width: min(820px, 100%);
-      margin: 28px auto 0;
+      margin: 27px auto 0;
       opacity: 0;
       animation: appear .7s ease .55s forwards;
     }
 
     .subscribe-label {
-      text-align: left;
       margin-bottom: 8px;
+      text-align: left;
       font-size: 9px;
+      line-height: 1;
       font-weight: 900;
       letter-spacing: 1.5px;
       text-transform: uppercase;
     }
 
     .form-box {
+      width: 100%;
+      padding: 7px;
       background: #fff;
       border: 2px solid #000;
-      padding: 7px;
       display: grid;
       grid-template-columns: 1fr 1fr 1fr auto;
       gap: 7px;
-      box-shadow: 7px 7px 0 rgba(0,0,0,.12);
-      transition: transform .25s ease, box-shadow .25s ease;
-    }
-
-    .form-box:hover {
-      transform: translateY(-3px);
-      box-shadow: 10px 10px 0 rgba(0,0,0,.14);
+      box-shadow: 7px 7px 0 rgba(0, 0, 0, .12);
     }
 
     input {
+      width: 100%;
       height: 48px;
       border: 1.5px solid #000;
+      outline: none;
       background: #fff;
+      color: #000;
       padding: 0 14px;
       font-family: inherit;
       font-size: 11px;
       font-weight: 700;
-      color: #000;
-      outline: none;
     }
 
     input::placeholder {
@@ -269,28 +351,31 @@
     button:disabled {
       opacity: .6;
       cursor: wait;
-      transform: none;
     }
 
     .success {
       display: none;
+      padding: 17px;
       background: #fff;
       border: 2px solid #000;
-      padding: 17px;
       font-size: 11px;
       font-weight: 900;
       text-transform: uppercase;
-      box-shadow: 7px 7px 0 rgba(0,0,0,.12);
+      box-shadow: 7px 7px 0 rgba(0, 0, 0, .12);
     }
 
     .error {
       display: none;
       margin-top: 8px;
+      text-align: left;
       font-size: 10px;
       font-weight: 900;
-      text-align: left;
       text-transform: uppercase;
     }
+
+    /* =========================================
+       SIDE LABELS
+    ========================================= */
 
     .side-note {
       position: absolute;
@@ -316,11 +401,15 @@
       opacity: .55;
     }
 
-    .marquee {
+    /* =========================================
+       BOTTOM SLIDER
+    ========================================= */
+
+    .bottom-slider {
       position: absolute;
       left: 0;
       right: 0;
-      bottom: 57px;
+      bottom: 56px;
       height: 36px;
       background: #000;
       color: #fff;
@@ -329,13 +418,19 @@
       overflow: hidden;
     }
 
-    .marquee-track {
+    .bottom-slider-track {
       display: flex;
       width: max-content;
-      animation: marquee 24s linear infinite;
+      animation: bottomSlide 24s linear infinite;
     }
 
-    .marquee-item {
+    .bottom-slider-group {
+      display: flex;
+      align-items: center;
+      flex-shrink: 0;
+    }
+
+    .bottom-slider-item {
       display: flex;
       align-items: center;
       gap: 24px;
@@ -347,12 +442,12 @@
       white-space: nowrap;
     }
 
-    .star {
+    .bottom-slider-star {
       color: var(--red);
       font-size: 12px;
     }
 
-    @keyframes marquee {
+    @keyframes bottomSlide {
       from {
         transform: translateX(0);
       }
@@ -362,20 +457,27 @@
       }
     }
 
+    /* =========================================
+       FOOTER
+    ========================================= */
+
     footer {
+      width: 100%;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
+      position: relative;
+      z-index: 10;
       font-size: 9px;
+      line-height: 1;
       font-weight: 900;
       letter-spacing: 1px;
       text-transform: uppercase;
-      position: relative;
-      z-index: 10;
     }
 
     .footer-links {
       display: flex;
+      align-items: center;
       gap: 24px;
     }
 
@@ -387,6 +489,10 @@
     footer a:hover {
       text-decoration: underline;
     }
+
+    /* =========================================
+       ANIMATIONS
+    ========================================= */
 
     @keyframes appear {
       from {
@@ -412,104 +518,319 @@
       }
     }
 
-    @media (max-width: 800px) {
+    /* =========================================
+       TABLET
+    ========================================= */
+
+    @media (max-width: 900px) {
 
       .page {
-        padding: 20px 17px 14px;
+        padding: 20px 22px 16px;
       }
 
       .brand {
-        font-size: 20px;
+        font-size: 26px;
+        letter-spacing: -1.9px;
       }
 
       .header-meta {
+        gap: 14px;
         font-size: 8px;
-        gap: 10px;
       }
 
       .hero {
-        padding: 60px 0 100px;
-      }
-
-      .eyebrow {
-        font-size: 8px;
-        margin-bottom: 19px;
+        padding: 40px 0 82px;
       }
 
       h1 {
-        font-size: clamp(54px, 15vw, 90px);
-        letter-spacing: -4px;
-        line-height: .84;
-      }
-
-      h1 .outline {
-        -webkit-text-stroke: 1.5px #000;
+        font-size: clamp(55px, 10.8vw, 100px);
+        letter-spacing: -5px;
       }
 
       .description {
-        max-width: 390px;
+        max-width: 460px;
         font-size: 14px;
-        margin-top: 27px;
+        margin-top: 25px;
       }
 
       .subscribe {
-        margin-top: 24px;
+        margin-top: 23px;
       }
 
       .form-box {
-        grid-template-columns: 1fr;
-        gap: 6px;
+        grid-template-columns: 1fr 1fr;
       }
 
-      input,
       button {
-        height: 48px;
-      }
-
-      .marquee {
-        bottom: 45px;
-        height: 33px;
-      }
-
-      .marquee-item {
-        font-size: 8px;
+        width: 100%;
       }
 
       .side-note,
       .side-note-right {
         display: none;
       }
-
-      footer {
-        font-size: 8px;
-      }
-
-      .footer-links {
-        gap: 15px;
-      }
     }
 
-    @media (max-width: 450px) {
+    /* =========================================
+       MOBILE
+    ========================================= */
 
-      .header-meta .year {
+    @media (max-width: 600px) {
+
+      .page {
+        min-height: 100svh;
+        padding: 15px 14px 12px;
+        display: block;
+      }
+
+      /* HEADER */
+
+      header {
+        min-height: 25px;
+      }
+
+      .brand {
+        font-size: 21px;
+        letter-spacing: -1.45px;
+      }
+
+      .header-meta {
+        gap: 6px;
+        font-size: 6.5px;
+        letter-spacing: .9px;
+      }
+
+      .live {
+        gap: 5px;
+      }
+
+      .live-dot {
+        width: 5px;
+        height: 5px;
+        flex-basis: 5px;
+      }
+
+      .year {
         display: none;
       }
 
+      /* TOP SLIDER */
+
+      .top-slider {
+        height: 24px;
+        margin-top: 10px;
+      }
+
+      .top-slider-item {
+        gap: 12px;
+        padding-right: 12px;
+        font-size: 6.3px;
+        letter-spacing: 1.15px;
+      }
+
+      .top-slider-star {
+        font-size: 8px;
+      }
+
+      /* HERO */
+
+      .hero {
+        width: 100%;
+        min-height: auto;
+        padding: 30px 0 72px;
+        display: block;
+      }
+
+      .hero-inner {
+        width: 100%;
+      }
+
+      .eyebrow {
+        gap: 7px;
+        margin-bottom: 15px;
+        font-size: 7px;
+        letter-spacing: 1.25px;
+      }
+
+      .eyebrow-dot {
+        width: 5px;
+        height: 5px;
+      }
+
       h1 {
-        font-size: 16.5vw;
-        letter-spacing: -3.5px;
+        font-size: 15.2vw;
+        line-height: .87;
+        letter-spacing: -3.2px;
+      }
+
+      h1 .outline {
+        -webkit-text-stroke: 1.2px #000;
       }
 
       .description {
-        max-width: 330px;
+        width: 100%;
+        max-width: 315px;
+        margin: 19px auto 0;
+        font-size: 11.5px;
+        line-height: 1.45;
       }
 
+      /* FORM */
+
+      .subscribe {
+        width: 100%;
+        margin-top: 18px;
+      }
+
+      .subscribe-label {
+        margin-bottom: 6px;
+        font-size: 7px;
+        letter-spacing: 1.1px;
+      }
+
+      .form-box {
+        width: 100%;
+        padding: 5px;
+        grid-template-columns: 1fr;
+        gap: 5px;
+        box-shadow: 5px 5px 0 rgba(0, 0, 0, .12);
+      }
+
+      input {
+        height: 42px;
+        padding: 0 11px;
+        font-size: 10px;
+      }
+
+      button {
+        height: 42px;
+        padding: 0 18px;
+        font-size: 9px;
+      }
+
+      /* BOTTOM SLIDER */
+
+      .bottom-slider {
+        position: relative;
+        left: auto;
+        right: auto;
+        bottom: auto;
+        width: calc(100% + 28px);
+        margin-left: -14px;
+        height: 29px;
+      }
+
+      .bottom-slider-item {
+        gap: 14px;
+        padding-right: 14px;
+        font-size: 6.3px;
+        letter-spacing: 1.1px;
+      }
+
+      .bottom-slider-star {
+        font-size: 8px;
+      }
+
+      /* FOOTER */
+
       footer {
-        flex-direction: column;
-        align-items: flex-start;
+        margin-top: 14px;
         gap: 9px;
+        align-items: flex-start;
+        font-size: 6.5px;
+        letter-spacing: .7px;
+      }
+
+      .footer-links {
+        gap: 12px;
       }
     }
+
+    /* =========================================
+       SMALL PHONES
+    ========================================= */
+
+    @media (max-width: 390px) {
+
+      .page {
+        padding-left: 12px;
+        padding-right: 12px;
+      }
+
+      .brand {
+        font-size: 19px;
+        letter-spacing: -1.3px;
+      }
+
+      .header-meta {
+        font-size: 6px;
+      }
+
+      .top-slider {
+        height: 22px;
+        margin-top: 9px;
+      }
+
+      .top-slider-item {
+        font-size: 5.8px;
+        gap: 10px;
+        padding-right: 10px;
+      }
+
+      .hero {
+        padding-top: 26px;
+        padding-bottom: 62px;
+      }
+
+      h1 {
+        font-size: 14.8vw;
+        letter-spacing: -2.7px;
+      }
+
+      .description {
+        max-width: 285px;
+        font-size: 10.5px;
+      }
+
+      .subscribe {
+        margin-top: 15px;
+      }
+
+      input,
+      button {
+        height: 40px;
+      }
+
+      .bottom-slider {
+        width: calc(100% + 24px);
+        margin-left: -12px;
+      }
+    }
+
+    /* =========================================
+       VERY SHORT MOBILE SCREENS
+    ========================================= */
+
+    @media (max-height: 700px) and (max-width: 600px) {
+
+      .hero {
+        padding-top: 22px;
+        padding-bottom: 58px;
+      }
+
+      .eyebrow {
+        margin-bottom: 12px;
+      }
+
+      .description {
+        margin-top: 15px;
+      }
+
+      .subscribe {
+        margin-top: 14px;
+      }
+    }
+
   </style>
 </head>
 
@@ -520,6 +841,7 @@
   <main class="page">
 
     <!-- HEADER -->
+
     <header>
 
       <div class="brand">
@@ -542,7 +864,82 @@
     </header>
 
 
+    <!-- HEADER SLIDER -->
+
+    <div class="top-slider">
+
+      <div class="top-slider-track">
+
+        <div class="top-slider-group">
+
+          <div class="top-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="top-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="top-slider-star">✦</span>
+            CHEATCODE™
+            <span class="top-slider-star">✦</span>
+          </div>
+
+          <div class="top-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="top-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="top-slider-star">✦</span>
+            CHEATCODE™
+            <span class="top-slider-star">✦</span>
+          </div>
+
+          <div class="top-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="top-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="top-slider-star">✦</span>
+            CHEATCODE™
+            <span class="top-slider-star">✦</span>
+          </div>
+
+        </div>
+
+
+        <div class="top-slider-group">
+
+          <div class="top-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="top-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="top-slider-star">✦</span>
+            CHEATCODE™
+            <span class="top-slider-star">✦</span>
+          </div>
+
+          <div class="top-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="top-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="top-slider-star">✦</span>
+            CHEATCODE™
+            <span class="top-slider-star">✦</span>
+          </div>
+
+          <div class="top-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="top-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="top-slider-star">✦</span>
+            CHEATCODE™
+            <span class="top-slider-star">✦</span>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+
     <!-- HERO -->
+
     <section class="hero">
 
       <div class="side-note">
@@ -580,17 +977,14 @@
 
 
         <p class="description">
-
           The ice cream that lets you
           <strong>cheat without regret.</strong>
-
-          Get launch updates,
-          live events and first access.
-
+          Get launch updates, live events and first access.
         </p>
 
 
         <!-- SIGNUP -->
+
         <div class="subscribe">
 
           <div class="subscribe-label">
@@ -611,7 +1005,6 @@
               required
             />
 
-
             <input
               type="email"
               name="email"
@@ -620,7 +1013,6 @@
               required
             />
 
-
             <input
               type="tel"
               name="phone"
@@ -628,7 +1020,6 @@
               autocomplete="tel"
               required
             />
-
 
             <button
               type="submit"
@@ -664,76 +1055,72 @@
     </section>
 
 
-    <!-- MARQUEE -->
-    <div class="marquee">
+    <!-- BOTTOM SLIDER -->
 
-      <div class="marquee-track">
+    <div class="bottom-slider">
 
-        <div class="marquee-item">
+      <div class="bottom-slider-track">
 
-          CHEAT WITHOUT REGRET
+        <div class="bottom-slider-group">
 
-          <span class="star">
-            ✦
-          </span>
+          <div class="bottom-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="bottom-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="bottom-slider-star">✦</span>
+            CHEATCODE™
+            <span class="bottom-slider-star">✦</span>
+          </div>
 
-          THIS NAVRATRI
+          <div class="bottom-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="bottom-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="bottom-slider-star">✦</span>
+            CHEATCODE™
+            <span class="bottom-slider-star">✦</span>
+          </div>
 
-          <span class="star">
-            ✦
-          </span>
-
-          CHEATCODE™
-
-          <span class="star">
-            ✦
-          </span>
-
-        </div>
-
-
-        <div class="marquee-item">
-
-          CHEAT WITHOUT REGRET
-
-          <span class="star">
-            ✦
-          </span>
-
-          THIS NAVRATRI
-
-          <span class="star">
-            ✦
-          </span>
-
-          CHEATCODE™
-
-          <span class="star">
-            ✦
-          </span>
+          <div class="bottom-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="bottom-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="bottom-slider-star">✦</span>
+            CHEATCODE™
+            <span class="bottom-slider-star">✦</span>
+          </div>
 
         </div>
 
 
-        <div class="marquee-item">
+        <div class="bottom-slider-group">
 
-          CHEAT WITHOUT REGRET
+          <div class="bottom-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="bottom-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="bottom-slider-star">✦</span>
+            CHEATCODE™
+            <span class="bottom-slider-star">✦</span>
+          </div>
 
-          <span class="star">
-            ✦
-          </span>
+          <div class="bottom-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="bottom-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="bottom-slider-star">✦</span>
+            CHEATCODE™
+            <span class="bottom-slider-star">✦</span>
+          </div>
 
-          THIS NAVRATRI
-
-          <span class="star">
-            ✦
-          </span>
-
-          CHEATCODE™
-
-          <span class="star">
-            ✦
-          </span>
+          <div class="bottom-slider-item">
+            CHEAT WITHOUT REGRET
+            <span class="bottom-slider-star">✦</span>
+            THIS NAVRATRI
+            <span class="bottom-slider-star">✦</span>
+            CHEATCODE™
+            <span class="bottom-slider-star">✦</span>
+          </div>
 
         </div>
 
@@ -743,12 +1130,12 @@
 
 
     <!-- FOOTER -->
+
     <footer>
 
       <div>
         © 2026 CHEATCODE™
       </div>
-
 
       <div class="footer-links">
 
@@ -759,7 +1146,6 @@
         >
           Instagram ↗
         </a>
-
 
         <a
           href="mailto:hello@houseofcheatcode.com"
@@ -774,7 +1160,8 @@
   </main>
 
 
-  <!-- GOOGLE SHEETS FORM SUBMISSION -->
+  <!-- GOOGLE SHEETS -->
+
   <script>
 
     const form =
@@ -800,15 +1187,10 @@
 
         e.preventDefault();
 
-
         submitButton.disabled = true;
+        submitButton.textContent = "SENDING...";
 
-        submitButton.textContent =
-          "SENDING...";
-
-
-        errorMessage.style.display =
-          "none";
+        errorMessage.style.display = "none";
 
 
         const formData =
@@ -834,7 +1216,6 @@
           await fetch(
             GOOGLE_SCRIPT_URL,
             {
-
               method: "POST",
 
               mode: "no-cors",
@@ -846,17 +1227,13 @@
 
               body:
                 JSON.stringify(data)
-
             }
           );
 
 
-          form.style.display =
-            "none";
+          form.style.display = "none";
 
-
-          success.style.display =
-            "block";
+          success.style.display = "block";
 
 
         } catch (error) {
@@ -866,17 +1243,11 @@
             error
           );
 
+          submitButton.disabled = false;
 
-          submitButton.disabled =
-            false;
+          submitButton.textContent = "I'M IN →";
 
-
-          submitButton.textContent =
-            "I'M IN →";
-
-
-          errorMessage.style.display =
-            "block";
+          errorMessage.style.display = "block";
 
         }
 
