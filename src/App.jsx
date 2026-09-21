@@ -199,17 +199,6 @@ export default function App() {
 
             <div className="hero-product">
               <HeroProduct />
-              <div className="side-copy">
-                SAME
-                <br />
-                PLEASURE.
-                <br />
-                <em>
-                  BETTER
-                  <br />
-                  CHOICES.
-                </em>
-              </div>
             </div>
           </div>
         </section>
