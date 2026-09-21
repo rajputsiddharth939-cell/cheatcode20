@@ -109,7 +109,7 @@ function Signup() {
     <section className="black signup" id="signup">
       <div className="wrap signup-grid">
         <div>
-          <span className="eyebrow">06 / GET IN EARLY</span>
+          <span className="eyebrow">07 / GET IN EARLY</span>
           <h2>
             DON’T MISS
             <br />
@@ -337,15 +337,15 @@ export default function App() {
 
         <section className="black order-start">
           <div className="wrap order-start-inner">
-            <span className="eyebrow redtext">06 / ORDERS START FROM 11TH OCTOBER.</span>
-            <h2>YOUR CHEATCODE<br />IS JUST ONE CLICK AWAY.</h2>
-            <p>
-              Order directly from our website and get your favourite flavour
-              delivered across Ahmedabad in just half an hour.
-            </p>
-            <a className="pill order-cta" href="#launch">
-              BE READY TO ORDER <b>→</b>
-            </a>
+            <span className="eyebrow redtext">06 / ORDERS OPEN 11.10.26</span>
+            <div className="order-start-grid">
+              <div className="order-date">11<span>OCT</span></div>
+              <div className="order-copy">
+                <h2>YOUR CHEATCODE<br />IS ONE CLICK AWAY.</h2>
+                <p>Order directly from our website and get your favourite flavour delivered across Ahmedabad in just half an hour.</p>
+                <a className="pill order-cta" href="#launch">BE READY TO ORDER <b>→</b></a>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -353,7 +353,7 @@ export default function App() {
 
         <section className="black follow">
           <div className="wrap">
-            <span className="eyebrow redtext">07 / FOLLOW THE BUILD</span>
+            <span className="eyebrow redtext">08 / FOLLOW THE BUILD</span>
             <h2>@HOUSEOFCHEATCODE</h2>
             <p className="muted">
               Flavour testing. Packaging. First batches. Launch preparation.
@@ -372,7 +372,7 @@ export default function App() {
 
         <section className="red final">
           <div className="wrap">
-            <span className="eyebrow">08 / CHEATCODE™</span>
+            <span className="eyebrow">09 / CHEATCODE™</span>
             <h2>
               YOUR NEXT
               <br />
