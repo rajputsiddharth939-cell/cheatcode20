@@ -44,9 +44,16 @@ function Count() {
 function HeroProduct() {
   const [index, setIndex] = useState(0);
 
+  // Infinite autoplay — keeps cycling through every flavour continuously.
   useEffect(() => {
-    const id = setInterval(() => setIndex((current) => (current + 1) % flavours.length), 1500);
-    return () => clearInterval(id);
+    let timer;
+    const advance = () => {
+      setIndex((current) => (current + 1) % flavours.length);
+      timer = setTimeout(advance, 1400);
+    };
+
+    timer = setTimeout(advance, 1400);
+    return () => clearTimeout(timer);
   }, []);
 
   return (
@@ -57,8 +64,8 @@ function HeroProduct() {
           <div className="hero-flavour-label">{flavour.name} {flavour.sub}</div>
         </div>
       ))}
-      <button className="hero-prev" onClick={() => setIndex((index - 1 + flavours.length) % flavours.length)} aria-label="Previous flavour">‹</button>
-      <button className="hero-next" onClick={() => setIndex((index + 1) % flavours.length)} aria-label="Next flavour">›</button>
+      <button className="hero-prev" onClick={() => setIndex((current) => (current - 1 + flavours.length) % flavours.length)} aria-label="Previous flavour">‹</button>
+      <button className="hero-next" onClick={() => setIndex((current) => (current + 1) % flavours.length)} aria-label="Next flavour">›</button>
       <div className="hero-dots" aria-hidden="true">
         {flavours.map((flavour, i) => <span className={i === index ? "active" : ""} key={flavour.name} />)}
       </div>
