@@ -222,35 +222,10 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
 }
 
 
-/* Reliable product image source */
-.pack{
-  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
-  background-size:500% 100% !important;
-  background-repeat:no-repeat !important;
-  background-position:50% center !important;
-}
-.flavour-row article:nth-child(1) .mini-pack{
-  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
-  background-size:500% 100% !important;
-  background-position:0% center !important;
-}
-.flavour-row article:nth-child(2) .mini-pack{
-  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
-  background-size:500% 100% !important;
-  background-position:25% center !important;
-}
-.flavour-row article:nth-child(3) .mini-pack{
-  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
-  background-size:500% 100% !important;
-  background-position:50% center !important;
-}
-.flavour-row article:nth-child(4) .mini-pack{
-  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
-  background-size:500% 100% !important;
-  background-position:75% center !important;
-}
-.flavour-row article:nth-child(5) .mini-pack{
-  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
-  background-size:500% 100% !important;
-  background-position:100% center !important;
-}
+/* Product sprite — local Vite public asset */
+.pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-repeat:no-repeat !important;background-position:50% center !important;}
+.flavour-row article:nth-child(1) .mini-pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-position:0% center !important;}
+.flavour-row article:nth-child(2) .mini-pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-position:25% center !important;}
+.flavour-row article:nth-child(3) .mini-pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-position:50% center !important;}
+.flavour-row article:nth-child(4) .mini-pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-position:75% center !important;}
+.flavour-row article:nth-child(5) .mini-pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-position:100% center !important;}
