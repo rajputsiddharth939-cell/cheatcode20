@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const API =
   "https://script.google.com/macros/s/AKfycbzX2i0JOw5HED9JnEOEs3gwDKZgEfpvRHN1b2VS6VYlFDJVBZDrlCwCBjTEKD8EuCVipg/exec";
@@ -363,6 +364,7 @@ export default function App() {
           HELLO@HOUSEOFCHEATCODE.COM
         </a>
       </footer>
+      <SpeedInsights />
     </div>
   );
 }
