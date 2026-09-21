@@ -33,8 +33,8 @@ nav a:hover{opacity:1}
 .header-btn:hover{background:var(--black);color:#fff}
 
 .ticker{position:absolute;z-index:19;top:74px;width:100%;background:var(--black);color:#fff;padding:9px 0;overflow:hidden;font:500 9px "DM Mono",monospace;letter-spacing:.08em}
-.ticker-track{display:flex;width:max-content;min-width:max-content;animation:ticker-marquee 22s linear infinite;will-change:transform}
-.ticker-track span{display:block;flex:none;padding-right:3.5rem}
+.ticker-track{display:flex;width:max-content;min-width:max-content;animation:ticker-marquee 18s linear infinite;will-change:transform}
+.ticker-track span{display:block;flex:none;padding-right:1.2rem}
 @keyframes ticker-marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.ticker-track{animation-duration:22s}}
 
