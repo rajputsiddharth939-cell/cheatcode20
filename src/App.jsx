@@ -6,8 +6,8 @@ const API =
 const flavours = [
   { name: "VANILLA", sub: "CRUNCH", image: "https://drive.google.com/thumbnail?id=1mplXCsRaxfshz-tfaye-fE4PQbyyQHTE&sz=w1200" },
   { name: "GUAVA", sub: "CHILLI", image: "https://drive.google.com/thumbnail?id=1fMMPBTYv3kkUwJ_PTvkzTXYsI6W3aaBY&sz=w1200" },
-  { name: "BELGIAN", sub: "CHOCOLATE", image: "https://drive.google.com/thumbnail?id=1nttyb2vNWrE7rdCx3hPBZYfaKpF1OsRq&sz=w1200" },
-  { name: "BLUEBERRY", sub: "CHEESECAKE", image: "https://drive.google.com/thumbnail?id=1nttyb2vNWrE7rdCx3hPBZYfaKpF1OsRq&sz=w1200" },
+  { name: "BELGIAN", sub: "CHOCOLATE", image: "https://drive.google.com/thumbnail?id=1jO709v0BtVusvzV_ZAGg17gYQpLUjF96&sz=w1200" },
+  { name: "BLUEBERRY", sub: "CHEESECAKE", image: "https://drive.google.com/thumbnail?id=1jO709v0BtVusvzV_ZAGg17gYQpLUjF96&sz=w1200" },
   { name: "MIDNIGHT", sub: "COOKIES", image: "https://drive.google.com/thumbnail?id=14iWRkcwax5jZGmH86DmVkVmCDEXNR8B_&sz=w1200" },
 ];
 
