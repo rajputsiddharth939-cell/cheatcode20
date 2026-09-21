@@ -4,11 +4,11 @@ const API =
   "https://script.google.com/macros/s/AKfycbzX2i0JOw5HED9JnEOEs3gwDKZgEfpvRHN1b2VS6VYlFDJVBZDrlCwCBjTEKD8EuCVipg/exec";
 
 const flavours = [
-  ["VANILLA", "CRUNCH", "0%"],
-  ["GUAVA", "CHILLI", "25%"],
-  ["BELGIAN", "CHOCOLATE", "50%"],
-  ["BLUEBERRY", "CHEESECAKE", "75%"],
-  ["MIDNIGHT", "COOKIES", "100%"],
+  { name: "VANILLA", sub: "CRUNCH", image: "https://drive.google.com/thumbnail?id=1ATzTMhLfDF2qRivyhivjrQKBS6f543Zh&sz=w1200" },
+  { name: "GUAVA", sub: "CHILLI", image: "https://drive.google.com/thumbnail?id=15-GnwIxkNv6CmFE-11gt4rjRiJ783QXD&sz=w1200" },
+  { name: "BELGIAN", sub: "CHOCOLATE", image: "https://drive.google.com/thumbnail?id=1SZ2iWxsUo0csAk_JeCZmrNV-U--tTogW&sz=w1200" },
+  { name: "BLUEBERRY", sub: "CHEESECAKE", image: "https://drive.google.com/thumbnail?id=1OY6uTJxPPRvIEHTkImZ8RFEmnktnBXWL&sz=w1200" },
+  { name: "MIDNIGHT", sub: "COOKIES", image: "https://drive.google.com/thumbnail?id=1hCX9R8Bdz2YjivbiePtuQRfEauShBPFy&sz=w1200" },
 ];
 
 function Count() {
@@ -41,11 +41,11 @@ function Count() {
   );
 }
 
-function Product({ pos = "50%" }) {
+function Product({ src }) {
   return (
     <div className="product" aria-hidden="true">
       <div className="glow" />
-      <div className="pack" style={{ backgroundPosition: pos }} />
+      <img className="pack" src={src} alt="" loading="eager" decoding="async" />
       <div className="floor" />
     </div>
   );
@@ -175,7 +175,7 @@ export default function App() {
             </div>
 
             <div className="hero-product">
-              <Product />
+              <Product src={flavours[2].image} />
               <div className="side-copy">
                 SAME
                 <br />
@@ -201,16 +201,19 @@ export default function App() {
 
             <div className="flavour-row">
               {flavours.map((flavour, index) => (
-                <article key={flavour.join("-")}>
+                <article key={flavour.name + "-" + flavour.sub}>
                   <div
                     className="mini-pack"
-                    style={{ backgroundPosition: flavour[2] }}
+                    src={flavour.image}
+                    alt={flavour.name + " " + flavour.sub + " CHEATCODE ice cream"}
+                    loading="lazy"
+                    decoding="async"
                   />
                   <span>0{index + 1}</span>
                   <h3>
-                    {flavour[0]}
+                    {flavour.name}
                     <br />
-                    {flavour[1]}
+                    {flavour.sub}
                   </h3>
                 </article>
               ))}
@@ -299,7 +302,7 @@ export default function App() {
           </div>
 
           <div className="launch-product">
-            <Product />
+            <Product src={flavours[0].image} />
           </div>
         </section>
 
