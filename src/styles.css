@@ -235,3 +235,18 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
   .hero-slider{min-height:400px}
   .hero-flavour-label{bottom:28px;font-size:10px}
 }
+
+
+/* Hero controls + mobile shadow cleanup */
+.hero-prev,.hero-next{position:absolute;top:50%;z-index:8;width:42px;height:42px;border:1px solid #fff8;background:#0006;color:#fff;border-radius:50%;font:400 30px/1 Arial;display:flex;align-items:center;justify-content:center;cursor:pointer;transform:translateY(-50%);backdrop-filter:blur(6px);transition:background .2s ease,transform .2s ease}
+.hero-prev{left:3%}.hero-next{right:3%}
+.hero-prev:hover,.hero-next:hover{background:#000c;transform:translateY(-50%) scale(1.05)}
+@media(max-width:600px){
+  .hero-prev,.hero-next{width:34px;height:34px;font-size:24px;background:#0004}
+  .hero-prev{left:7px}.hero-next{right:7px}
+  .hero-slide .pack{filter:none;box-shadow:none}
+  .hero-slide .floor{opacity:.35;filter:blur(14px)}
+  .hero-slide .product:before{opacity:.22;filter:blur(55px)}
+  .hero-slide .glow{opacity:.25}
+  .hero-slide{transition:opacity .55s ease,transform .7s ease,visibility .55s ease}
+}
