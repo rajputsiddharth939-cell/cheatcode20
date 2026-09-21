@@ -49,7 +49,7 @@ nav a:hover{opacity:1}
 
 .hero-product{position:relative;height:min(670px,75vh)}
 .product{height:100%;position:relative;display:flex;align-items:center;justify-content:center}
-.pack{width:min(390px,58%);aspect-ratio:4/5;background-image:url('/flavours.webp');background-size:500% 100%;background-repeat:no-repeat;border-radius:25% 25% 9% 9%;filter:drop-shadow(0 35px 35px #0009);transform:rotate(2deg);position:relative;z-index:2;transition:transform .35s ease,filter .35s ease}
+.pack{width:min(390px,58%);height:auto;max-height:92%;object-fit:contain;display:block;border-radius:0;filter:drop-shadow(0 35px 35px #0009);transform:rotate(2deg);position:relative;z-index:2;transition:transform .35s ease,filter .35s ease}
 .product:hover .pack{transform:rotate(-1deg) translateY(-6px) scale(1.015);filter:drop-shadow(0 46px 42px #000b)}
 .product:before{content:"";position:absolute;width:50%;height:50%;border-radius:50%;background:#ffdfc9;filter:blur(80px);opacity:.55}
 .glow{position:absolute;inset:12% 10%;background:radial-gradient(circle,#ffdbba55,transparent 58%)}
@@ -63,7 +63,7 @@ nav a:hover{opacity:1}
 .muted{opacity:.62}
 .flavour-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:55px}
 .flavour-row article{min-width:0;text-align:center}
-.mini-pack{height:310px;background-image:url('/flavours.webp');background-size:500% 100%;background-repeat:no-repeat;filter:drop-shadow(0 20px 22px #000);transition:transform .25s ease}
+.mini-pack{width:100%;height:310px;object-fit:contain;display:block;filter:drop-shadow(0 20px 22px #000);transition:transform .25s ease}
 .flavour-row article:hover .mini-pack{transform:translateY(-8px)}
 .flavour-row article span{font:500 9px "DM Mono",monospace;opacity:.45}
 .flavour-row h3{font-size:15px;line-height:.95;margin:8px 0 0}
@@ -151,7 +151,7 @@ footer b{font:900 16px Inter,sans-serif}
   .stats span:nth-child(2){border-right:0}
   .flavours-sec,.signup,.follow,.story,.launch{padding:75px 0}
   .flavour-row{grid-template-columns:repeat(2,1fr)}
-  .mini-pack{height:240px}
+  .mini-pack{height:240px;width:100%}
   .benefits{grid-template-columns:repeat(2,1fr);gap:20px}
   .benefits div:nth-child(2){border-right:0}
   .benefits div:nth-child(3),.benefits div:nth-child(4){padding-top:18px}
@@ -189,7 +189,7 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
   .stats b{font-size:22px}
   .hero-product{width:100%;height:335px;margin-top:4px;overflow:hidden}
   .hero-product .product{width:100%;height:100%}
-  .hero-product .pack{width:205px;max-width:62vw;transform:rotate(2deg)}
+  .hero-product .pack{width:205px;max-width:62vw;max-height:100%;transform:rotate(2deg)}
   .hero-product .product:before{width:58%;height:48%}
   .hero-product .floor{bottom:6%;width:52%}
   .side-copy{display:none}
@@ -197,7 +197,7 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
   .center h2,.flavours-sec h2{font-size:clamp(40px,13vw,60px)}
   .flavour-row{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 10px;margin-top:38px}
   .flavour-row article:nth-child(4),.flavour-row article:nth-child(5){margin-top:0}
-  .mini-pack{height:210px}
+  .mini-pack{height:210px;width:100%}
   .benefits{margin-top:42px}
   .split{width:100%;grid-template-columns:1fr;overflow:hidden}
   .image-panel{width:100%;height:300px}
@@ -220,8 +220,3 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
   .final h2{font-size:clamp(58px,17vw,82px)}
   footer{width:100%;padding:26px 18px}
 }
-
-
-/* Product imagery — let React's per-flavour backgroundPosition control the sprite. */
-.pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-repeat:no-repeat !important;background-position:50% center !important;}
-.mini-pack{background-image:url("/flavours.webp") !important;background-size:500% 100% !important;background-repeat:no-repeat !important;}
