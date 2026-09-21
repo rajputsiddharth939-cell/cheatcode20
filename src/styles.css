@@ -11,6 +11,6 @@
 .hero-tag{font-size:clamp(18px,2vw,28px);font-weight:700;line-height:1.05}
 .pill{display:inline-flex;gap:30px;align-items:center;background:var(--black);color:#fff;border-radius:999px;padding:14px 16px 14px 20px;font:700 10px "DM Mono",monospace;margin:20px 0 30px;transition:transform .2s ease}
 .pill:hover{transform:translateY(-2px)}
-.pill b{width:50px;height:50px;display:grid;place-items:center;flex:0 0 50px;background:var(--red);color:var(--black);border-radius:50%;padding:0}
+.pill b{width:56px;height:56px;display:grid;place-items:center;flex:0 0 56px;background:var(--red);color:var(--black);border-radius:50%;padding:0;font-size:20px;line-height:1}
 .stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #000;padding-top:18px;max-width:660px;gap:0}
 .stats span{min-width:0;padding:0 18px;border-right:1px solid #000}
