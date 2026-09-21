@@ -1,12 +1,25 @@
-# CHEATCODE™ Launch Website
+# CHEATCODE™ Website
 
-React + Vite + Tailwind CSS launch site for CHEATCODE™.
+Premium high-protein ice cream launch website for CHEATCODE.
 
-## Run
+## Stack
+- React 19
+- Vite 7
+- CSS
+
+## Brand
+- Tagline: You Can Cheat Without Regret.
+- USP: 10g Protein · 0 Added Sugar · High Fibre · Low Carb
+- Launch: 11 October 2026
+- Instagram: @houseofcheatcode
+
+## Run locally
+```bash
 npm install
 npm run dev
+```
 
 ## Build
+```bash
 npm run build
-
-Launch countdown: 11 October 2026, India time (UTC+05:30).
+```
