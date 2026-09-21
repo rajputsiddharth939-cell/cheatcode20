@@ -41,6 +41,29 @@ function Count() {
   );
 }
 
+function HeroProduct() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((current) => (current + 1) % flavours.length), 5200);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="hero-slider" aria-label="CHEATCODE flavour showcase">
+      {flavours.map((flavour, i) => (
+        <div className={`hero-slide ${i === index ? "active" : ""}`} key={flavour.name + flavour.sub}>
+          <Product src={flavour.image} />
+          <div className="hero-flavour-label">{flavour.name} {flavour.sub}</div>
+        </div>
+      ))}
+      <div className="hero-dots" aria-hidden="true">
+        {flavours.map((flavour, i) => <span className={i === index ? "active" : ""} key={flavour.name} />)}
+      </div>
+    </div>
+  );
+}
+
 function Product({ src }) {
   return (
     <div className="product" aria-hidden="true">
@@ -77,7 +100,7 @@ function Signup() {
     <section className="black signup" id="signup">
       <div className="wrap signup-grid">
         <div>
-          <span className="eyebrow">08 / GET IN EARLY</span>
+          <span className="eyebrow">06 / GET IN EARLY</span>
           <h2>
             DON’T MISS
             <br />
@@ -138,7 +161,7 @@ export default function App() {
         <section className="hero red">
           <div className="wrap hero-grid">
             <div className="hero-copy">
-              <span className="eyebrow">PREMIUM HIGH-PROTEIN ICE CREAM</span>
+              <span className="eyebrow">01 / PREMIUM HIGH-PROTEIN ICE CREAM</span>
 
               <h1>
                 CHEAT
@@ -175,7 +198,7 @@ export default function App() {
             </div>
 
             <div className="hero-product">
-              <Product src={flavours[2].image} />
+              <HeroProduct />
               <div className="side-copy">
                 SAME
                 <br />
@@ -329,7 +352,7 @@ export default function App() {
 
         <section className="red final">
           <div className="wrap">
-            <span className="eyebrow">CHEATCODE™</span>
+            <span className="eyebrow">08 / CHEATCODE™</span>
             <h2>
               YOUR NEXT
               <br />
