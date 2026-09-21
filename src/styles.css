@@ -220,3 +220,17 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
   .final h2{font-size:clamp(58px,17vw,82px)}
   footer{width:100%;padding:26px 18px}
 }
+
+/* Crisp individual product assets */
+.pack,.mini-pack{
+  background-image: none !important;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center !important;
+}
+.pack{background-image:url("/products/belgian-chocolate.png") !important;}
+.flavour-row article:nth-child(1) .mini-pack{background-image:url("/products/vanilla-crunch.png") !important;}
+.flavour-row article:nth-child(2) .mini-pack{background-image:url("/products/guava-chilli.png") !important;}
+.flavour-row article:nth-child(3) .mini-pack{background-image:url("/products/belgian-chocolate.png") !important;}
+.flavour-row article:nth-child(4) .mini-pack{background-image:url("/products/blueberry-cheesecake.png") !important;}
+.flavour-row article:nth-child(5) .mini-pack{background-image:url("/products/midnight-cookies.png") !important;}
