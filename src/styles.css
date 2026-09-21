@@ -222,35 +222,35 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
 }
 
 
-/* Product image fallback + individual asset hooks */
+/* Reliable product image source */
 .pack{
-  background-image:url("/products/belgian-chocolate.png"),url("/flavours.webp") !important;
-  background-size:contain,500% 100%;
-  background-position:center,50% center !important;
-  background-repeat:no-repeat;
+  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
+  background-size:500% 100% !important;
+  background-repeat:no-repeat !important;
+  background-position:50% center !important;
 }
 .flavour-row article:nth-child(1) .mini-pack{
-  background-image:url("/products/vanilla-crunch.png"),url("/flavours.webp") !important;
-  background-size:contain,500% 100%;
-  background-position:center,0% center !important;
+  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
+  background-size:500% 100% !important;
+  background-position:0% center !important;
 }
 .flavour-row article:nth-child(2) .mini-pack{
-  background-image:url("/products/guava-chilli.png"),url("/flavours.webp") !important;
-  background-size:contain,500% 100%;
-  background-position:center,25% center !important;
+  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
+  background-size:500% 100% !important;
+  background-position:25% center !important;
 }
 .flavour-row article:nth-child(3) .mini-pack{
-  background-image:url("/products/belgian-chocolate.png"),url("/flavours.webp") !important;
-  background-size:contain,500% 100%;
-  background-position:center,50% center !important;
+  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
+  background-size:500% 100% !important;
+  background-position:50% center !important;
 }
 .flavour-row article:nth-child(4) .mini-pack{
-  background-image:url("/products/blueberry-cheesecake.png"),url("/flavours.webp") !important;
-  background-size:contain,500% 100%;
-  background-position:center,75% center !important;
+  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
+  background-size:500% 100% !important;
+  background-position:75% center !important;
 }
 .flavour-row article:nth-child(5) .mini-pack{
-  background-image:url("/products/midnight-cookies.png"),url("/flavours.webp") !important;
-  background-size:contain,500% 100%;
-  background-position:center,100% center !important;
+  background-image:url("https://raw.githubusercontent.com/rajputsiddharth939-cell/cheatcode20/main/public/flavours.webp") !important;
+  background-size:500% 100% !important;
+  background-position:100% center !important;
 }
