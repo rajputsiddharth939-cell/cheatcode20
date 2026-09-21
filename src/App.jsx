@@ -261,7 +261,13 @@ export default function App() {
 
         <section className="black split">
           <div className="image-panel">
-            <div className="icecream-art" />
+            <img
+              className="section3-image"
+              src="/images/Cheatcode Section 3.JPG"
+              alt="CHEATCODE ice cream brand visual"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
 
           <div className="copy-panel">
