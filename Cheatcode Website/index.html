@@ -1,0 +1,1359 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ff0000">
+<meta name="description" content="CHEATCODE™ — Premium high-protein ice cream. You Can Cheat Without Regret. Launching 11.10.26.">
+<title>CHEATCODE™ — You Can Cheat Without Regret.</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700;800;900&display=swap');
+
+:root{
+  --red:#ff0000;
+  --black:#050505;
+  --white:#fff;
+  --cream:#f4f1ea;
+  --pad:clamp(18px,5vw,72px);
+}
+
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--red);
+  color:var(--black);
+  font-family:Inter,Arial,sans-serif;
+  overflow-x:hidden;
+  width:100%;
+}
+img{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+
+.texture{
+  position:fixed;inset:0;z-index:1000;pointer-events:none;opacity:.025;
+  background-image:radial-gradient(rgba(0,0,0,.8) .5px,transparent .5px);
+  background-size:5px 5px;
+}
+
+/* ================= HEADER ================= */
+
+header{
+  position:absolute;
+  top:0;left:0;right:0;
+  z-index:50;
+  padding:22px var(--pad);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.brand{
+  font-size:clamp(24px,2.5vw,34px);
+  font-weight:900;
+  letter-spacing:-2px;
+  line-height:1;
+}
+
+.header-right{
+  display:flex;
+  align-items:center;
+  gap:18px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+}
+
+.live{display:flex;align-items:center;gap:7px}
+.dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#000;
+  animation:pulse 1.5s infinite;
+}
+@keyframes pulse{50%{opacity:.2}}
+
+/* FULL-WIDTH HEADER MARQUEE */
+.header-marquee{
+  position:absolute;
+  top:72px;
+  left:50%;
+  width:100vw;
+  transform:translateX(-50%);
+  height:28px;
+  overflow:hidden;
+  background:#000;
+  color:#fff;
+  display:flex;
+  align-items:center;
+  z-index:40;
+}
+.header-track{
+  display:flex;
+  width:max-content;
+  animation:marquee 22s linear infinite;
+}
+.header-item{
+  white-space:nowrap;
+  padding-right:30px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.7px;
+  text-transform:uppercase;
+}
+.header-item span{color:var(--red);padding:0 12px}
+@keyframes marquee{
+  from{transform:translateX(0)}
+  to{transform:translateX(-50%)}
+}
+
+/* ================= GLOBAL ================= */
+
+.section{
+  width:100%;
+  padding:clamp(72px,9vw,135px) var(--pad);
+}
+.container{
+  width:min(1400px,100%);
+  margin:0 auto;
+}
+.section-number{
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:2px;
+  opacity:.55;
+  margin-bottom:clamp(20px,3vw,34px);
+  text-transform:uppercase;
+}
+.white{background:var(--cream)}
+.black{background:var(--black);color:#fff}
+.red{color:var(--red)}
+.outline{color:transparent;-webkit-text-stroke:2px currentColor}
+
+/* ================= STICKY COUNTDOWN ================= */
+
+.sticky-countdown{
+  position:fixed;
+  z-index:900;
+  left:50%;
+  bottom:max(10px,env(safe-area-inset-bottom));
+  transform:translateX(-50%);
+  display:flex;
+  align-items:center;
+  gap:14px;
+  padding:9px 14px;
+  background:#000;
+  color:#fff;
+  border:1px solid #fff;
+  white-space:nowrap;
+  box-shadow:4px 4px 0 rgba(0,0,0,.18);
+}
+.sticky-label{
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:1.3px;
+  text-transform:uppercase;
+}
+.sticky-time{font-size:10px;font-weight:900;letter-spacing:.5px}
+.sticky-time span{color:var(--red)}
+
+/* ================= HERO ================= */
+
+.hero{
+  min-height:100svh;
+  padding:155px var(--pad) 90px;
+  display:flex;
+  align-items:center;
+  text-align:center;
+  overflow:hidden;
+}
+.hero-content{width:min(1450px,100%);margin:auto}
+.hero-small{
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+  margin-bottom:22px;
+}
+.hero h1{
+  font-size:clamp(62px,12.5vw,190px);
+  line-height:.8;
+  letter-spacing:clamp(-9px,-.65vw,-5px);
+  font-weight:900;
+  overflow-wrap:anywhere;
+}
+.hero-tagline{
+  margin-top:28px;
+  font-size:clamp(18px,2.2vw,32px);
+  font-weight:800;
+  letter-spacing:-1px;
+}
+.hero-specs{
+  display:flex;
+  justify-content:center;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:23px;
+}
+.spec{
+  border:1.5px solid #000;
+  padding:9px 12px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.launch-date{
+  margin-top:21px;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:2.5px;
+  text-transform:uppercase;
+}
+.hero-cta{
+  display:inline-flex;
+  margin-top:23px;
+  padding:14px 21px;
+  background:#000;
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+  transition:.2s;
+}
+.hero-cta:hover{background:#fff;color:#000;transform:translateY(-2px)}
+
+/* ================= WHAT ================= */
+
+.what-grid{
+  display:grid;
+  grid-template-columns:minmax(0,.72fr) minmax(0,1.28fr);
+  gap:clamp(40px,8vw,120px);
+  align-items:end;
+}
+.what-title{
+  font-size:clamp(50px,7vw,105px);
+  line-height:.84;
+  letter-spacing:-6px;
+  font-weight:900;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.what-copy p{
+  max-width:680px;
+  font-size:clamp(20px,2.5vw,36px);
+  line-height:1.08;
+  font-weight:800;
+  letter-spacing:-1.4px;
+}
+.subcopy{
+  margin-top:25px;
+  max-width:540px;
+  font-size:13px;
+  line-height:1.6;
+  font-weight:600;
+}
+.nutrition{
+  margin-top:48px;
+  border-block:2px solid #000;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+}
+.nitem{
+  text-align:center;
+  padding:18px 8px;
+  border-right:1px solid #000;
+}
+.nitem:last-child{border:0}
+.nnum{display:block;font-size:28px;font-weight:900}
+.nlabel{
+  display:block;
+  margin-top:4px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.3px;
+  text-transform:uppercase;
+}
+
+/* ================= DIFFERENCE ================= */
+
+.diff{background:#000;color:#fff}
+.dtop{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 280px;
+  gap:50px;
+  align-items:start;
+}
+.diff h2{
+  max-width:900px;
+  font-size:clamp(55px,8vw,125px);
+  line-height:.82;
+  letter-spacing:-7px;
+  font-weight:900;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.dintro{font-size:13px;line-height:1.5;font-weight:600}
+.dlist{
+  margin-top:clamp(55px,7vw,90px);
+  border-top:1px solid rgba(255,255,255,.3);
+}
+.drow{
+  display:grid;
+  grid-template-columns:60px minmax(0,1fr) 30px;
+  gap:20px;
+  align-items:center;
+  padding:25px 0;
+  border-bottom:1px solid rgba(255,255,255,.3);
+}
+.dnum{font-size:9px;opacity:.5}
+.dtitle{
+  font-size:clamp(24px,4vw,55px);
+  line-height:1;
+  font-weight:900;
+  letter-spacing:-1.8px;
+  overflow-wrap:anywhere;
+}
+.dfinal{
+  margin-top:55px;
+  max-width:800px;
+  font-size:clamp(28px,4vw,60px);
+  line-height:.95;
+  font-weight:900;
+  letter-spacing:-2.5px;
+  text-transform:uppercase;
+}
+
+/* ================= FLAVOURS ================= */
+
+.flavour-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  gap:30px;
+  margin-bottom:38px;
+}
+.flavours h2{
+  font-size:clamp(50px,7vw,105px);
+  line-height:.84;
+  letter-spacing:-6px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.flavour-count{
+  flex:0 0 auto;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.5px;
+}
+.flavour-grid{
+  display:grid;
+  grid-template-columns:repeat(5,minmax(0,1fr));
+  gap:9px;
+}
+.card{
+  min-width:0;
+  border:2px solid #000;
+  overflow:hidden;
+  background:#fff;
+  transition:transform .25s;
+}
+.card:hover{transform:translateY(-6px)}
+.flavour-img{
+  width:100%;
+  aspect-ratio:4/4.8;
+  object-fit:cover;
+  object-position:center top;
+}
+.info{padding:16px}
+.fnum{
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.3px;
+  opacity:.55;
+}
+.fname{
+  margin-top:7px;
+  font-size:clamp(17px,1.65vw,25px);
+  line-height:.92;
+  font-weight:900;
+  letter-spacing:-1.2px;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.fdesc{
+  margin-top:9px;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+.fstatement{
+  margin-top:48px;
+  text-align:center;
+  font-size:clamp(35px,6vw,85px);
+  line-height:.86;
+  font-weight:900;
+  letter-spacing:-4px;
+  text-transform:uppercase;
+}
+
+/* ================= WHY ================= */
+
+.why-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:clamp(45px,8vw,120px);
+  align-items:center;
+}
+.why h2{
+  font-size:clamp(55px,8vw,120px);
+  line-height:.8;
+  letter-spacing:-7px;
+  font-weight:900;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.why-copy{
+  font-size:clamp(22px,3vw,42px);
+  line-height:1.05;
+  letter-spacing:-1.3px;
+  font-weight:800;
+}
+.why-small{
+  margin-top:28px;
+  max-width:470px;
+  font-size:13px;
+  line-height:1.6;
+  color:rgba(255,255,255,.7);
+}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:25px}
+.tagpill{
+  border:1px solid rgba(255,255,255,.4);
+  padding:8px 10px;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:1px;
+  text-transform:uppercase;
+}
+
+/* ================= STORY ================= */
+
+.story{min-height:72vh;display:flex;align-items:center}
+.story-content{max-width:1100px}
+.story h2{
+  font-size:clamp(50px,8vw,120px);
+  line-height:.82;
+  letter-spacing:-7px;
+  font-weight:900;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.story-copy{
+  margin-top:42px;
+  max-width:720px;
+  font-size:clamp(18px,2vw,27px);
+  line-height:1.25;
+  font-weight:700;
+}
+.highlight{
+  display:inline-block;
+  margin-top:30px;
+  padding-bottom:5px;
+  border-bottom:2px solid #000;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
+/* ================= COUNTDOWN ================= */
+
+.count{
+  min-height:82vh;
+  display:flex;
+  align-items:center;
+  text-align:center;
+}
+.count h2{
+  font-size:clamp(65px,11vw,175px);
+  line-height:.78;
+  letter-spacing:-10px;
+  font-weight:900;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.bigdate{
+  margin-top:30px;
+  font-size:clamp(28px,5vw,75px);
+  font-weight:900;
+}
+.clock{
+  margin:42px auto 0;
+  width:min(900px,100%);
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  border-block:2px solid #000;
+}
+.box{
+  padding:25px 8px;
+  border-right:1px solid #000;
+}
+.box:last-child{border:0}
+.tnum{
+  display:block;
+  font-size:clamp(40px,7vw,85px);
+  line-height:.9;
+  font-weight:900;
+  letter-spacing:-4px;
+}
+.tlab{
+  display:block;
+  margin-top:9px;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+.countsub{
+  margin-top:28px;
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:1.7px;
+  text-transform:uppercase;
+}
+.countnote{margin-top:10px;font-size:9px}
+
+/* ================= SIGNUP ================= */
+
+.signup{background:#000;color:#fff;text-align:center}
+.signup h2{
+  font-size:clamp(55px,8vw,125px);
+  line-height:.82;
+  letter-spacing:-7px;
+  font-weight:900;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.signup-copy{
+  max-width:530px;
+  margin:25px auto 0;
+  font-size:12px;
+  line-height:1.5;
+  color:rgba(255,255,255,.7);
+}
+.form{
+  width:min(820px,100%);
+  margin:30px auto 0;
+  padding:6px;
+  background:#fff;
+  border:2px solid #fff;
+  display:grid;
+  grid-template-columns:1fr 1fr 1fr auto;
+  gap:6px;
+}
+.form input{
+  min-width:0;
+  height:46px;
+  border:1.5px solid #000;
+  padding:0 12px;
+  outline:0;
+  font-size:10px;
+  font-weight:700;
+}
+.form button{
+  height:46px;
+  border:1.5px solid #000;
+  background:#000;
+  color:#fff;
+  padding:0 20px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1px;
+  cursor:pointer;
+}
+.form button:hover{background:var(--red);color:#000}
+.success{
+  display:none;
+  margin:18px auto 0;
+  padding:14px;
+  background:#fff;
+  color:#000;
+  font-size:9px;
+  font-weight:900;
+  text-transform:uppercase;
+}
+.error{
+  display:none;
+  margin-top:9px;
+  color:var(--red);
+  font-size:8px;
+  font-weight:900;
+}
+
+/* ================= FOLLOW / FINAL / FOOTER ================= */
+
+.follow{background:#050505;color:#fff;text-align:center}
+.follow h2{
+  font-size:clamp(55px,9vw,140px);
+}
+.follow-copy{
+  max-width:520px;
+  margin:25px auto 0;
+  font-size:12px;
+  line-height:1.5;
+  color:rgba(255,255,255,.7);
+}
+.handle{
+  display:inline-block;
+  margin-top:25px;
+  font-size:20px;
+  font-weight:900;
+}
+.igbtn{
+  display:inline-flex;
+  margin-top:18px;
+  padding:13px 20px;
+  background:var(--red);
+  color:#000;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.4px;
+  text-transform:uppercase;
+}
+.final{
+  min-height:78vh;
+  display:flex;
+  align-items:center;
+  text-align:center;
+}
+.final h2{
+  font-size:clamp(65px,11vw,175px);
+  line-height:.78;
+  letter-spacing:-10px;
+  font-weight:900;
+  text-transform:uppercase;
+  overflow-wrap:anywhere;
+}
+.final-brand{
+  margin-top:38px;
+  font-size:clamp(35px,5vw,75px);
+  font-weight:900;
+  letter-spacing:-4px;
+}
+.final-tag{margin-top:10px;font-size:14px;font-weight:800}
+.final-date{margin-top:28px;font-size:clamp(24px,4vw,55px);font-weight:900}
+.there{
+  display:inline-flex;
+  margin-top:22px;
+  padding:14px 25px;
+  background:#000;
+  color:#fff;
+  font-size:9px;
+  font-weight:900;
+  letter-spacing:1.8px;
+  text-transform:uppercase;
+}
+footer{
+  padding:22px var(--pad) 85px;
+  background:#000;
+  color:#fff;
+  display:flex;
+  justify-content:space-between;
+  gap:20px;
+  font-size:8px;
+  font-weight:900;
+  letter-spacing:1.3px;
+  text-transform:uppercase;
+}
+.footer-links{display:flex;gap:22px;flex-wrap:wrap}
+footer a:hover{color:var(--red)}
+
+/* ================= TABLET ================= */
+
+@media(max-width:1000px){
+  .flavour-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .card:nth-child(4){grid-column:1/2}
+  .card:nth-child(5){grid-column:2/3}
+}
+
+/* ================= MOBILE ================= */
+
+@media(max-width:700px){
+
+  :root{--pad:16px}
+
+  header{
+    padding:17px var(--pad);
+  }
+
+  .brand{
+    font-size:21px;
+    letter-spacing:-1.5px;
+  }
+
+  .header-right{
+    gap:8px;
+    font-size:6.5px;
+    letter-spacing:1px;
+  }
+
+  .header-marquee{
+    top:57px;
+    height:23px;
+  }
+
+  .header-item{
+    font-size:6.5px;
+    padding-right:20px;
+    letter-spacing:1.2px;
+  }
+
+  .header-item span{padding:0 7px}
+
+  .section{
+    padding:68px var(--pad);
+  }
+
+  .section-number{
+    font-size:7px;
+    letter-spacing:1.5px;
+    margin-bottom:22px;
+  }
+
+  /* HERO */
+  .hero{
+    min-height:100svh;
+    padding:118px var(--pad) 62px;
+  }
+
+  .hero-small{
+    font-size:7px;
+    letter-spacing:1.8px;
+    margin-bottom:18px;
+  }
+
+  .hero h1{
+    font-size:clamp(52px,18vw,82px);
+    line-height:.84;
+    letter-spacing:-4px;
+  }
+
+  .hero-tagline{
+    margin-top:20px;
+    font-size:17px;
+    line-height:1.1;
+  }
+
+  .hero-specs{
+    max-width:340px;
+    margin:17px auto 0;
+    gap:5px;
+  }
+
+  .spec{
+    padding:7px 8px;
+    font-size:6px;
+    letter-spacing:.7px;
+  }
+
+  .launch-date{
+    margin-top:17px;
+    font-size:7px;
+    letter-spacing:1.7px;
+  }
+
+  .hero-cta{
+    margin-top:18px;
+    padding:12px 16px;
+    font-size:7px;
+  }
+
+  /* WHAT */
+  .what-grid{
+    grid-template-columns:1fr;
+    gap:28px;
+  }
+
+  .what-title{
+    font-size:clamp(47px,16vw,70px);
+    letter-spacing:-4px;
+  }
+
+  .what-copy p{
+    font-size:22px;
+    letter-spacing:-.8px;
+  }
+
+  .subcopy{
+    margin-top:18px;
+    font-size:10px;
+    line-height:1.55;
+  }
+
+  .nutrition{
+    margin-top:30px;
+  }
+
+  .nitem{
+    padding:14px 4px;
+  }
+
+  .nnum{font-size:20px}
+  .nlabel{font-size:5.5px;letter-spacing:.9px}
+
+  /* DIFFERENCE */
+  .dtop{
+    grid-template-columns:1fr;
+    gap:25px;
+  }
+
+  .diff h2{
+    font-size:clamp(48px,16vw,70px);
+    letter-spacing:-4px;
+  }
+
+  .dintro{
+    max-width:330px;
+    font-size:10px;
+  }
+
+  .dlist{margin-top:38px}
+
+  .drow{
+    grid-template-columns:25px minmax(0,1fr) 18px;
+    gap:9px;
+    padding:17px 0;
+  }
+
+  .dnum{font-size:7px}
+  .dtitle{
+    font-size:21px;
+    letter-spacing:-.8px;
+  }
+
+  .dfinal{
+    margin-top:38px;
+    font-size:26px;
+    letter-spacing:-1.2px;
+  }
+
+  /* FLAVOURS */
+  .flavour-head{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+    margin-bottom:24px;
+  }
+
+  .flavours h2{
+    font-size:clamp(47px,16vw,70px);
+    letter-spacing:-4px;
+  }
+
+  .flavour-count{font-size:7px}
+
+  .flavour-grid{
+    grid-template-columns:1fr 1fr;
+    gap:6px;
+  }
+
+  .card,
+  .card:nth-child(4),
+  .card:nth-child(5){
+    grid-column:auto;
+    min-width:0;
+    min-height:0;
+  }
+
+  .card:nth-child(5){
+    grid-column:1/-1;
+  }
+
+  .flavour-img{
+    width:100%;
+    aspect-ratio:1/1.08;
+    object-fit:cover;
+  }
+
+  .info{padding:11px}
+  .fnum{font-size:6px}
+  .fname{
+    margin-top:5px;
+    font-size:17px;
+    letter-spacing:-.7px;
+  }
+  .fdesc{
+    margin-top:6px;
+    font-size:5.5px;
+    letter-spacing:.7px;
+  }
+
+  .fstatement{
+    margin-top:32px;
+    font-size:11vw;
+    letter-spacing:-2.5px;
+  }
+
+  /* WHY */
+  .why-grid{
+    grid-template-columns:1fr;
+    gap:32px;
+  }
+
+  .why h2{
+    font-size:clamp(48px,16vw,70px);
+    letter-spacing:-4px;
+  }
+
+  .why-copy{
+    font-size:25px;
+    letter-spacing:-.8px;
+  }
+
+  .why-small{
+    margin-top:20px;
+    font-size:10px;
+  }
+
+  .tagpill{
+    padding:7px 8px;
+    font-size:6px;
+  }
+
+  /* STORY */
+  .story{
+    min-height:auto;
+  }
+
+  .story h2{
+    font-size:clamp(46px,15.5vw,68px);
+    letter-spacing:-4px;
+  }
+
+  .story-copy{
+    margin-top:28px;
+    font-size:16px;
+    line-height:1.28;
+  }
+
+  .highlight{
+    margin-top:22px;
+    font-size:8px;
+  }
+
+  /* COUNTDOWN */
+  .count{
+    min-height:72vh;
+  }
+
+  .count h2{
+    font-size:clamp(55px,18vw,82px);
+    letter-spacing:-5px;
+  }
+
+  .bigdate{
+    margin-top:20px;
+    font-size:8vw;
+  }
+
+  .clock{
+    margin-top:28px;
+  }
+
+  .box{
+    padding:17px 2px;
+  }
+
+  .tnum{
+    font-size:9vw;
+    letter-spacing:-2px;
+  }
+
+  .tlab{
+    margin-top:6px;
+    font-size:5px;
+    letter-spacing:.8px;
+  }
+
+  .countsub{
+    margin-top:20px;
+    font-size:7px;
+    letter-spacing:1.2px;
+  }
+
+  .countnote{
+    margin-top:8px;
+    font-size:7px;
+  }
+
+  /* FORM */
+  .signup h2{
+    font-size:clamp(48px,16vw,70px);
+    letter-spacing:-4px;
+  }
+
+  .signup-copy{
+    margin-top:18px;
+    font-size:10px;
+  }
+
+  .form{
+    grid-template-columns:1fr;
+    margin-top:23px;
+    padding:5px;
+    gap:5px;
+  }
+
+  .form input,
+  .form button{
+    height:42px;
+  }
+
+  /* FOLLOW */
+  .follow h2{
+    font-size:clamp(48px,17vw,76px);
+    letter-spacing:-4px;
+  }
+
+  .follow-copy{
+    font-size:10px;
+    margin-top:18px;
+  }
+
+  .handle{
+    margin-top:20px;
+    font-size:17px;
+  }
+
+  .igbtn{
+    margin-top:14px;
+    padding:12px 16px;
+    font-size:7px;
+  }
+
+  /* FINAL */
+  .final{
+    min-height:67vh;
+  }
+
+  .final h2{
+    font-size:clamp(52px,18vw,82px);
+    letter-spacing:-5px;
+  }
+
+  .final-brand{
+    margin-top:27px;
+    font-size:11vw;
+    letter-spacing:-2px;
+  }
+
+  .final-tag{font-size:10px}
+  .final-date{margin-top:20px;font-size:8vw}
+  .there{margin-top:17px;padding:12px 20px;font-size:7px}
+
+  /* FOOTER */
+  footer{
+    padding:20px var(--pad) 78px;
+    flex-direction:column;
+    align-items:flex-start;
+    gap:12px;
+    font-size:6.5px;
+  }
+
+  .footer-links{
+    gap:12px;
+  }
+
+  /* STICKY */
+  .sticky-countdown{
+    width:calc(100% - 16px);
+    justify-content:center;
+    gap:8px;
+    padding:8px 8px;
+  }
+
+  .sticky-label{font-size:5.5px}
+  .sticky-time{font-size:7px}
+}
+
+@media(max-width:380px){
+  .header-right>div:last-child{display:none}
+  .hero h1{font-size:17vw;letter-spacing:-3.5px}
+  .hero-tagline{font-size:15px}
+  .spec{font-size:5.5px}
+  .what-title,.diff h2,.why h2,.story h2,.signup h2{font-size:15.5vw}
+  .flavour-grid{grid-template-columns:1fr}
+  .card:nth-child(5){grid-column:auto}
+  .flavour-img{aspect-ratio:1/1}
+  .fname{font-size:19px}
+  .sticky-label{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="texture"></div>
+
+<div class="sticky-countdown">
+  <div class="sticky-label">Launching 11.10.26</div>
+  <div class="sticky-time">
+    <span id="sd">00</span>D :
+    <span id="sh">00</span>H :
+    <span id="sm">00</span>M :
+    <span id="ss">00</span>S
+  </div>
+</div>
+
+<header>
+  <div class="brand">CHEATCODE</div>
+  <div class="header-right">
+    <div class="live"><span class="dot"></span>We're Almost Here</div>
+    <div>2026</div>
+  </div>
+
+  <div class="header-marquee" aria-hidden="true">
+    <div class="header-track">
+      <div class="header-item">CHEAT WITHOUT REGRET <span>✦</span> THIS NAVRATRI <span>✦</span> CHEATCODE™ <span>✦</span></div>
+      <div class="header-item">CHEAT WITHOUT REGRET <span>✦</span> THIS NAVRATRI <span>✦</span> CHEATCODE™ <span>✦</span></div>
+      <div class="header-item">CHEAT WITHOUT REGRET <span>✦</span> THIS NAVRATRI <span>✦</span> CHEATCODE™ <span>✦</span></div>
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-small">Premium High-Protein Ice Cream</div>
+    <h1>CHEATCODE</h1>
+    <div class="hero-tagline">You Can Cheat Without Regret.</div>
+    <div class="hero-specs">
+      <div class="spec">10g Protein</div>
+      <div class="spec">Zero Added Sugar</div>
+      <div class="spec">High Fibre</div>
+    </div>
+    <div class="launch-date">Launching 11.10.26</div>
+    <a class="hero-cta" href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noopener">Follow The Cheat →</a>
+  </div>
+</section>
+
+<section class="section white">
+  <div class="container">
+    <div class="section-number">02 — WHAT IS CHEATCODE?</div>
+    <div class="what-grid">
+      <h2 class="what-title">ICE CREAM,<br>BUT WITH<br>A <span class="red">CHEATCODE.</span></h2>
+      <div>
+        <p>Real ice cream experience.<br>More protein.<br>Zero added sugar.<br>Made for people who don't want to compromise.</p>
+        <div class="subcopy">We believe you shouldn't have to choose between the ice cream you crave and the way you want to feel about what you're eating.</div>
+      </div>
+    </div>
+    <div class="nutrition">
+      <div class="nitem"><span class="nnum">10g</span><span class="nlabel">Protein</span></div>
+      <div class="nitem"><span class="nnum">0</span><span class="nlabel">Added Sugar</span></div>
+      <div class="nitem"><span class="nnum">HIGH</span><span class="nlabel">Fibre</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="section diff">
+  <div class="container">
+    <div class="section-number">03 — THE CHEATCODE DIFFERENCE</div>
+    <div class="dtop">
+      <h2>YOU WANT<br>ICE CREAM.<br><span class="red">WE GET IT.</span></h2>
+      <div class="dintro">You want the creamy texture.<br>You want the indulgence.<br>You want the flavour.<br><br>But you also want more from it.</div>
+    </div>
+    <div class="dlist">
+      <div class="drow"><div class="dnum">01</div><div class="dtitle">MORE PROTEIN.</div><div>+</div></div>
+      <div class="drow"><div class="dnum">02</div><div class="dtitle">ZERO ADDED SUGAR.</div><div>0</div></div>
+      <div class="drow"><div class="dnum">03</div><div class="dtitle">LESS COMPROMISE.</div><div>→</div></div>
+    </div>
+    <div class="dfinal">SO WE MADE <span class="red">THE CHEATCODE.</span></div>
+  </div>
+</section>
+
+<section class="section white flavours">
+  <div class="container">
+    <div class="section-number">04 — MEET THE CHEATS</div>
+    <div class="flavour-head">
+      <h2>5 FLAVOURS.<br>1 SERIOUS CHEAT.</h2>
+      <div class="flavour-count">005 / 001</div>
+    </div>
+
+    <div class="flavour-grid">
+      <article class="card">
+        <img class="flavour-img" src="assets/belgian-chocolate.jpeg" alt="CHEATCODE Belgian Chocolate packaging" loading="lazy">
+        <div class="info"><div class="fnum">01 / CHOCOLATE</div><div class="fname">Belgian Chocolate</div><div class="fdesc">Deep. Rich. Serious.</div></div>
+      </article>
+      <article class="card">
+        <img class="flavour-img" src="assets/vanilla-crunch.jpeg" alt="CHEATCODE Vanilla Crunch packaging" loading="lazy">
+        <div class="info"><div class="fnum">02 / CRUNCH</div><div class="fname">Vanilla Crunch</div><div class="fdesc">Creamy. Crunchy. Addictive.</div></div>
+      </article>
+      <article class="card">
+        <img class="flavour-img" src="assets/blueberry-cheesecake.jpeg" alt="CHEATCODE Blueberry Cheesecake packaging" loading="lazy">
+        <div class="info"><div class="fnum">03 / BERRY</div><div class="fname">Blueberry Cheesecake</div><div class="fdesc">Tangy. Creamy. Wild.</div></div>
+      </article>
+      <article class="card">
+        <img class="flavour-img" src="assets/guava-chilli.jpeg" alt="CHEATCODE Guava Chilli packaging" loading="lazy">
+        <div class="info"><div class="fnum">04 / SPICY</div><div class="fname">Guava Chilli</div><div class="fdesc">Sweet. Spicy. Unexpected.</div></div>
+      </article>
+      <article class="card">
+        <img class="flavour-img" src="assets/midnight-cookies.jpeg" alt="CHEATCODE Midnight Cookies packaging" loading="lazy">
+        <div class="info"><div class="fnum">05 / COOKIES</div><div class="fname">Midnight Cookies</div><div class="fdesc">Dark. Crunchy. Dangerous.</div></div>
+      </article>
+    </div>
+
+    <div class="fstatement">PICK YOUR <span class="red">CHEAT.</span></div>
+  </div>
+</section>
+
+<section class="section why black">
+  <div class="container">
+    <div class="section-number">05 — WHY CHEATCODE?</div>
+    <div class="why-grid">
+      <h2>BECAUSE<br>“HEALTHY”<br>SHOULDN'T<br>MEAN<br><span class="red">BORING.</span></h2>
+      <div>
+        <div class="why-copy">Premium ingredients.<br>Big flavour.<br>Protein-packed.<br>Zero added sugar.</div>
+        <div class="why-small">CHEATCODE is built around one simple idea: better choices don't have to feel like sacrifices.</div>
+        <div class="tags">
+          <div class="tagpill">Premium Ingredients</div>
+          <div class="tagpill">Big Flavour</div>
+          <div class="tagpill">Protein-Packed</div>
+          <div class="tagpill">Zero Added Sugar</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section story white">
+  <div class="container">
+    <div class="section-number">06 — THE STORY</div>
+    <div class="story-content">
+      <h2>WE DIDN'T WANT<br>TO MAKE ANOTHER<br><span class="red">“HEALTHY”</span><br>ICE CREAM.</h2>
+      <div class="story-copy">We wanted to make the kind of ice cream you'd actually crave.<br><br>So we built CHEATCODE for the moments when you want to indulge — without feeling like you completely abandoned your goals.</div>
+      <div class="highlight">That's the cheat.</div>
+    </div>
+  </div>
+</section>
+
+<section class="section count">
+  <div class="container">
+    <div class="section-number">07 — LIVE LAUNCH COUNTDOWN</div>
+    <h2>THE CHEAT<br>IS COMING.</h2>
+    <div class="bigdate">11 • 10 • 26</div>
+    <div class="clock">
+      <div class="box"><span class="tnum" id="d">00</span><span class="tlab">Days</span></div>
+      <div class="box"><span class="tnum" id="h">00</span><span class="tlab">Hours</span></div>
+      <div class="box"><span class="tnum" id="m">00</span><span class="tlab">Minutes</span></div>
+      <div class="box"><span class="tnum" id="s">00</span><span class="tlab">Seconds</span></div>
+    </div>
+    <div class="countsub">See you on the other side.</div>
+    <div class="countnote">No pre-order. No fake urgency. Just LAUNCH DAY.</div>
+  </div>
+</section>
+
+<section class="section signup">
+  <div class="container">
+    <div class="section-number">GET THE FIRST SCOOP</div>
+    <h2>DON'T MISS<br><span class="red">THE CHEAT.</span></h2>
+    <div class="signup-copy">Get launch updates, behind-the-scenes drops and first news when CHEATCODE hits the market.</div>
+    <form class="form" id="signupForm">
+      <input name="name" type="text" placeholder="NAME" autocomplete="name" required>
+      <input name="email" type="email" placeholder="EMAIL" autocomplete="email" required>
+      <input name="phone" type="tel" placeholder="PHONE" autocomplete="tel" required>
+      <button id="signupButton" type="submit">KEEP ME POSTED →</button>
+    </form>
+    <div class="success" id="success">✓ You're on the list. See you at the launch.</div>
+    <div class="error" id="error">Something went wrong. Please try again.</div>
+  </div>
+</section>
+
+<section class="section follow">
+  <div class="container">
+    <div class="section-number">08 — FOLLOW THE BUILD</div>
+    <h2>WATCH US<br>BUILD THE<br><span class="red">CHEATCODE.</span></h2>
+    <div class="follow-copy">Behind the scenes.<br>Flavour testing.<br>Packaging.<br>First batches.<br>Launch preparation.</div>
+    <a class="handle" href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noopener">@houseofcheatcode</a><br>
+    <a class="igbtn" href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noopener">Follow Us On Instagram →</a>
+  </div>
+</section>
+
+<section class="section final">
+  <div class="container">
+    <div class="section-number">09 — FINAL CTA</div>
+    <h2>YOUR NEXT<br>CHEAT IS<br><span class="outline">ALMOST HERE.</span></h2>
+    <div class="final-brand">CHEATCODE</div>
+    <div class="final-tag">You Can Cheat Without Regret.</div>
+    <div class="final-date">11.10.26</div>
+    <div class="there">BE THERE.</div>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 CHEATCODE™</div>
+  <div class="footer-links">
+    <a href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noopener">Instagram ↗</a>
+    <a href="mailto:hello@houseofcheatcode.com">hello@houseofcheatcode.com</a>
+  </div>
+</footer>
+
+<script>
+const launch=new Date("2026-10-11T00:00:00+05:30").getTime();
+
+function countdown(){
+  const x=Math.max(0,launch-Date.now());
+  const vals=[
+    Math.floor(x/86400000),
+    Math.floor(x%86400000/3600000),
+    Math.floor(x%3600000/60000),
+    Math.floor(x%60000/1000)
+  ].map(v=>String(v).padStart(2,"0"));
+
+  ["d","h","m","s"].forEach((id,i)=>document.getElementById(id).textContent=vals[i]);
+  ["sd","sh","sm","ss"].forEach((id,i)=>document.getElementById(id).textContent=vals[i]);
+}
+countdown();
+setInterval(countdown,1000);
+
+/* Google Apps Script signup */
+const GOOGLE_SCRIPT_URL="https://script.google.com/macros/s/AKfycbzX2i0JOw5HED9JnEOEs3gwDKZgEfpvRHN1b2VS6VYlFDJVBZDrlCwCBjTEKD8EuCVipg/exec";
+const form=document.getElementById("signupForm");
+const btn=document.getElementById("signupButton");
+const ok=document.getElementById("success");
+const err=document.getElementById("error");
+
+form.addEventListener("submit",async(e)=>{
+  e.preventDefault();
+  btn.disabled=true;
+  btn.textContent="SENDING...";
+  err.style.display="none";
+
+  const f=new FormData(form);
+  const data={
+    name:f.get("name"),
+    email:f.get("email"),
+    phone:f.get("phone")
+  };
+
+  try{
+    await fetch(GOOGLE_SCRIPT_URL,{
+      method:"POST",
+      mode:"no-cors",
+      headers:{"Content-Type":"text/plain;charset=utf-8"},
+      body:JSON.stringify(data)
+    });
+
+    form.style.display="none";
+    ok.style.display="block";
+  }catch(error){
+    console.error(error);
+    btn.disabled=false;
+    btn.textContent="KEEP ME POSTED →";
+    err.style.display="block";
+  }
+});
+</script>
+</body>
+</html>
