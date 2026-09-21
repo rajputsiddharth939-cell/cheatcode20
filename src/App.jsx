@@ -4,11 +4,11 @@ const API =
   "https://script.google.com/macros/s/AKfycbzX2i0JOw5HED9JnEOEs3gwDKZgEfpvRHN1b2VS6VYlFDJVBZDrlCwCBjTEKD8EuCVipg/exec";
 
 const flavours = [
-  { name: "VANILLA", sub: "CRUNCH", image: "https://drive.google.com/thumbnail?id=1ATzTMhLfDF2qRivyhivjrQKBS6f543Zh&sz=w1200" },
-  { name: "GUAVA", sub: "CHILLI", image: "https://drive.google.com/thumbnail?id=15-GnwIxkNv6CmFE-11gt4rjRiJ783QXD&sz=w1200" },
+  { name: "VANILLA", sub: "CRUNCH", image: "https://drive.google.com/thumbnail?id=1mplXCsRaxfshz-tfaye-fE4PQbyyQHTE&sz=w1200" },
+  { name: "GUAVA", sub: "CHILLI", image: "https://drive.google.com/thumbnail?id=1fMMPBTYv3kkUwJ_PTvkzTXYsI6W3aaBY&sz=w1200" },
   { name: "BELGIAN", sub: "CHOCOLATE", image: "https://drive.google.com/thumbnail?id=1nttyb2vNWrE7rdCx3hPBZYfaKpF1OsRq&sz=w1200" },
-  { name: "BLUEBERRY", sub: "CHEESECAKE", image: "https://drive.google.com/thumbnail?id=1OY6uTJxPPRvIEHTkImZ8RFEmnktnBXWL&sz=w1200" },
-  { name: "MIDNIGHT", sub: "COOKIES", image: "https://drive.google.com/thumbnail?id=1hCX9R8Bdz2YjivbiePtuQRfEauShBPFy&sz=w1200" },
+  { name: "BLUEBERRY", sub: "CHEESECAKE", image: "https://drive.google.com/thumbnail?id=1nttyb2vNWrE7rdCx3hPBZYfaKpF1OsRq&sz=w1200" },
+  { name: "MIDNIGHT", sub: "COOKIES", image: "https://drive.google.com/thumbnail?id=14iWRkcwax5jZGmH86DmVkVmCDEXNR8B_&sz=w1200" },
 ];
 
 function Count() {
