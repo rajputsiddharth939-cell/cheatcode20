@@ -316,7 +316,7 @@ export default function App() {
           </div>
 
           <div className="launch-product">
-            <Product src={flavours[0].image} />
+            <HeroProduct />
           </div>
         </section>
 
