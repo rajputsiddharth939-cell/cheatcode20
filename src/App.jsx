@@ -202,7 +202,7 @@ export default function App() {
             <div className="flavour-row">
               {flavours.map((flavour, index) => (
                 <article key={flavour.name + "-" + flavour.sub}>
-                  <div
+                  <img
                     className="mini-pack"
                     src={flavour.image}
                     alt={flavour.name + " " + flavour.sub + " CHEATCODE ice cream"}
