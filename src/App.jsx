@@ -49,10 +49,10 @@ function HeroProduct() {
     let timer;
     const advance = () => {
       setIndex((current) => (current + 1) % flavours.length);
-      timer = setTimeout(advance, 1400);
+      timer = setTimeout(advance, 5000);
     };
 
-    timer = setTimeout(advance, 1400);
+    timer = setTimeout(advance, 5000);
     return () => clearTimeout(timer);
   }, []);
 
