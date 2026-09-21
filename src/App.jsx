@@ -335,6 +335,20 @@ export default function App() {
           </div>
         </section>
 
+        <section className="black order-start">
+          <div className="wrap order-start-inner">
+            <span className="eyebrow redtext">06 / ORDERS START FROM 11TH OCTOBER.</span>
+            <h2>YOUR CHEATCODE<br />IS JUST ONE CLICK AWAY.</h2>
+            <p>
+              Order directly from our website and get your favourite flavour
+              delivered across Ahmedabad in just half an hour.
+            </p>
+            <a className="pill order-cta" href="#launch">
+              BE READY TO ORDER <b>→</b>
+            </a>
+          </div>
+        </section>
+
         <Signup />
 
         <section className="black follow">
