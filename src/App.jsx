@@ -161,9 +161,11 @@ export default function App() {
         </a>
       </header>
 
-      <div className="ticker">
-        YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH
-        FIBRE · LOW CARB · LAUNCHING 11.10.26 ·
+      <div className="ticker" aria-label="CHEATCODE highlights">
+        <div className="ticker-track">
+          <span>YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span>
+          <span aria-hidden="true">YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span>
+        </div>
       </div>
 
       <main>
