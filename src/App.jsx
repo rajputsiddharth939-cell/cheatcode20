@@ -45,7 +45,7 @@ function HeroProduct() {
   const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => setIndex((current) => (current + 1) % flavours.length), 5200);
+    const id = setInterval(() => setIndex((current) => (current + 1) % flavours.length), 1500);
     return () => clearInterval(id);
   }, []);
 
@@ -57,6 +57,8 @@ function HeroProduct() {
           <div className="hero-flavour-label">{flavour.name} {flavour.sub}</div>
         </div>
       ))}
+      <button className="hero-prev" onClick={() => setIndex((index - 1 + flavours.length) % flavours.length)} aria-label="Previous flavour">‹</button>
+      <button className="hero-next" onClick={() => setIndex((index + 1) % flavours.length)} aria-label="Next flavour">›</button>
       <div className="hero-dots" aria-hidden="true">
         {flavours.map((flavour, i) => <span className={i === index ? "active" : ""} key={flavour.name} />)}
       </div>
