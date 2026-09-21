@@ -1,1 +1,0 @@
-Temporary trigger for importing CHEATCODE product images.
