@@ -42,7 +42,10 @@ nav a:hover{opacity:1}
 .pill{display:inline-flex;gap:30px;align-items:center;background:var(--black);color:#fff;border-radius:999px;padding:14px 16px 14px 20px;font:700 10px "DM Mono",monospace;margin:20px 0 30px;transition:transform .2s ease}
 .pill:hover{transform:translateY(-2px)}
 .pill b{background:var(--red);color:var(--black);border-radius:50%;padding:7px}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid #000;padding-top:18px;max-width:600px}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-top:1px solid #000;padding-top:18px;max-width:660px;gap:0}
+.stats span{min-width:0;padding:0 18px;border-right:1px solid #000}
+.stats span:first-child{padding-left:0}
+.stats span:last-child{border-right:0;padding-right:0}
 .stats span{font:500 9px "DM Mono",monospace;border-right:1px solid #000;padding-right:10px}
 .stats span:last-child{border-right:0}
 .stats b{display:block;font:900 25px Inter,sans-serif;margin-bottom:3px}
