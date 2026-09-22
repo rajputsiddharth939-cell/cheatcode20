@@ -306,7 +306,7 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
 }
 
 
-/* FAQ — Gen Z, searchable, answer-friendly */
+/* FAQ  Gen Z, searchable, answer-friendly */
 .faq{padding:110px 0 125px;overflow:hidden}
 .faq-head{max-width:900px;margin-bottom:55px}
 .faq-head h2{font-size:clamp(58px,8vw,115px);line-height:.84;letter-spacing:-.075em;margin:18px 0}
