@@ -11,6 +11,57 @@ const flavours = [
 function Count(){const [time,setTime]=useState(0);useEffect(()=>{const tick=()=>setTime(Math.max(0,new Date("2026-10-11T00:00:00+05:30")-Date.now()));tick();const id=setInterval(tick,1000);return()=>clearInterval(id)},[]);const values=[Math.floor(time/864e5),Math.floor(time/36e5)%24,Math.floor(time/6e4)%60,Math.floor(time/1e3)%60];return <div className="count" aria-label="Countdown to launch">{values.map((v,i)=><div key={i}><b>{String(v).padStart(2,"0")}</b><small>{["DAYS","HOURS","MIN","SEC"][i]}</small></div>)}</div>}
 function HeroProduct(){const [index,setIndex]=useState(0);useEffect(()=>{let timer;const advance=()=>{setIndex(c=>(c+1)%flavours.length);timer=setTimeout(advance,5000)};timer=setTimeout(advance,5000);return()=>clearTimeout(timer)},[]);return <div className="hero-slider" aria-label="CHEATCODE flavour showcase">{flavours.map((f,i)=><div className={`hero-slide ${i===index?"active":""}`} key={f.name+f.sub}><Product src={f.image}/><div className="hero-flavour-label">{f.name} {f.sub}</div></div>)}<button className="hero-prev" onClick={()=>setIndex(c=>(c-1+flavours.length)%flavours.length)} aria-label="Previous flavour">‹</button><button className="hero-next" onClick={()=>setIndex(c=>(c+1)%flavours.length)} aria-label="Next flavour">›</button><div className="hero-dots" aria-hidden="true">{flavours.map((f,i)=><span className={i===index?"active":""} key={f.name}/>)}</div></div>}
 function Product({src}){return <div className="product" aria-hidden="true"><div className="glow"/><img className="pack" src={src} alt="" loading="eager" decoding="async" fetchPriority="high"/><div className="floor"/></div>}
+function CheckoutButton(){
+  const [status,setStatus]=useState("");
+  const [busy,setBusy]=useState(false);
+  async function loadRazorpay(){
+    if(window.Razorpay)return true;
+    return new Promise(resolve=>{
+      const existing=document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+      if(existing){existing.addEventListener("load",()=>resolve(true),{once:true});existing.addEventListener("error",()=>resolve(false),{once:true});return;}
+      const script=document.createElement("script");
+      script.src="https://checkout.razorpay.com/v1/checkout.js";
+      script.async=true;
+      script.onload=()=>resolve(true);
+      script.onerror=()=>resolve(false);
+      document.body.appendChild(script);
+    });
+  }
+  async function startPayment(){
+    if(busy)return;
+    setBusy(true);setStatus("");
+    try{
+      const loaded=await loadRazorpay();
+      if(!loaded)throw new Error("Payment checkout could not load. Please try again.");
+      const orderResponse=await fetch("/api/create-order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:14900,currency:"INR",receipt:"cheatcode-"+Date.now()})});
+      const order=await orderResponse.json().catch(()=>({}));
+      if(!orderResponse.ok)throw new Error(order.error||"Could not create your order.");
+      const options={
+        key:import.meta.env.VITE_RAZORPAY_KEY_ID,
+        amount:order.amount,
+        currency:order.currency,
+        name:"CHEATCODE™",
+        description:"CHEATCODE Ice Cream",
+        order_id:order.order_id,
+        theme:{color:"#ff1616"},
+        handler:async function(response){
+          try{
+            const verifyResponse=await fetch("/api/verify-payment",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({razorpay_order_id:response.razorpay_order_id,razorpay_payment_id:response.razorpay_payment_id,razorpay_signature:response.razorpay_signature})});
+            const result=await verifyResponse.json().catch(()=>({}));
+            if(!verifyResponse.ok||!result.verified)throw new Error(result.error||"Payment verification failed.");
+            setStatus("PAYMENT SUCCESSFUL. ORDER RECEIVED.");
+          }catch(error){setStatus(error.message||"Payment verification failed.");}
+          finally{setBusy(false);}
+        },
+        modal:{ondismiss:()=>{setBusy(false);setStatus("PAYMENT CANCELLED.");}},
+      };
+      const rzp=new window.Razorpay(options);
+      rzp.on("payment.failed",response=>{setBusy(false);setStatus(response?.error?.description||"Payment failed. Please try again.");});
+      rzp.open();
+    }catch(error){setBusy(false);setStatus(error.message||"Something went wrong. Please try again.");}
+  }
+  return <div className="checkout-wrap"><button type="button" className="pill order-cta checkout-cta" onClick={startPayment} disabled={busy}>{busy?"OPENING CHECKOUT…":"ORDER NOW ₹149"}<b>→</b></button>{status&&<p className="payment-status" role="status">{status}</p>}</div>;
+}
 function Signup(){const [done,setDone]=useState(false),[busy,setBusy]=useState(false);async function submit(e){e.preventDefault();if(busy)return;setBusy(true);const data=Object.fromEntries(new FormData(e.currentTarget));const params=new URLSearchParams({name:String(data.name||""),email:String(data.email||""),phone:String(data.phone||"")});try{await fetch(API+"?"+params.toString(),{method:"GET",mode:"no-cors",keepalive:true});setDone(true);e.currentTarget.reset()}catch{setBusy(false)}}return <section className="black signup" id="signup"><div className="wrap signup-grid"><div><span className="eyebrow">07 / GET IN EARLY</span><h2>DON’T MISS<br/>THE DROP.</h2><p className="muted">Get launch-day news, first access and the occasional CHEATCODE surprise.</p></div>{done?<div className="success">✓ YOU’RE ON THE LIST.<br/><span>SEE YOU ON LAUNCH DAY.</span></div>:<form onSubmit={submit}><input name="name" placeholder="YOUR NAME" required/><input name="email" type="email" placeholder="EMAIL ADDRESS" required/><input name="phone" placeholder="PHONE NUMBER" required/><button disabled={busy}>{busy?"JOINING…":"GET NOTIFIED →"}</button></form>}</div></section>}
 function LabReport(){return <main className="lab-report-page"><div className="lab-report-card"><span className="eyebrow redtext">CHEATCODE™ / LAB REPORT</span><h1>LAB REPORT</h1><p>Scan complete. Your CHEATCODE lab report will appear here.</p><div className="lab-report-pdf"><div className="lab-report-placeholder">PDF REPORT<br/><small>COMING SOON</small></div></div></div></main>}
 
@@ -20,7 +71,7 @@ export default function App(){if(window.location.pathname==="/lab-report"){retur
 <section className="black split"><div className="image-panel"><img className="section3-image" src="/images/Cheatcode Section 3.JPG" alt="CHEATCODE ice cream brand visual" loading="lazy" decoding="async"/></div><div className="copy-panel"><span className="eyebrow redtext">03 / THE BETTER INDULGENCE</span><h2>DESSERT<br/>THAT WORKS<br/>FOR YOU.</h2><p>Creamy texture. Bold flavours. Thought-through nutrition. Built for the moments when you want dessert and still want to feel good about the choice.</p><a className="outline" href="#story">READ OUR STORY ↗</a></div></section>
 <section className="white story" id="story"><div className="wrap story-grid"><div><span className="eyebrow">04 / THE CHEATCODE</span><h2>WE DIDN’T<br/>WANT TO MAKE<br/>ANOTHER<br/><span>“HEALTHY”</span><br/>ICE CREAM.</h2></div><div><p className="big">We wanted the kind of ice cream you’d actually crave.</p><p>So we built CHEATCODE for the moments when you want to indulge without feeling like you abandoned your goals.</p><strong>THAT’S THE CHEAT.</strong></div></div></section>
 <section className="red launch" id="launch"><div className="wrap"><span className="eyebrow">05 / LAUNCHING ON</span><h2>11.10.26</h2><Count/><p className="launch-note">THE WAIT IS ALMOST OVER.<br/>SEE YOU ON LAUNCH DAY.</p></div><div className="launch-product"><HeroProduct/></div></section>
-<section className="black order-start"><div className="wrap order-start-inner"><span className="eyebrow redtext">06 / ORDERS OPEN 11.10.26</span><div className="order-start-grid"><div className="order-date">11 OCT</div><div className="order-copy"><h2>YOUR CHEATCODE<br/>IS ONE CLICK AWAY.</h2><p>Order directly from our website and get your favourite flavour delivered across Ahmedabad in just half an hour.</p><a className="pill order-cta" href="#launch">BE READY TO ORDER <b>→</b></a></div></div></div></section>
+<section className="black order-start"><div className="wrap order-start-inner"><span className="eyebrow redtext">06 / ORDERS OPEN 11.10.26</span><div className="order-start-grid"><div className="order-date">11 OCT</div><div className="order-copy"><h2>YOUR CHEATCODE<br/>IS ONE CLICK AWAY.</h2><p>Order directly from our website and get your favourite flavour delivered across Ahmedabad in just half an hour.</p><CheckoutButton/></div></div></div></section>
 <Signup/><section className="black follow"><div className="wrap"><span className="eyebrow redtext">08 / FOLLOW THE BUILD</span><h2>@HOUSEOFCHEATCODE</h2><p className="muted">Flavour testing. Packaging. First batches. Launch preparation. The real build, before the first scoop.</p><a className="outline" href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noreferrer">FOLLOW ON INSTAGRAM ↗</a></div></section><section className="black faq" id="faq"><div className="wrap"><div className="faq-head"><span className="eyebrow redtext">09 / YOU ASKED. WE CHEATED.</span><h2>FAQ, BUT MAKE IT<br/><span>CHEATCODE.</span></h2><p className="muted">Everything you actually wanna know before the first scoop.</p></div><div className="faq-list">
 {[
 ["Okay, so what exactly is CHEATCODE?","Basically? Ice cream, but with a little more thought behind it. CHEATCODE is made with 10g protein, 0 added sugar, high fibre and a low-carb positioning  because dessert should still feel like dessert."],
