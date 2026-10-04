@@ -1668,7 +1668,7 @@ function totalsHTML() {
   return `${bad.length ? `<p class="notice err" role="alert">One item isn\u2019t a valid pack size. Fix it to check out.</p>` : ''}
     <div class="sum-row"><span>${tubsWord(Cart.count())}</span><span>${money(Cart.subtotal())}</span></div>
     <div class="sum-row"><span>Delivery</span><span>${CONFIG.deliveryFee ? money(CONFIG.deliveryFee) : '<strong>FREE</strong>'}</span></div>
-    <div class="sum-row total"><span>Subtotal</span><span>${money(Cart.subtotal() + CONFIG.deliveryFee)}</span></div>`;
+    <div class="sum-row total"><span>Total</span><span>${money(Cart.subtotal() + CONFIG.deliveryFee)}</span></div>`;
 }
 
 let newLineId = null;
