@@ -24,12 +24,12 @@ export default async function handler(req) {
     return json({ error: "Missing payment verification fields." }, 400);
   }
 
-  if (!process.env.razorpay_key_secret) {
+  if (!process.env.RAZORPAY_KEY_SECRET) {
     return json({ error: "Razorpay verification is not configured on the server." }, 500);
   }
 
   const expectedSignature = crypto
-    .createHmac("sha256", process.env.razorpay_key_secret)
+    .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
     .update(razorpay_order_id + "|" + razorpay_payment_id)
     .digest("hex");
 
