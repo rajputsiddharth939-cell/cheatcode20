@@ -1552,11 +1552,9 @@ ${railHTML(slug, 'You might also cheat with')}
           </div><p class="t-bs t-muted" style="margin-top:var(--s2)"><span class="tbd">Delivery areas and timelines to be added.</span></p></fieldset>
           <fieldset class="fs"><legend><span>3</span>Payment</legend>
             <div class="pay">
-              <label><input type="radio" name="pay" value="upi" checked>UPI<small>GPay, PhonePe, Paytm</small></label>
-              <label><input type="radio" name="pay" value="card">Card<small>Credit or debit</small></label>
-              <label><input type="radio" name="pay" value="cod">Cash on delivery</label>
+              <label><input type="radio" name="pay" value="razorpay" checked>Razorpay Secure Checkout<small>UPI, Cards, Netbanking & more</small></label>
             </div>
-            <p class="t-bs t-muted" style="margin-top:var(--s2)">Payment gateway not connected in this preview. No money is taken.</p>
+            <p class="t-bs t-muted" style="margin-top:var(--s2)">Secure payment powered by Razorpay. Your payment is verified before the order is confirmed.</p>
           </fieldset>
           <div id="co-err"></div>
           <button class="btn btn-red btn-block" type="submit" id="co-submit" style="min-height:64px;font-size:21px"><span>Pay securely \u2014 ${money(Cart.subtotal() + CONFIG.deliveryFee)}</span></button>
@@ -1993,7 +1991,7 @@ function mountCheckout() {
       if (!createRes.ok || !createData.order_id) throw new Error(createData.error || 'Unable to create payment order.');
 
       const options = {
-        key: '%vite_razorpay_key_id%',
+        key: 'rzp_test_Tjn9IunjRtNOKg',
         amount: createData.amount,
         currency: createData.currency || CONFIG.currency,
         name: 'CHEATCODE',
