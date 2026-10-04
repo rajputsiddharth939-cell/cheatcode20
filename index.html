@@ -1984,6 +1984,7 @@ function mountCheckout() {
     btn.innerHTML = '<span class="spin" aria-hidden="true"></span><span>Opening secure checkout</span>';
 
     try {
+      CONFIG.deliveryFee = deliveryForTubs(Cart.count());
       const amount = Math.round((Cart.subtotal() + CONFIG.deliveryFee) * 100);
       const customer = {
         name: $('#fname').value.trim(),
