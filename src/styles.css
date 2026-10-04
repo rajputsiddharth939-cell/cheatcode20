@@ -330,3 +330,10 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
   .faq-list summary>b{font-size:24px}
   .faq-list details p{margin:0 25px 22px 48px;font-size:15px}
 }
+
+
+/* Razorpay checkout */
+.checkout-cta{border:0;cursor:pointer;appearance:none}
+.checkout-cta:disabled{opacity:.6;cursor:wait}
+.checkout-wrap{display:flex;flex-direction:column;align-items:flex-start}
+.payment-status{margin:8px 0 0;font:500 10px "DM Mono",monospace;letter-spacing:.06em;line-height:1.4;max-width:520px;color:var(--red)}
