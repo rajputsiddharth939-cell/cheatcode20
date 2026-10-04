@@ -17,7 +17,7 @@ export default async function handler(req) {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
 
-  if (!process.env.razorpay_key_id || !process.env.razorpay_key_secret) {
+  if (!process.env.RAZORPAY_KEY_ID || !process.env.RAZORPAY_KEY_SECRET) {
     return json({ error: "Razorpay is not configured on the server." }, 500);
   }
 
@@ -32,8 +32,8 @@ export default async function handler(req) {
     }
 
     const razorpay = new Razorpay({
-      key_id: process.env.razorpay_key_id,
-      key_secret: process.env.razorpay_key_secret,
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
     });
 
     const order = await razorpay.orders.create({
