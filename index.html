@@ -1982,6 +1982,10 @@ function mountCheckout() {
         phone: $('#phone') ? $('#phone').value.trim() : ''
       };
 
+      const configRes = await fetch('/api/razorpay-config', { headers: { 'Accept': 'application/json' } });
+      const configData = await configRes.json().catch(() => ({}));
+      if (!configRes.ok || !configData.key_id) throw new Error(configData.error || 'Razorpay is not configured.');
+
       const createRes = await fetch('/api/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -1991,7 +1995,7 @@ function mountCheckout() {
       if (!createRes.ok || !createData.order_id) throw new Error(createData.error || 'Unable to create payment order.');
 
       const options = {
-        key: 'rzp_test_Tjn9IunjRtNOKg',
+        key: configData.key_id,
         amount: createData.amount,
         currency: createData.currency || CONFIG.currency,
         name: 'CHEATCODE',
