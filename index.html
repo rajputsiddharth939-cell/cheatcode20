@@ -1993,7 +1993,7 @@ function mountCheckout() {
       if (!createRes.ok || !createData.order_id) throw new Error(createData.error || 'Unable to create payment order.');
 
       const options = {
-        key: '%VITE_RAZORPAY_KEY_ID%',
+        key: '%vite_razorpay_key_id%',
         amount: createData.amount,
         currency: createData.currency || CONFIG.currency,
         name: 'CHEATCODE',
