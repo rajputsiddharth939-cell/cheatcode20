@@ -1987,9 +1987,9 @@ function mountCheckout() {
       CONFIG.deliveryFee = deliveryForTubs(Cart.count());
       const amount = Math.round((Cart.subtotal() + CONFIG.deliveryFee) * 100);
       const customer = {
-        name: $('#fname').value.trim(),
-        email: $('#email').value.trim(),
-        phone: $('#phone') ? $('#phone').value.trim() : ''
+        name: [$('#fname')?.value?.trim(), $('#lname')?.value?.trim()].filter(Boolean).join(' '),
+        email: $('#email')?.value?.trim() || '',
+        phone: $('#phone')?.value?.trim() || ''
       };
 
       const configRes = await fetch('/api/razorpay-config', { headers: { 'Accept': 'application/json' } });

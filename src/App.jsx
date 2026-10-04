@@ -33,11 +33,19 @@ function CheckoutButton(){
     try{
       const loaded=await loadRazorpay();
       if(!loaded)throw new Error("Payment checkout could not load. Please try again.");
+      let keyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+      if(!keyId){
+        const configRes = await fetch("/api/razorpay-config");
+        const configData = await configRes.json().catch(()=>({}));
+        keyId = configData.key_id;
+      }
+      if(!keyId) throw new Error("Razorpay is not configured.");
+
       const orderResponse=await fetch("/api/create-order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:14900,currency:"INR",receipt:"cheatcode-"+Date.now()})});
       const order=await orderResponse.json().catch(()=>({}));
-      if(!orderResponse.ok)throw new Error(order.error||"Could not create your order.");
+      if(!orderResponse.ok||!order.order_id)throw new Error(order.error||"Could not create your order.");
       const options={
-        key:import.meta.env.VITE_RAZORPAY_KEY_ID,
+        key:keyId,
         amount:order.amount,
         currency:order.currency,
         name:"CHEATCODE™",
