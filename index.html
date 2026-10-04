@@ -1667,12 +1667,13 @@ function totalsHTML() {
   const bad = Cart.invalid();
   return `${bad.length ? `<p class="notice err" role="alert">One item isn\u2019t a valid pack size. Fix it to check out.</p>` : ''}
     <div class="sum-row"><span>${tubsWord(Cart.count())}</span><span>${money(Cart.subtotal())}</span></div>
-    <div class="sum-row"><span>Delivery</span><span>${CONFIG.deliveryFee ? money(CONFIG.deliveryFee) : '<span class="tbd">To be confirmed</span>'}</span></div>
+    <div class="sum-row"><span>Delivery</span><span>${CONFIG.deliveryFee ? money(CONFIG.deliveryFee) : '<strong>FREE</strong>'}</span></div>
     <div class="sum-row total"><span>Subtotal</span><span>${money(Cart.subtotal() + CONFIG.deliveryFee)}</span></div>`;
 }
 
 let newLineId = null;
 function renderCart() {
+  CONFIG.deliveryFee = deliveryForTubs(Cart.count());
   const has = Cart.items.length > 0, bad = Cart.invalid().length > 0;
   $('#dr-body').innerHTML = has ? Cart.items.map(l => lineHTML(l, { enter: l.id === newLineId })).join('') : emptyHTML();
   $('#dr-foot').innerHTML = has ? `${totalsHTML()}
