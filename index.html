@@ -2112,7 +2112,7 @@ function setQtyUI(slug, q) {
     const ind = $('.qty-ind', g); ind.style.transform = `translateX(${PACKS.indexOf(q) * 100}%)`; ind.style.opacity = '';
     $$('[role="radio"]', g).forEach(b => { const on = +b.dataset.qty === q; b.setAttribute('aria-checked', on); b.tabIndex = on ? 0 : -1; });
   });
-  $$(`[data-price="${slug}"]`).forEach(el => { el.firstChild.textContent = money(q * CONFIG.pricePerTub); });
+  $(`[data-price="${slug}"]`).forEach(el => { const strong = el.querySelector("strong"), crossed = el.querySelector("s"); if (strong) strong.textContent = money(packPrice(q)); else el.firstChild.textContent = money(packPrice(q)); if (crossed) crossed.textContent = money(packComparePrice(q)); });
   $$(`[data-pricenote="${slug}"]`).forEach(el => el.textContent = `for ${q} tubs, ${money(CONFIG.pricePerTub)} each`);
   $$(`main [data-action="add-pack"][data-slug="${slug}"] span`).forEach(s => s.textContent = s.closest('.pdp-buy') ? `Add ${q} tubs to cart` : `Add ${q} tubs`);
   updateSticky();
