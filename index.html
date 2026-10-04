@@ -1117,7 +1117,7 @@ function cardHTML(p) {
       <div class="card-macros"><span class="chip">10g protein</span><span class="chip">No added sugar</span><span class="chip">High fiber</span></div>
       ${qtyHTML(p.slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
-        <span class="card-price" data-price="${p.slug}">${money(q * CONFIG.pricePerTub)}<small>${money(CONFIG.pricePerTub)} a tub</small></span>
+        <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
         <button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>
       </div>
     </div>
@@ -1326,7 +1326,7 @@ function panelHTML(p, i) {
       <p class="fp-desc">${esc(p.short)}</p>
       ${qtyHTML(p.slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
-        <span class="card-price" data-price="${p.slug}">${money(q * CONFIG.pricePerTub)}<small>${money(CONFIG.pricePerTub)} a tub</small></span>
+        <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
         <button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>
       </div>
     </div>
@@ -1381,7 +1381,7 @@ function spotlightHTML(slug = 'midnight-cookies') {
       </div>
       ${qtyHTML(slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
-        <span class="card-price" data-price="${slug}">${money(q * CONFIG.pricePerTub)}<small>${money(CONFIG.pricePerTub)} a tub</small></span>
+        <span class="card-price" data-price="${slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
         <button class="btn btn-red" data-action="add-pack" data-slug="${slug}"><span>Add ${q} tubs</span></button>
       </div>
     </div>
@@ -1470,7 +1470,7 @@ ${finalHTML()}`
       <h1 class="t-dl">${esc(p.name)}</h1>
       <p class="pdp-desc t-bl t-muted">${esc(p.desc)}</p>
       <div class="pdp-trio" aria-label="In every tub"><div><strong>10G</strong><span>Protein per tub</span></div><div><strong>0G</strong><span>Added sugar</span></div><div><strong>HIGH</strong><span>Fiber</span></div></div>
-      <div class="pdp-price"><span class="t-dm" data-price="${slug}">${money(q * CONFIG.pricePerTub)}</span><span class="t-bs t-muted" data-pricenote="${slug}">for ${q} tubs, ${money(CONFIG.pricePerTub)} each</span></div>
+      <div class="pdp-price"><span class="t-dm" data-price="${slug}">${money(packPrice(q))}</span><span class="t-bs t-muted" data-pricenote="${slug}">${money(packComparePrice(q))} crossed out · ₹99/tub pre-order price · valid till ${CONFIG.preOrderEnds}</span></div>
       <div class="pdp-buy" id="pdp-buy">
         <p class="qty-hint">Choose your pack. Minimum 3 tubs.</p>
         ${qtyHTML(slug, q, { lg: true, label: `Pack size for ${p.name}` })}
