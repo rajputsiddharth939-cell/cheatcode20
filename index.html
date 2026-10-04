@@ -806,6 +806,10 @@ body.has-bar .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 .grid-cards{align-items:stretch}
 main:focus,main:focus-visible{outline:none}
 
+
+/* preorder + mobile polish */
+.preorder-strip{background:var(--ink);color:#fff;border-bottom:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.preorder-strip .wrap{min-height:38px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}.preorder-strip b{background:var(--red);padding:5px 9px}.preorder-strip a{color:#fff;text-decoration:underline;text-underline-offset:3px}.card-price strong{font-size:1.08em}.card-price s{font-size:.7em;opacity:.5;margin-left:4px}.card-price small{display:block}.delivery-note{font-size:12px;font-weight:700;margin:7px 0 2px;color:var(--muted)}.foot-legal{display:flex;gap:14px;flex-wrap:wrap}.foot-legal a{color:inherit;text-decoration:underline;text-underline-offset:3px}.policy-wrap{max-width:900px}.policy-lead{max-width:680px;margin:18px 0 52px}.policy-wrap h2{font-size:clamp(24px,3vw,38px);margin:42px 0 12px}.policy-wrap p{max-width:760px;line-height:1.7}.policy-date{margin-top:50px;font-size:13px;color:var(--muted)}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--red);margin-bottom:10px}
+@media (max-width:599px){.preorder-strip{font-size:10px}.preorder-strip .wrap{min-height:34px;gap:8px;padding:6px 14px}.preorder-strip a{display:none}.nav-in{gap:8px}.nav-links{display:none}.nav-logo{max-width:132px}.nav-right{gap:4px}.cart-word{display:none}.cart-btn{padding:8px 9px}.icon-btn{width:40px;height:40px}.card-buy,.fp .card-buy{grid-template-columns:1fr;gap:10px}.card-buy .btn{width:100%}.qty{max-width:100%;overflow:hidden}.qty.lg button{padding-left:8px;padding-right:8px}.co-grid,.co-sum{width:100%;min-width:0}.co-sum .line{grid-template-columns:64px minmax(0,1fr)}.fs{padding:16px 14px}.fgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.foot-grid{grid-template-columns:1fr 1fr}.foot-base{flex-direction:column;align-items:flex-start;gap:10px}.foot-legal{gap:8px 12px}.policy-lead{margin-bottom:36px}.policy-wrap h2{margin-top:34px}html,body{max-width:100%;overflow-x:hidden}.wrap{width:min(100% - 28px,var(--max))}}
 </style>
 </head>
 <body>
@@ -838,6 +842,7 @@ main:focus,main:focus-visible{outline:none}
     </div>
   </div>
 </header>
+<div class="preorder-strip" role="status"><div class="wrap"><span>PRE-ORDER PRICE</span><b>₹99 / TUB</b><span>ENDS 11 OCTOBER 2026</span><a href="#/shop">SHOP NOW →</a></div></div>
 
 <div class="mmenu" id="mmenu" inert role="dialog" aria-modal="true" aria-label="Menu">
   <div class="mmenu-top"><a href="#/" class="nav-logo" aria-label="CHEATCODE home" data-logo></a><button class="icon-btn" data-action="close" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>
@@ -868,7 +873,7 @@ main:focus,main:focus-visible{outline:none}
       <div><h2>Help</h2><ul><li><a href="#/faq">FAQ</a></li><li><a href="#/contact">Contact</a></li></ul></div>
     </div>
     <div class="foot-logo" data-logo></div>
-    <div class="foot-base"><span>&copy; 2026 CHEATCODE</span><span>Cheat without regret.</span></div>
+    <div class="foot-base"><span>&copy; 2026 CHEATCODE</span><span class="foot-legal"><a href="#/privacy">Privacy</a><a href="#/terms">Terms &amp; Conditions</a><a href="#/returns">No Return Policy</a></span><span>Cheat without regret.</span></div>
   </div>
 </footer>
 
@@ -891,14 +896,14 @@ const ART = {"family": "data:image/webp;base64,UklGRnRCAQBXRUJQVlA4IGhCAQBw+AadA
    append one object to PRODUCTS (and its image to IMG).
    ========================================================= */
 const CONFIG = {
-  currency: 'INR',
-  locale: 'en-IN',
-  pricePerTub: 149,          // PLACEHOLDER price per 125 ml tub - replace with real pricing
-  packSizes: [3, 6, 9, 12],  // the only quantities a customer can buy
-  deliveryFee: 0,            // PLACEHOLDER - replace with real delivery pricing
-  instagram: '@cheatcode',   // PLACEHOLDER handle
-  email: 'hello@cheatcode.in' // PLACEHOLDER address
+  currency: 'INR', locale: 'en-IN', pricePerTub: 99, comparePricePerTub: 149,
+  packSizes: [3, 6, 9, 12], deliveryFee: 60, freeDeliveryFrom: 9,
+  preOrderEnds: '11 October 2026', instagram: '@houseofcheatcode',
+  instagramUrl: 'https://instagram.com/houseofcheatcode', email: 'hello@houseofcheatcode.com'
 };
+const deliveryForTubs = tubs => tubs <= 0 ? 0 : (tubs >= CONFIG.freeDeliveryFrom ? 0 : CONFIG.deliveryFee);
+const packPrice = tubs => tubs * CONFIG.pricePerTub;
+const packComparePrice = tubs => tubs * CONFIG.comparePricePerTub;
 
 /* Facts below come from the packaging: 10g protein, 125 ml, high fiber,
    zero added sugar, low carb. Anything not on the pack is left null and
@@ -1096,7 +1101,7 @@ function qtyHTML(slug, sel, { lg = false, label = 'Pack size' } = {}) {
   const i = PACKS.indexOf(sel);
   return `<div class="qty${lg ? ' lg' : ''}" role="radiogroup" aria-label="${esc(label)}" data-slug="${slug}">
     <span class="qty-ind" style="transform:translateX(${i * 100}%);${i < 0 ? 'opacity:0' : ''}"></span>
-    ${PACKS.map(q => `<button type="button" role="radio" aria-checked="${q === sel}" tabindex="${q === sel || (i < 0 && q === PACKS[0]) ? 0 : -1}" data-action="qty" data-qty="${q}" data-slug="${slug}">${q}<small>tubs</small>${lg ? `<span class="pp">${money(q * CONFIG.pricePerTub)}</span>` : ''}</button>`).join('')}
+    ${PACKS.map(q => `<button type="button" role="radio" aria-checked="${q === sel}" tabindex="${q === sel || (i < 0 && q === PACKS[0]) ? 0 : -1}" data-action="qty" data-qty="${q}" data-slug="${slug}">${q}<small>tubs</small>${lg ? `<span class="pp">${money(packPrice(q))}</span>` : ''}</button>`).join('')}
   </div>`;
 }
 
@@ -1169,7 +1174,7 @@ function boxCopy() {
   const t = Box.total(), s = Box.size, m = s - t;
   if (t === 0) return { status: `Pick ${s} to start`, sub: `Tap + on any flavour. Mix them however you like.`, cta: `Pick ${s} to start` };
   if (m > 0) return { status: `Add ${m} more tub${m === 1 ? '' : 's'}`, sub: `${t} of ${s} picked.`, cta: `Add ${m} more tub${m === 1 ? '' : 's'}` };
-  return { status: 'Your box is ready', sub: s < MAX ? `Want more? Choose a bigger size.` : `12 tubs. The biggest box.`, cta: `${Box.editing ? 'Update box' : 'Add box to cart'} \u2014 ${money(t * CONFIG.pricePerTub)}` };
+  return { status: 'Your box is ready', sub: s < MAX ? `Want more? Choose a bigger size.` : `12 tubs. The biggest box.`, cta: `${Box.editing ? 'Update box' : 'Add box to cart'} \u2014 ${money(packPrice(t))}` };
 }
 
 function updateBuilder() {
@@ -1446,7 +1451,7 @@ ${finalHTML()}`
       title: `${p.name} High Protein Ice Cream | CHEATCODE`,
       desc: `${p.name}: ${p.short} 10g protein per 125 ml tub, high fiber, zero added sugar. Buy in packs of 3, 6, 9 or 12.`,
       ld: { '@context': 'https://schema.org', '@type': 'Product', name: `CHEATCODE ${p.name}`, description: p.desc, brand: { '@type': 'Brand', name: 'CHEATCODE' }, size: '125 ml',
-        offers: { '@type': 'AggregateOffer', priceCurrency: CONFIG.currency, lowPrice: PACKS[0] * CONFIG.pricePerTub, highPrice: MAX * CONFIG.pricePerTub, offerCount: PACKS.length, availability: 'https://schema.org/InStock' } },
+        offers: { '@type': 'AggregateOffer', priceCurrency: CONFIG.currency, lowPrice: packPrice(PACKS[0]), highPrice: packPrice(MAX), offerCount: PACKS.length, availability: 'https://schema.org/InStock' } },
       bar: 'pdp', slug,
       html: `<section class="page-top" style="padding-bottom:var(--sec)">
   <div class="wrap pdp" style="--tint:${p.tint}">
@@ -1557,7 +1562,7 @@ ${railHTML(slug, 'You might also cheat with')}
             <p class="t-bs t-muted" style="margin-top:var(--s2)">Secure payment powered by Razorpay. Your payment is verified before the order is confirmed.</p>
           </fieldset>
           <div id="co-err"></div>
-          <button class="btn btn-red btn-block" type="submit" id="co-submit" style="min-height:64px;font-size:21px"><span>Pay securely \u2014 ${money(Cart.subtotal() + CONFIG.deliveryFee)}</span></button>
+          <button class="btn btn-red btn-block" type="submit" id="co-submit" style="min-height:64px;font-size:21px"><span>Pay securely \u2014 ${money(Cart.subtotal() + deliveryForTubs(Cart.count()))}</span></button>
         </form>
         <aside class="co-sum" aria-label="Order summary"><h2>Your order</h2><div id="co-lines"></div></aside>
       </div></div></section>`
@@ -1590,8 +1595,8 @@ ${railHTML(slug, 'You might also cheat with')}
       ['How much protein is in a tub?', '10g of protein in every 125 ml tub, across every flavour.'],
       ['Is there sugar in it?', 'There is no added sugar. Full nutrition details for each flavour are on its product page.'],
       ['How should I store it?', 'Keep it frozen. Give it a couple of minutes out of the freezer before scooping.'],
-      ['Where do you deliver?', '<span class="tbd">Delivery areas, timelines and fees to be added.</span>'],
-      ['What if something arrives damaged?', '<span class="tbd">Returns and replacement policy to be added.</span>']
+      ['What is delivery?', 'Delivery is ₹60 for 3-tub and 6-tub orders. Orders of 9 or 12 tubs get FREE delivery.'],
+      ['What if something arrives damaged?', 'CHEATCODE follows a no-return policy. If your order arrives damaged or there is a verified delivery issue, email hello@houseofcheatcode.com as soon as possible with your order details and clear photos so our team can review it.']
     ];
     return {
       title: 'FAQ | CHEATCODE', desc: 'Answers on CHEATCODE packs, mixing flavours, protein, sugar and storage.',
@@ -1621,6 +1626,9 @@ ${railHTML(slug, 'You might also cheat with')}
     };
   },
 
+  privacy() { return { title: 'Privacy Policy | CHEATCODE', desc: 'CHEATCODE privacy policy.', html: '<section class="sec page-top policy"><div class="wrap policy-wrap"><p class="eyebrow">LEGAL</p><h1 class="t-dxl">Privacy Policy</h1><p class="t-bl t-muted policy-lead">Your data should help us serve your order, not become a product.</p><h2>What we collect</h2><p>When you place an order or contact us, we may collect your name, email address, phone number, delivery address and order and payment references needed to process and support your purchase.</p><h2>Payments</h2><p>Payments are processed by Razorpay. CHEATCODE does not receive or store your complete card, UPI or banking credentials.</p><h2>How we use information</h2><p>We use information to process orders, arrange delivery, provide customer support, prevent fraud, and communicate important order updates. We do not sell your personal information.</p><h2>Cookies and storage</h2><p>Our storefront may use browser storage for cart and checkout convenience. Third-party services may use their own cookies or technologies according to their policies.</p><h2>Contact</h2><p>For privacy questions, corrections or requests, contact <a class="link" href="mailto:hello@houseofcheatcode.com">hello@houseofcheatcode.com</a>.</p><p class="policy-date">Last updated: 4 October 2026</p></div></section>' }; },
+  terms() { return { title: 'Terms & Conditions | CHEATCODE', desc: 'CHEATCODE terms and conditions.', html: '<section class="sec page-top policy"><div class="wrap policy-wrap"><p class="eyebrow">LEGAL</p><h1 class="t-dxl">Terms &amp; Conditions</h1><p class="t-bl t-muted policy-lead">A few simple rules so every CHEATCODE order stays clear and fair.</p><h2>Orders and pricing</h2><p>Prices are in Indian Rupees. The pre-order price is ₹99 per 125 ml tub until 11 October 2026, subject to availability. Pack prices are ₹297 for 3, ₹594 for 6, ₹891 for 9 and ₹1,188 for 12 tubs.</p><h2>Delivery</h2><p>Delivery is ₹60 for 3-tub and 6-tub orders. Delivery is FREE for 9-tub and 12-tub orders. Delivery timelines and serviceability may vary by location.</p><h2>Payment</h2><p>Payments are processed through Razorpay. An order is confirmed only after successful payment verification.</p><h2>Product and storage</h2><p>CHEATCODE ice cream is a frozen product. Customers are responsible for providing a reachable delivery address and storing the product in a freezer promptly after delivery.</p><h2>Changes</h2><p>We may update product availability, pricing, delivery coverage or these terms when necessary. The version published on this website applies to new orders.</p><p class="policy-date">Last updated: 4 October 2026</p></div></section>' }; },
+  returns() { return { title: 'No Return Policy | CHEATCODE', desc: 'CHEATCODE no return policy.', html: '<section class="sec page-top policy"><div class="wrap policy-wrap"><p class="eyebrow">LEGAL</p><h1 class="t-dxl">No Return Policy</h1><p class="t-bl t-muted policy-lead">Because frozen food and returns are a bad combination.</p><h2>No returns</h2><p>Because CHEATCODE is a frozen food product, we do not accept returns or exchanges after delivery.</p><h2>Damaged or incorrect orders</h2><p>If your order arrives damaged, melted beyond safe consumption, or contains an incorrect item, contact <a class="link" href="mailto:hello@houseofcheatcode.com">hello@houseofcheatcode.com</a> as soon as possible, preferably within 24 hours, with your order number and clear photos. Verified issues may qualify for a replacement or another appropriate resolution.</p><h2>Customer responsibility</h2><p>Please ensure someone is available to receive the order and that the product can be moved to a freezer promptly. We cannot accept claims caused by an unavailable recipient, incorrect address, refusal to receive the order, or improper storage after delivery.</p><h2>Pre-order cancellations</h2><p>If you need to request a cancellation before your order has entered fulfilment, contact us immediately. Approval depends on order status and is not guaranteed once processing has begun.</p><p class="policy-date">Last updated: 4 October 2026</p></div></section>' }; },
   notfound() {
     return { title: 'Not found | CHEATCODE', desc: '', html: `<section class="sec page-top success-wrap"><div class="wrap"><h1 class="t-dxl">Wrong code.</h1><p class="t-bl t-muted" style="margin:var(--s3) 0 var(--s5)">That page doesn\u2019t exist.</p><a class="btn btn-red" href="#/shop"><span>Shop flavours</span></a></div></section>` };
   }
@@ -1739,7 +1747,7 @@ function updateSticky() {
 }
 
 /* ---------------- router ---------------- */
-const ROUTES = { '': 'home', shop: 'shop', flavour: 'product', build: 'build', why: 'why', about: 'about', cart: 'cart', checkout: 'checkout', success: 'success', faq: 'faq', contact: 'contact' };
+const ROUTES = { '': 'home', shop: 'shop', flavour: 'product', build: 'build', why: 'why', about: 'about', cart: 'cart', checkout: 'checkout', success: 'success', faq: 'faq', contact: 'contact', privacy: 'privacy', terms: 'terms', returns: 'returns' };
 let firstRender = true, pageObservers = [], pageCleanups = [];
 function parse() {
   const parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
