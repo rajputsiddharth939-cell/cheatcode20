@@ -686,14 +686,12 @@ body.has-bar .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
   .ugc2>.ug-t:nth-of-type(3),.ugc2>.ug-t:nth-of-type(4){grid-column:2;grid-row:auto;aspect-ratio:4/5}
 }
 
-
 .fl-head{padding-bottom:var(--s5)}
 .fl-head h2{max-width:12ch}
 .fl-head p{margin-top:var(--s2)}
 .fl-track .fl-intro{display:none}
 .fl.pinned .fl-head{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);padding:0}
 .fl.pinned .fl-track .fl-intro{display:flex}
-
 
 /* =========================================================
    SECTION 2 — scroll-filled statement + square image
@@ -806,7 +804,6 @@ body.has-bar .toast{bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 main:focus,main:focus-visible{outline:none}
 
 
-
 /* ---------- mobile header fix ---------- */
 @media (max-width: 767px){
   /* Keep the primary header visually separate from the preorder bar. */
@@ -861,39 +858,6 @@ main:focus,main:focus-visible{outline:none}
     font-size:14px;
   }
 
-  /* The preorder strip starts after the full safe-area-aware header. */
-  .preorder-strip{
-    top:calc(var(--nav-h) + env(safe-area-inset-top,0px));
-    height:34px;
-    z-index:49;
-    overflow:hidden;
-  }
-  .preorder-strip .wrap{
-    min-height:34px;
-    height:34px;
-    width:100%;
-    padding:0 10px;
-    gap:7px;
-    justify-content:center;
-    flex-wrap:nowrap;
-    white-space:nowrap;
-  }
-  .preorder-strip .wrap span{
-    overflow:hidden;
-    text-overflow:clip;
-  }
-  .preorder-strip .wrap span:first-child{
-    max-width:112px;
-  }
-  .preorder-strip .wrap span:nth-of-type(2){
-    max-width:118px;
-  }
-  .preorder-strip b{
-    flex:0 0 auto;
-    padding:5px 7px;
-    font-size:10px;
-  }
-}
 @media (max-width:390px){
   .nav-in{padding-left:11px;padding-right:7px}
   .nav-logo{width:96px;max-width:96px}
@@ -901,14 +865,14 @@ main:focus,main:focus-visible{outline:none}
   .icon-btn{width:34px;height:34px}
   .cart-btn{padding:0 4px}
   .cart-count{min-width:23px;height:23px}
-  .preorder-strip .wrap{gap:5px;padding:0 7px}
-  .preorder-strip .wrap span:first-child{max-width:92px}
-  .preorder-strip .wrap span:nth-of-type(2){max-width:104px}
+  
+  
+  
 }
 
 /* preorder + mobile polish */
-.preorder-strip{position:fixed;left:0;right:0;top:calc(var(--nav-h) + env(safe-area-inset-top,0px));z-index:49;background:var(--ink);color:#fff;border-bottom:1px solid rgba(255,255,255,.18);font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.preorder-strip .wrap{min-height:38px;display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap}.preorder-strip b{background:var(--red);padding:5px 9px}.preorder-strip a{color:#fff;text-decoration:underline;text-underline-offset:3px}.nav{z-index:50}.card-price strong{font-size:1.08em}.card-price s{font-size:.7em;opacity:.5;margin-left:4px}.card-price small{display:block}.delivery-note{font-size:12px;font-weight:700;margin:7px 0 2px;color:var(--muted)}.foot-legal{display:flex;gap:14px;flex-wrap:wrap}.foot-legal a{color:inherit;text-decoration:underline;text-underline-offset:3px}.policy-wrap{max-width:900px}.policy-lead{max-width:680px;margin:18px 0 52px}.policy-wrap h2{font-size:clamp(24px,3vw,38px);margin:42px 0 12px}.policy-wrap p{max-width:760px;line-height:1.7}.policy-date{margin-top:50px;font-size:13px;color:var(--muted)}.eyebrow{font-size:12px;font-weight:900;letter-spacing:.12em;color:var(--red);margin-bottom:10px}
-@media (max-width:599px){.preorder-strip{font-size:10px}.preorder-strip .wrap{min-height:34px;gap:8px;padding:6px 14px;white-space:nowrap;overflow:hidden}.preorder-strip .wrap span{flex:0 0 auto}.preorder-strip b{padding:5px 8px}.preorder-strip a{display:none}.nav-in{gap:8px}.nav-links{display:none}.nav-logo{width:108px;max-width:108px}.nav-right{gap:2px}.cart-word{display:none}.cart-btn{padding:0 7px}.icon-btn{width:38px;height:38px}.card-buy,.fp .card-buy{grid-template-columns:1fr;gap:10px}.card-buy .btn{width:100%}.qty{max-width:100%;overflow:hidden}.qty.lg button{padding-left:8px;padding-right:8px}.co-grid,.co-sum{width:100%;min-width:0}.co-sum .line{grid-template-columns:64px minmax(0,1fr)}.fs{padding:16px 14px}.fgrid{grid-template-columns:1fr}.field.full{grid-column:auto}.foot-grid{grid-template-columns:1fr 1fr}.foot-base{flex-direction:column;align-items:flex-start;gap:10px}.foot-legal{gap:8px 12px}.policy-lead{margin-bottom:36px}.policy-wrap h2{margin-top:34px}html,body{max-width:100%;overflow-x:hidden}.wrap{width:min(100% - 28px,var(--max))}}
+
+@media (max-width:599px){
 </style>
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 </head>
@@ -942,7 +906,7 @@ main:focus,main:focus-visible{outline:none}
     </div>
   </div>
 </header>
-<div class="preorder-strip" role="status"><div class="wrap"><span>PRE-ORDER PRICE</span><b>₹99 / TUB</b><span>ENDS 11 OCTOBER 2026</span><a href="#/shop">SHOP NOW →</a></div></div>
+</div>
 
 <div class="mmenu" id="mmenu" inert role="dialog" aria-modal="true" aria-label="Menu">
   <div class="mmenu-top"><a href="#/" class="nav-logo" aria-label="CHEATCODE home" data-logo></a><button class="icon-btn" data-action="close" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M5 5l14 14M19 5 5 19"/></svg></button></div>
@@ -1156,7 +1120,6 @@ const Cart = {
   clear() { this.items = []; this.save(); }
 };
 Cart.load();
-
 
 /* ---------------- custom box state ----------------
    Flow: pick flavours → choose size (3/6/9/12) → fill → add to cart.
@@ -1729,7 +1692,6 @@ ${railHTML(slug, 'You might also cheat with')}
     };
   },
 
-
   privacy() { return { title: 'Privacy Policy | CHEATCODE', desc: 'CHEATCODE privacy policy.', html: `<section class="sec page-top policy"><div class="wrap policy-wrap"><p class="eyebrow">LEGAL</p><h1 class="t-dxl">Privacy Policy</h1><p class="t-bl t-muted policy-lead">Your data should help us serve your order, not become a product.</p><h2>What we collect</h2><p>When you place an order or contact us, we may collect your name, email address, phone number, delivery address and order/payment references needed to process and support your purchase.</p><h2>Payments</h2><p>Payments are processed by Razorpay. CHEATCODE does not receive or store your complete card, UPI or banking credentials.</p><h2>How we use information</h2><p>We use information to process orders, arrange delivery, provide customer support, prevent fraud, and communicate important order updates. We do not sell your personal information.</p><h2>Cookies &amp; storage</h2><p>Our storefront may use browser storage for cart and checkout convenience. Third-party services may use their own cookies or technologies according to their policies.</p><h2>Contact</h2><p>For privacy questions, corrections or requests, contact <a class="link" href="mailto:${CONFIG.email}">${CONFIG.email}</a>.</p><p class="policy-date">Last updated: 4 October 2026</p></div></section>` }; },
   terms() { return { title: 'Terms & Conditions | CHEATCODE', desc: 'CHEATCODE terms and conditions.', html: `<section class="sec page-top policy"><div class="wrap policy-wrap"><p class="eyebrow">LEGAL</p><h1 class="t-dxl">Terms &amp; Conditions</h1><p class="t-bl t-muted policy-lead">A few simple rules so every CHEATCODE order stays clear and fair.</p><h2>Orders &amp; pricing</h2><p>Prices are in Indian Rupees. The pre-order price is ₹99 per 125 ml tub until 11 October 2026, subject to availability. Pack prices are ₹297 for 3, ₹594 for 6, ₹891 for 9 and ₹1,188 for 12 tubs.</p><h2>Delivery</h2><p>Delivery is ₹60 for 3-tub and 6-tub orders. Delivery is FREE for 9-tub and 12-tub orders. Delivery timelines and serviceability may vary by location.</p><h2>Payment</h2><p>Payments are processed through Razorpay. An order is confirmed only after successful payment verification.</p><h2>Product &amp; storage</h2><p>CHEATCODE ice cream is a frozen product. Customers are responsible for providing a reachable delivery address and storing the product in a freezer promptly after delivery.</p><h2>Changes</h2><p>We may update product availability, pricing, delivery coverage or these terms when necessary. The version published on this website applies to new orders.</p><p class="policy-date">Last updated: 4 October 2026</p></div></section>` }; },
   returns() { return { title: 'No Return Policy | CHEATCODE', desc: 'CHEATCODE no return policy.', html: `<section class="sec page-top policy"><div class="wrap policy-wrap"><p class="eyebrow">LEGAL</p><h1 class="t-dxl">No Return Policy</h1><p class="t-bl t-muted policy-lead">Because frozen food and returns are a bad combination.</p><h2>No returns</h2><p>Because CHEATCODE is a frozen food product, we do not accept returns or exchanges after delivery.</p><h2>Damaged or incorrect orders</h2><p>If your order arrives damaged, melted beyond safe consumption, or contains an incorrect item, contact <a class="link" href="mailto:${CONFIG.email}">${CONFIG.email}</a> as soon as possible, preferably within 24 hours, with your order number and clear photos. Verified issues may qualify for a replacement or another appropriate resolution.</p><h2>Customer responsibility</h2><p>Please ensure someone is available to receive the order and that the product can be moved to a freezer promptly. We cannot accept claims caused by an unavailable recipient, incorrect address, refusal to receive the order, or improper storage after delivery.</p><h2>Pre-order cancellations</h2><p>If you need to request a cancellation before your order has entered fulfilment, contact us immediately. Approval depends on order status and is not guaranteed once processing has begun.</p><p class="policy-date">Last updated: 4 October 2026</p></div></section>` }; },
@@ -1821,7 +1783,6 @@ function toast(msg) {
   const t = $('#toast'); t.textContent = msg; t.classList.add('show');
   clearTimeout(toast.t); toast.t = setTimeout(() => t.classList.remove('show'), 2200);
 }
-
 
 /* ---------------- sticky bars ---------------- */
 let route = { name: 'home' }, pdpVisible = true, heroGone = false, builderVisible = false;
