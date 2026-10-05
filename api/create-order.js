@@ -1,111 +1,110 @@
-if (typeof process.loadEnvFile === "function") {
-  try { process.loadEnvFile(); } catch (_) {}
+import { supabaseRequest } from "./_supabase.js";
+
+function respond(res, status, data) {
+  res.statusCode = status;
+  res.setHeader?.("Content-Type", "application/json");
+  res.setHeader?.("Access-Control-Allow-Origin", "*");
+  res.end(JSON.stringify(data));
 }
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
-
 async function getRequestBody(req) {
-  if (req.body && typeof req.body === "object") return req.body;
-  if (typeof req.json === "function") {
-    try {
-      return await req.json();
-    } catch {
-      return {};
-    }
-  }
-  return new Promise((resolve) => {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk;
-    });
-    req.on("end", () => {
-      try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch {
-        resolve({});
-      }
-    });
+  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) return req.body;
+  if (typeof req.json === "function") return await req.json();
+  return new Promise(resolve => {
+    let raw = "";
+    req.on("data", c => raw += c);
+    req.on("end", () => { try { resolve(JSON.parse(raw || "{}")); } catch { resolve({}); } });
     req.on("error", () => resolve({}));
   });
 }
 
-function respond(res, status, data) {
-  const bodyStr = JSON.stringify(data);
-  if (res && typeof res.writeHead === "function") {
-    res.writeHead(status, { "Content-Type": "application/json", ...corsHeaders });
-    return res.end(bodyStr);
-  }
-  return new Response(bodyStr, {
-    status,
-    headers: { "Content-Type": "application/json", ...corsHeaders },
-  });
-}
+const PRICE = 149;
+const VALID_FLAVOURS = new Set([
+  "Vanilla Crunch", "Guava Chilli", "Belgian Chocolate",
+  "Blueberry Cheesecake", "Midnight Cookies"
+]);
 
 export default async function handler(req, res) {
-  const method = req.method || (req instanceof Request ? req.method : "POST");
-
-  if (method === "OPTIONS") {
-    if (res && typeof res.writeHead === "function") {
-      res.writeHead(204, corsHeaders);
-      return res.end();
-    }
-    return new Response(null, { status: 204, headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.setHeader?.("Access-Control-Allow-Origin", "*");
+    res.end();
+    return;
   }
+  if (req.method !== "POST") return respond(res, 405, { error: "Method not allowed" });
 
-  if (method !== "POST") {
-    return respond(res, 405, { error: "Method not allowed" });
-  }
-
-  const keyId = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID;
+  const keyId = process.env.RAZORPAY_KEY_ID;
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
-
-  if (!keyId || !keySecret) {
-    return respond(res, 500, { error: "Razorpay is not configured on the server." });
-  }
+  if (!keyId || !keySecret) return respond(res, 500, { error: "Razorpay is not configured on the server." });
 
   try {
     const body = await getRequestBody(req);
-    const amount = Number(body.amount);
-    const currency = String(body.currency || "INR").toUpperCase();
-    const receipt = String(body.receipt || "cc_" + Date.now());
+    const customer = body.customer || {};
+    const items = Array.isArray(body.items) ? body.items : [];
 
-    if (!Number.isInteger(amount) || amount < 100) {
-      return respond(res, 400, { error: "Amount must be at least 100 paise (₹1)." });
+    if (!customer.name || !customer.phone || !customer.address || !customer.pincode) {
+      return respond(res, 400, { error: "Name, phone, address and pincode are required." });
     }
+    if (!items.length || items.length > 20) return respond(res, 400, { error: "Please select a valid product quantity." });
 
-    const auth = Buffer.from(`${keyId}:${keySecret}`).toString("base64");
-    const rzpResponse = await fetch("https://api.razorpay.com/v1/orders", {
-      method: "POST",
-      headers: {
-        Authorization: `Basic ${auth}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        amount,
-        currency,
-        receipt,
-      }),
+    const normalized = items.map(item => {
+      const name = String(item.name || "").trim();
+      const quantity = Number(item.quantity);
+      if (!VALID_FLAVOURS.has(name) || !Number.isInteger(quantity) || quantity < 1 || quantity > 20) {
+        throw new Error("Invalid product selection.");
+      }
+      return { name, quantity, price: PRICE };
     });
 
+    const subtotal = normalized.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const amount = subtotal * 100;
+    const orderNumber = "CC" + Date.now().toString().slice(-7);
+    const receipt = "cc_" + Date.now();
+
+    const auth = Buffer.from(keyId + ":" + keySecret).toString("base64");
+    const rzpResponse = await fetch("https://api.razorpay.com/v1/orders", {
+      method: "POST",
+      headers: { Authorization: "Basic " + auth, "Content-Type": "application/json" },
+      body: JSON.stringify({ amount, currency: "INR", receipt })
+    });
     const data = await rzpResponse.json().catch(() => ({}));
 
     if (!rzpResponse.ok || !data.id) {
-      const errMsg = data?.error?.description || data?.message || "Failed to create Razorpay order";
-      return respond(res, rzpResponse.status || 500, { error: errMsg });
+      return respond(res, rzpResponse.status || 500, {
+        error: data?.error?.description || "Failed to create Razorpay order."
+      });
     }
+
+    const saved = await supabaseRequest("orders", {
+      method: "POST",
+      body: JSON.stringify({
+        order_number: orderNumber,
+        customer_name: String(customer.name).trim(),
+        phone: String(customer.phone).trim(),
+        email: customer.email ? String(customer.email).trim() : null,
+        address: String(customer.address).trim(),
+        city: customer.city ? String(customer.city).trim() : "Ahmedabad",
+        state: customer.state ? String(customer.state).trim() : "Gujarat",
+        pincode: String(customer.pincode).trim(),
+        items: normalized,
+        subtotal,
+        discount: 0,
+        delivery_charge: 0,
+        total_amount: subtotal,
+        razorpay_order_id: data.id,
+        payment_status: "pending",
+        order_status: "pending"
+      })
+    });
 
     return respond(res, 200, {
       order_id: data.id,
+      order_number: orderNumber,
       amount: data.amount,
       currency: data.currency,
+      db_order_id: saved?.[0]?.id || null
     });
   } catch (error) {
-    return respond(res, 500, {
-      error: error?.message || "Unable to create Razorpay order.",
-    });
+    return respond(res, 500, { error: error?.message || "Unable to create order." });
   }
 }

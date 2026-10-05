@@ -337,3 +337,22 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
 .checkout-cta:disabled{opacity:.6;cursor:wait}
 .checkout-wrap{display:flex;flex-direction:column;align-items:flex-start}
 .payment-status{margin:8px 0 0;font:500 10px "DM Mono",monospace;letter-spacing:.06em;line-height:1.4;max-width:520px;color:var(--red)}
+
+
+/* Checkout + admin orders */
+.checkout-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);z-index:5000;display:grid;place-items:center;padding:20px}
+.checkout-card{position:relative;width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;color:#050505;padding:clamp(28px,5vw,52px);box-shadow:0 24px 80px #0008}
+.checkout-card h3{font-size:clamp(48px,7vw,82px);line-height:.84;letter-spacing:-.075em;margin:16px 0 30px}
+.checkout-close{position:absolute;right:18px;top:15px;border:0;background:transparent;font-size:34px;line-height:1;cursor:pointer;color:#050505}
+.checkout-form{display:flex;flex-direction:column;gap:12px}
+.checkout-form input,.checkout-form select{width:100%;border:1px solid #d7d7d7;background:#f7f7f7;color:#050505;padding:15px 14px;font:600 12px Inter,sans-serif;letter-spacing:.02em;outline:none}
+.checkout-form input:focus,.checkout-form select:focus{border-color:#ff1616}
+.checkout-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.checkout-total{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding:18px 0;margin-top:6px;font:700 12px "DM Mono",monospace}
+.checkout-total strong{font-size:24px;font-family:Inter,sans-serif}
+.checkout-pay{border:0;cursor:pointer;background:#ff1616!important;color:#fff!important;width:100%;justify-content:center;margin-top:4px}
+.checkout-pay:disabled{opacity:.6;cursor:wait}
+@media(max-width:600px){.checkout-row{grid-template-columns:1fr}.checkout-card{padding:28px 18px}.checkout-card h3{font-size:48px}}
+
+.admin-page{min-height:100vh;background:#050505;color:#fff;padding:40px 0 80px;font-family:Inter,sans-serif}
+.admin-wrap{width:min(1500px,92vw);margin:0 auto}.admin-head{display:flex;align-items:flex-end;justify-content:space-between;gap:30px;border-bottom:1px solid #333;padding-bottom:30px;margin-bottom:30px}.admin-head h1,.admin-login h1{font-size:clamp(70px,10vw,150px);line-height:.78;letter-spacing:-.08em;margin:15px 0 0}.admin-login{width:min(520px,92vw);margin:15vh auto 0;display:flex;flex-direction:column;gap:14px}.admin-login input{background:#111;border:1px solid #444;color:#fff;padding:17px;font:600 13px Inter}.admin-login button{border:0;cursor:pointer;justify-content:center}.admin-error{color:#ff1616;font:600 12px "DM Mono",monospace;margin:10px 0}.admin-table-wrap{overflow:auto;border:1px solid #333}.admin-table{width:100%;border-collapse:collapse;min-width:1000px}.admin-table th,.admin-table td{text-align:left;padding:17px 14px;border-bottom:1px solid #2a2a2a;vertical-align:top;font-size:13px}.admin-table th{font:600 9px "DM Mono",monospace;color:#888;letter-spacing:.1em}.admin-table td b{display:block}.admin-table td small{display:block;color:#888;margin-top:5px;line-height:1.35}.admin-table select{background:#111;color:#fff;border:1px solid #444;padding:9px;font:600 11px Inter}.status-badge{display:inline-block;padding:6px 8px;font:700 9px "DM Mono",monospace;text-transform:uppercase}.status-badge.paid{background:#fff;color:#050505}.status-badge.pending{background:#333;color:#fff}.status-badge.failed,.status-badge.payment_failed{background:#ff1616;color:#fff}.admin-page .outline{cursor:pointer}

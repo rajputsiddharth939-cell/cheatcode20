@@ -14,50 +14,59 @@ function Product({src}){return <div className="product" aria-hidden="true"><div 
 function CheckoutButton(){
   const [status,setStatus]=useState("");
   const [busy,setBusy]=useState(false);
+  const [open,setOpen]=useState(false);
+  const [customer,setCustomer]=useState({name:"",phone:"",email:"",address:"",city:"Ahmedabad",state:"Gujarat",pincode:""});
+  const [quantity,setQuantity]=useState(1);
+  const [flavour,setFlavour]=useState("Belgian Chocolate");
+
   async function loadRazorpay(){
     if(window.Razorpay)return true;
     return new Promise(resolve=>{
       const existing=document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
       if(existing){existing.addEventListener("load",()=>resolve(true),{once:true});existing.addEventListener("error",()=>resolve(false),{once:true});return;}
       const script=document.createElement("script");
-      script.src="https://checkout.razorpay.com/v1/checkout.js";
-      script.async=true;
-      script.onload=()=>resolve(true);
-      script.onerror=()=>resolve(false);
-      document.body.appendChild(script);
+      script.src="https://checkout.razorpay.com/v1/checkout.js";script.async=true;
+      script.onload=()=>resolve(true);script.onerror=()=>resolve(false);document.body.appendChild(script);
     });
   }
-  async function startPayment(){
-    if(busy)return;
+
+  function update(e){setCustomer(c=>({...c,[e.target.name]:e.target.value}));}
+
+  async function startPayment(e){
+    e.preventDefault(); if(busy)return;
     setBusy(true);setStatus("");
     try{
       const loaded=await loadRazorpay();
       if(!loaded)throw new Error("Payment checkout could not load. Please try again.");
-      let keyId = import.meta.env.VITE_RAZORPAY_KEY_ID;
+      let keyId=import.meta.env.VITE_RAZORPAY_KEY_ID;
       if(!keyId){
-        const configRes = await fetch("/api/razorpay-config");
-        const configData = await configRes.json().catch(()=>({}));
-        keyId = configData.key_id;
+        const configRes=await fetch("/api/razorpay-config");
+        const configData=await configRes.json().catch(()=>({})); keyId=configData.key_id;
       }
-      if(!keyId) throw new Error("Razorpay is not configured.");
+      if(!keyId)throw new Error("Razorpay is not configured.");
 
-      const orderResponse=await fetch("/api/create-order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({amount:14900,currency:"INR",receipt:"cheatcode-"+Date.now()})});
+      const orderResponse=await fetch("/api/create-order",{
+        method:"POST",headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({customer,items:[{name:flavour,quantity}]})
+      });
       const order=await orderResponse.json().catch(()=>({}));
       if(!orderResponse.ok||!order.order_id)throw new Error(order.error||"Could not create your order.");
+
       const options={
-        key:keyId,
-        amount:order.amount,
-        currency:order.currency,
-        name:"CHEATCODE™",
-        description:"CHEATCODE Ice Cream",
-        order_id:order.order_id,
-        theme:{color:"#ff1616"},
+        key:keyId,amount:order.amount,currency:order.currency,name:"CHEATCODE™",
+        description:`${flavour} × ${quantity}`,order_id:order.order_id,theme:{color:"#ff1616"},
+        prefill:{name:customer.name,email:customer.email,contact:customer.phone},
+        notes:{order_number:order.order_number},
         handler:async function(response){
           try{
-            const verifyResponse=await fetch("/api/verify-payment",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({razorpay_order_id:response.razorpay_order_id,razorpay_payment_id:response.razorpay_payment_id,razorpay_signature:response.razorpay_signature})});
+            const verifyResponse=await fetch("/api/verify-payment",{
+              method:"POST",headers:{"Content-Type":"application/json"},
+              body:JSON.stringify(response)
+            });
             const result=await verifyResponse.json().catch(()=>({}));
             if(!verifyResponse.ok||!result.verified)throw new Error(result.error||"Payment verification failed.");
-            setStatus("PAYMENT SUCCESSFUL. ORDER RECEIVED.");
+            setStatus(`PAYMENT SUCCESSFUL · ORDER #${order.order_number}`);
+            setOpen(false);
           }catch(error){setStatus(error.message||"Payment verification failed.");}
           finally{setBusy(false);}
         },
@@ -68,12 +77,73 @@ function CheckoutButton(){
       rzp.open();
     }catch(error){setBusy(false);setStatus(error.message||"Something went wrong. Please try again.");}
   }
-  return <div className="checkout-wrap"><button type="button" className="pill order-cta checkout-cta" onClick={startPayment} disabled={busy}>{busy?"OPENING CHECKOUT…":"ORDER NOW ₹149"}<b>→</b></button>{status&&<p className="payment-status" role="status">{status}</p>}</div>;
+
+  return <div className="checkout-wrap">
+    <button type="button" className="pill order-cta checkout-cta" onClick={()=>setOpen(true)} disabled={busy}>ORDER NOW ₹149 <b>→</b></button>
+    {status&&<p className="payment-status" role="status">{status}</p>}
+    {open&&<div className="checkout-overlay" role="dialog" aria-modal="true" aria-label="CHEATCODE checkout">
+      <div className="checkout-card">
+        <button className="checkout-close" type="button" onClick={()=>setOpen(false)} aria-label="Close checkout">×</button>
+        <span className="eyebrow redtext">CHEATCODE / CHECKOUT</span>
+        <h3>YOUR CHEAT.<br/>YOUR DETAILS.</h3>
+        <form onSubmit={startPayment} className="checkout-form">
+          <div className="checkout-row">
+            <input name="name" value={customer.name} onChange={update} placeholder="FULL NAME" required/>
+            <input name="phone" value={customer.phone} onChange={update} placeholder="PHONE NUMBER" inputMode="numeric" pattern="[0-9]{10}" maxLength="10" required/>
+          </div>
+          <input name="email" type="email" value={customer.email} onChange={update} placeholder="EMAIL ADDRESS"/>
+          <input name="address" value={customer.address} onChange={update} placeholder="FULL DELIVERY ADDRESS" required/>
+          <div className="checkout-row">
+            <input name="city" value={customer.city} onChange={update} placeholder="CITY" required/>
+            <input name="pincode" value={customer.pincode} onChange={update} placeholder="PINCODE" inputMode="numeric" pattern="[0-9]{6}" maxLength="6" required/>
+          </div>
+          <div className="checkout-row">
+            <select value={flavour} onChange={e=>setFlavour(e.target.value)} aria-label="Flavour">
+              {flavours.map(f=><option key={f.name+f.sub} value={f.name.charAt(0)+f.name.slice(1).toLowerCase()+" "+f.sub.charAt(0)+f.sub.slice(1).toLowerCase()}>{f.name} {f.sub}</option>)}
+            </select>
+            <select value={quantity} onChange={e=>setQuantity(Number(e.target.value))} aria-label="Quantity">
+              {[1,2,3,4,5,6,7,8,9,10].map(n=><option key={n} value={n}>{n} TUB{n>1?"S":""}</option>)}
+            </select>
+          </div>
+          <div className="checkout-total"><span>TOTAL</span><strong>₹{149*quantity}</strong></div>
+          <button className="pill checkout-pay" type="submit" disabled={busy}>{busy?"PROCESSING…":`PAY ₹${149*quantity} →`}</button>
+        </form>
+      </div>
+    </div>}
+  </div>;
 }
+
 function Signup(){const [done,setDone]=useState(false),[busy,setBusy]=useState(false);async function submit(e){e.preventDefault();if(busy)return;setBusy(true);const data=Object.fromEntries(new FormData(e.currentTarget));const params=new URLSearchParams({name:String(data.name||""),email:String(data.email||""),phone:String(data.phone||"")});try{await fetch(API+"?"+params.toString(),{method:"GET",mode:"no-cors",keepalive:true});setDone(true);e.currentTarget.reset()}catch{setBusy(false)}}return <section className="black signup" id="signup"><div className="wrap signup-grid"><div><span className="eyebrow">07 / GET IN EARLY</span><h2>DON’T MISS<br/>THE DROP.</h2><p className="muted">Get launch-day news, first access and the occasional CHEATCODE surprise.</p></div>{done?<div className="success">✓ YOU’RE ON THE LIST.<br/><span>SEE YOU ON LAUNCH DAY.</span></div>:<form onSubmit={submit}><input name="name" placeholder="YOUR NAME" required/><input name="email" type="email" placeholder="EMAIL ADDRESS" required/><input name="phone" placeholder="PHONE NUMBER" required/><button disabled={busy}>{busy?"JOINING…":"GET NOTIFIED →"}</button></form>}</div></section>}
 function LabReport(){return <main className="lab-report-page"><div className="lab-report-card"><span className="eyebrow redtext">CHEATCODE™ / LAB REPORT</span><h1>LAB REPORT</h1><p>Scan complete. Your CHEATCODE lab report will appear here.</p><div className="lab-report-pdf"><div className="lab-report-placeholder">PDF REPORT<br/><small>COMING SOON</small></div></div></div></main>}
 
-export default function App(){if(window.location.pathname==="/lab-report"){return <LabReport/>}return <div className="site"><header><a href="#" className="brand-mark">CHEATCODE™</a><nav aria-label="Primary navigation"><a href="#flavours">FLAVOURS</a><a href="#story">OUR STORY</a><a href="#launch">LAUNCH</a></nav><a className="header-btn" href="#signup">GET NOTIFIED ↗</a></header><div className="ticker" aria-label="CHEATCODE highlights"><div className="ticker-track"><span>YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span><span aria-hidden="true">YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span></div></div><main>
+function AdminOrders(){
+  const [password,setPassword]=useState("");
+  const [orders,setOrders]=useState([]);
+  const [error,setError]=useState("");
+  const [loading,setLoading]=useState(false);
+  async function load(p=password){
+    setLoading(true);setError("");
+    try{
+      const r=await fetch("/api/admin-orders",{headers:{"x-admin-password":p}});
+      const d=await r.json();
+      if(!r.ok)throw new Error(d.error||"Unable to load orders.");
+      setOrders(d.orders||[]);sessionStorage.setItem("cc_admin_password",p);
+    }catch(e){setError(e.message);setOrders([]);}
+    finally{setLoading(false);}
+  }
+  useEffect(()=>{const p=sessionStorage.getItem("cc_admin_password");if(p){setPassword(p);load(p)}},[]);
+  async function updateOrder(id,status){
+    const r=await fetch("/api/admin-update-order",{method:"PATCH",headers:{"Content-Type":"application/json","x-admin-password":password},body:JSON.stringify({order_id:id,order_status:status})});
+    const d=await r.json();if(!r.ok){setError(d.error||"Update failed.");return}
+    setOrders(os=>os.map(o=>o.id===id?{...o,order_status:status}:o));
+  }
+  if(!sessionStorage.getItem("cc_admin_password")||!orders.length&&!password){
+    return <main className="admin-page"><div className="admin-login"><span className="eyebrow redtext">CHEATCODE / ADMIN</span><h1>ORDERS.</h1><input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="ADMIN PASSWORD" onKeyDown={e=>e.key==="Enter"&&load()}/><button className="pill" onClick={()=>load()} disabled={loading}>{loading?"CHECKING…":"OPEN ORDERS →"}</button>{error&&<p className="admin-error">{error}</p>}</div></main>;
+  }
+  return <main className="admin-page"><div className="admin-wrap"><div className="admin-head"><div><span className="eyebrow redtext">CHEATCODE / ADMIN</span><h1>ORDERS.</h1></div><button className="outline" onClick={()=>load()}>REFRESH ↻</button></div>{error&&<p className="admin-error">{error}</p>}<div className="admin-table-wrap"><table className="admin-table"><thead><tr><th>ORDER</th><th>CUSTOMER</th><th>ITEMS</th><th>AMOUNT</th><th>PAYMENT</th><th>STATUS</th></tr></thead><tbody>{orders.map(o=><tr key={o.id}><td><b>#{o.order_number}</b><small>{new Date(o.created_at).toLocaleString("en-IN")}</small></td><td><b>{o.customer_name}</b><small>{o.phone}<br/>{o.email||""}</small><small>{o.address}, {o.city}, {o.pincode}</small></td><td>{(o.items||[]).map((i,idx)=><div key={idx}>{i.name} × {i.quantity}</div>)}</td><td><b>₹{o.total_amount}</b></td><td><span className={`status-badge ${o.payment_status}`}>{o.payment_status}</span><small>{o.razorpay_payment_id||"—"}</small></td><td><select value={o.order_status} onChange={e=>updateOrder(o.id,e.target.value)}><option value="pending">Pending</option><option value="processing">Processing</option><option value="packed">Packed</option><option value="shipped">Shipped</option><option value="out_for_delivery">Out for delivery</option><option value="delivered">Delivered</option><option value="cancelled">Cancelled</option><option value="payment_failed">Payment failed</option></select></td></tr>)}{!orders.length&&<tr><td colSpan="6">No orders yet.</td></tr>}</tbody></table></div></div></main>;
+}
+
+export default function App(){if(window.location.pathname==="/lab-report"){return <LabReport/>}if(window.location.pathname==="/admin/orders"){return <AdminOrders/>}return <div className="site"><header><a href="#" className="brand-mark">CHEATCODE™</a><nav aria-label="Primary navigation"><a href="#flavours">FLAVOURS</a><a href="#story">OUR STORY</a><a href="#launch">LAUNCH</a></nav><a className="header-btn" href="#signup">GET NOTIFIED ↗</a></header><div className="ticker" aria-label="CHEATCODE highlights"><div className="ticker-track"><span>YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span><span aria-hidden="true">YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span></div></div><main>
 <section className="hero red"><div className="wrap hero-grid"><div className="hero-copy"><span className="eyebrow">01 / PREMIUM HIGH-PROTEIN ICE CREAM</span><h1>CHEAT<br/>WITHOUT<br/>REGRET.</h1><p className="hero-tag">Same pleasure.<br/>Better choices.</p><a className="pill" href="#flavours">DISCOVER CHEATCODE <b>↗</b></a><div className="stats"><span><b>10g</b>PROTEIN</span><span><b>0</b>ADDED SUGAR</span><span><b>HIGH</b>FIBRE</span><span><b>LOW</b>CARB</span></div></div><div className="hero-product"><HeroProduct/></div></div></section>
 <section className="black flavours-sec" id="flavours"><div className="wrap"><div className="center"><span className="eyebrow redtext">02 / THE LINE-UP</span><h2>5 WAYS TO CHEAT.</h2><p className="muted">Different moods. Same CHEATCODE.</p></div><div className="flavour-row">{flavours.map((f,i)=><article key={f.name+"-"+f.sub}><img className="mini-pack" src={f.image} alt={f.name+" "+f.sub+" CHEATCODE ice cream"} loading="lazy" decoding="async"/><span>0{i+1}</span><h3>{f.name}<br/>{f.sub}</h3></article>)}</div><div className="benefits">{[["10g","Protein"],["0","Added Sugar"],["High","Fibre"],["Low","Carb"]].map(([t,l])=><div key={l}><i>◉</i><b>{t}</b><small>{l}</small></div>)}</div></div></section>
 <section className="black split"><div className="image-panel"><img className="section3-image" src="/images/Cheatcode Section 3.JPG" alt="CHEATCODE ice cream brand visual" loading="lazy" decoding="async"/></div><div className="copy-panel"><span className="eyebrow redtext">03 / THE BETTER INDULGENCE</span><h2>DESSERT<br/>THAT WORKS<br/>FOR YOU.</h2><p>Creamy texture. Bold flavours. Thought-through nutrition. Built for the moments when you want dessert and still want to feel good about the choice.</p><a className="outline" href="#story">READ OUR STORY ↗</a></div></section>
