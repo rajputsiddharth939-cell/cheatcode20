@@ -1,76 +1,38 @@
 import crypto from "node:crypto";
+import { supabaseRequest } from "./_supabase.js";
 
-if (typeof process.loadEnvFile === "function") {
-  try { process.loadEnvFile(); } catch (_) {}
+function respond(res, status, data) {
+  res.statusCode = status;
+  res.setHeader?.("Content-Type", "application/json");
+  res.setHeader?.("Access-Control-Allow-Origin", "*");
+  res.end(JSON.stringify(data));
 }
 
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "Content-Type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-};
-
 async function getRequestBody(req) {
-  if (req.body && typeof req.body === "object") return req.body;
-  if (typeof req.json === "function") {
-    try {
-      return await req.json();
-    } catch {
-      return {};
-    }
-  }
-  return new Promise((resolve) => {
-    let body = "";
-    req.on("data", (chunk) => {
-      body += chunk;
-    });
-    req.on("end", () => {
-      try {
-        resolve(body ? JSON.parse(body) : {});
-      } catch {
-        resolve({});
-      }
-    });
+  if (req.body && typeof req.body === "object" && !Buffer.isBuffer(req.body)) return req.body;
+  if (typeof req.json === "function") return await req.json();
+  return new Promise(resolve => {
+    let raw = "";
+    req.on("data", c => raw += c);
+    req.on("end", () => { try { resolve(JSON.parse(raw || "{}")); } catch { resolve({}); } });
     req.on("error", () => resolve({}));
   });
 }
 
-function respond(res, status, data) {
-  const bodyStr = JSON.stringify(data);
-  if (res && typeof res.writeHead === "function") {
-    res.writeHead(status, { "Content-Type": "application/json", ...corsHeaders });
-    return res.end(bodyStr);
-  }
-  return new Response(bodyStr, {
-    status,
-    headers: { "Content-Type": "application/json", ...corsHeaders },
-  });
-}
-
 export default async function handler(req, res) {
-  const method = req.method || (req instanceof Request ? req.method : "POST");
-
-  if (method === "OPTIONS") {
-    if (res && typeof res.writeHead === "function") {
-      res.writeHead(204, corsHeaders);
-      return res.end();
-    }
-    return new Response(null, { status: 204, headers: corsHeaders });
+  if (req.method === "OPTIONS") {
+    res.statusCode = 204;
+    res.setHeader?.("Access-Control-Allow-Origin", "*");
+    res.end();
+    return;
   }
-
-  if (method !== "POST") {
-    return respond(res, 405, { error: "Method not allowed" });
-  }
+  if (req.method !== "POST") return respond(res, 405, { error: "Method not allowed" });
 
   const keySecret = process.env.RAZORPAY_KEY_SECRET;
-  if (!keySecret) {
-    return respond(res, 500, { error: "Razorpay verification is not configured on the server." });
-  }
+  if (!keySecret) return respond(res, 500, { error: "Razorpay verification is not configured on the server." });
 
   try {
-    const body = await getRequestBody(req);
-    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = body;
-
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = await getRequestBody(req);
     if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
       return respond(res, 400, { error: "Missing payment verification fields." });
     }
@@ -82,14 +44,21 @@ export default async function handler(req, res) {
 
     const expected = Buffer.from(expectedSignature, "utf8");
     const received = Buffer.from(String(razorpay_signature), "utf8");
+    const valid = expected.length === received.length && crypto.timingSafeEqual(expected, received);
 
-    const valid =
-      expected.length === received.length &&
-      crypto.timingSafeEqual(expected, received);
+    if (!valid) return respond(res, 400, { verified: false, error: "Payment signature mismatch." });
 
-    if (!valid) {
-      return respond(res, 400, { verified: false, error: "Payment signature mismatch." });
-    }
+    await supabaseRequest(
+      "orders?razorpay_order_id=eq." + encodeURIComponent(razorpay_order_id),
+      {
+        method: "PATCH",
+        body: JSON.stringify({
+          razorpay_payment_id,
+          payment_status: "paid",
+          order_status: "processing"
+        })
+      }
+    );
 
     return respond(res, 200, { verified: true });
   } catch (error) {
