@@ -23,3 +23,13 @@ npm run dev
 ```bash
 npm run build
 ```
+
+
+## CHEATCODE Orders Setup
+
+1. Run `supabase/orders.sql` in the Supabase SQL Editor.
+2. Add these Vercel environment variables: `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `ADMIN_PASSWORD`.
+3. In Razorpay Dashboard, create a webhook pointing to `https://YOUR-DOMAIN/api/razorpay-webhook` and subscribe to `payment.captured` and `payment.failed`.
+4. Open `/admin/orders` and use the value of `ADMIN_PASSWORD` to view/manage orders.
+
+Never expose the Razorpay secret, webhook secret, Supabase service-role key, or admin password in client-side code.
