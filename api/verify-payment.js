@@ -76,6 +76,32 @@ async function saveOrder(orderData, payment) {
     order_status: "new",
   };
 
+  // Finalize the pending row created by create-order.js when possible.
+  const pendingRes = await fetch(
+    `${url}/rest/v1/orders?select=id,order_number&razorpay_order_id=eq.${encodeURIComponent(payment.order_id)}&limit=1`,
+    { headers }
+  );
+  if (!pendingRes.ok) {
+    const detail = await pendingRes.text();
+    throw new Error(`Could not check pending order: ${detail.slice(0, 300)}`);
+  }
+  const pending = await pendingRes.json();
+
+  if (pending[0]?.id) {
+    const updateRes = await fetch(
+      `${url}/rest/v1/orders?id=eq.${encodeURIComponent(pending[0].id)}`,
+      {
+        method: "PATCH",
+        headers: { ...headers, Prefer: "return=representation" },
+        body: JSON.stringify(payload),
+      }
+    );
+    if (!updateRes.ok) {
+      const detail = await updateRes.text();
+      throw new Error(`Order could not be updated: ${detail.slice(0, 300)}`);
+    }
+    return { saved: true, duplicate: false, order_number: pending[0].order_number || orderNumber };
+  }
   const insertRes = await fetch(`${url}/rest/v1/orders`, {
     method: "POST",
     headers: { ...headers, Prefer: "return=representation" },
