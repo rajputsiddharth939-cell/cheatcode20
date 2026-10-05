@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CHEATCODE Orders</title>
+<style>
+body{margin:0;background:#f5f5f2;color:#111;font-family:Arial,sans-serif}.wrap{max-width:1200px;margin:auto;padding:28px 18px}h1{font-size:36px;margin:0 0 6px}.muted{color:#666}.bar{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0}.bar input{padding:12px;border:1px solid #bbb;border-radius:8px}.btn{padding:12px 18px;border:0;border-radius:8px;background:#f52f23;color:#fff;font-weight:700;cursor:pointer}.grid{display:grid;gap:14px}.card{background:#fff;border:1px solid #ddd;border-radius:14px;padding:18px}.top{display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap}.pill{padding:6px 9px;border-radius:999px;background:#eee;font-size:12px;font-weight:700}.paid{background:#d9f7df}.item{padding:9px 0;border-top:1px solid #eee}.total{font-size:20px;font-weight:800;margin-top:10px}.err{color:#b00020}.login{max-width:420px;margin:12vh auto;background:#fff;padding:24px;border-radius:16px;border:1px solid #ddd}.login input{box-sizing:border-box;width:100%;padding:13px;margin:10px 0 14px;border:1px solid #bbb;border-radius:8px}@media(max-width:600px){h1{font-size:28px}.wrap{padding:18px 12px}}
+</style>
+</head>
+<body>
+<div id="app" class="wrap"></div>
+<script>
+const app=document.getElementById('app');
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function login(){app.innerHTML='<div class="login"><h1>CHEATCODE Orders</h1><p class="muted">Private order dashboard.</p><input id="key" type="password" placeholder="Admin key"><button class="btn" onclick="load()">View Orders</button><p id="err" class="err"></p></div>'}
+async function load(){const key=document.getElementById('key').value.trim();if(!key)return;sessionStorage.setItem('cc_admin_key',key);app.innerHTML='<div class="login"><h2>Loading orders…</h2></div>';try{const r=await fetch('/api/orders',{headers:{'X-Admin-Key':key}});const d=await r.json();if(!r.ok)throw Error(d.error||'Unable to load orders');render(d.orders||[])}catch(e){sessionStorage.removeItem('cc_admin_key');app.innerHTML='<div class="login"><h1>CHEATCODE Orders</h1><p class="err">'+esc(e.message)+'</p><input id="key" type="password" placeholder="Admin key"><button class="btn" onclick="load()">Try again</button></div>'}}
+function render(orders){app.innerHTML='<div class="top"><div><h1>CHEATCODE Orders</h1><p class="muted">'+orders.length+' latest orders</p></div><button class="btn" onclick="load()">Refresh</button></div><div class="grid">'+orders.map(o=>'<article class="card"><div class="top"><div><b>'+esc(o.order_number)+'</b><div class="muted">'+new Date(o.created_at).toLocaleString('en-IN')+'</div></div><span class="pill paid">'+esc(o.payment_status||'paid')+'</span></div><p><b>'+esc(o.customer_name)+'</b><br>'+esc(o.phone)+' · '+esc(o.email)+'<br>'+esc(o.address)+', '+esc(o.city)+(o.state?', '+esc(o.state):'')+' - '+esc(o.pincode)+'</p><div>'+((o.items||[]).map(i=>'<div class="item">'+esc(i.name)+' × '+esc(i.quantity)+' <span style="float:right">₹'+Number(i.total||0).toFixed(0)+'</span></div>').join(''))+'</div><div class="total">₹'+Number(o.total_amount||0).toFixed(0)+' <span class="pill">'+esc(o.order_status||'new')+'</span></div><p class="muted">Razorpay: '+esc(o.razorpay_payment_id)+'</p></article>').join('')+'</div>'}
+const saved=sessionStorage.getItem('cc_admin_key'); if(saved){document.body.dataset.loading='1';fetch('/api/orders',{headers:{'X-Admin-Key':saved}}).then(r=>r.ok?r.json():Promise.reject()).then(d=>render(d.orders||[])).catch(login)}else login();
+</script>
+</body>
+</html>
