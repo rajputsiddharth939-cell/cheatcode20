@@ -1,8 +1,20 @@
 {
   "rewrites": [
-    { "source": "/lab-report", "destination": "/" },
-    { "source": "/lab-report/", "destination": "/" },
-    { "source": "/admin/orders", "destination": "/index.html" },
-    { "source": "/admin/orders/", "destination": "/index.html" }
+    {
+      "source": "/lab-report",
+      "destination": "/"
+    },
+    {
+      "source": "/lab-report/",
+      "destination": "/"
+    },
+    {
+      "source": "/admin/orders",
+      "destination": "/orders.html"
+    },
+    {
+      "source": "/admin/orders/",
+      "destination": "/orders.html"
+    }
   ]
 }
