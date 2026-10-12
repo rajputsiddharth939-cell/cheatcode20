@@ -50,7 +50,7 @@ export default async function handler(req, res) {
     const normalized = items.map(item => {
       const name = String(item.name || "").trim();
       const quantity = Number(item.quantity);
-      if (!VALID_FLAVOURS.has(name) || !Number.isInteger(quantity) || quantity < 1 || quantity > 20) {
+      if (!VALID_FLAVOURS.has(name) || !Number.isInteger(quantity) || ![3, 6, 9, 12].includes(quantity)) {
         throw new Error("Invalid product selection.");
       }
       return { name, quantity, price: PRICE };
