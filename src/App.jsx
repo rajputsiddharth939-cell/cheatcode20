@@ -17,7 +17,8 @@ function CheckoutButton(){
  const [busy,setBusy]=useState(false);
  const [open,setOpen]=useState(false);
  const [customer,setCustomer]=useState({name:"",phone:"",email:"",address:"",city:"Ahmedabad",state:"Gujarat",pincode:""});
- const [quantity,setQuantity]=useState(1);
+ const [quantity,setQuantity]=useState(3);
+  const packTotal = 149 * quantity;
  const [flavour,setFlavour]=useState("Belgian Chocolate");
 
  async function loadRazorpay(){
@@ -80,7 +81,7 @@ function CheckoutButton(){
  }
 
  return <div className="checkout-wrap">
- <button type="button" className="pill order-cta checkout-cta" onClick={()=>setOpen(true)} disabled={busy}>ORDER NOW ₹149 <b>→</b></button>
+ <button type="button" className="pill order-cta checkout-cta" onClick={()=>setOpen(true)} disabled={busy}>ORDER NOW FROM ₹447 <b>→</b></button>
  {status&&<p className="payment-status" role="status">{status}</p>}
  {open&&<div className="checkout-overlay" role="dialog" aria-modal="true" aria-label="CHEATCODE checkout">
  <div className="checkout-card">
@@ -103,11 +104,11 @@ function CheckoutButton(){
  {flavours.map(f=><option key={f.name+f.sub} value={f.name.charAt(0)+f.name.slice(1).toLowerCase()+" "+f.sub.charAt(0)+f.sub.slice(1).toLowerCase()}>{f.name} {f.sub}</option>)}
  </select>
  <select value={quantity} onChange={e=>setQuantity(Number(e.target.value))} aria-label="Quantity">
- {[1,2,3,4,5,6,7,8,9,10].map(n=><option key={n} value={n}>{n} TUB{n>1?"S":""}</option>)}
+ {[3,6,9,12].map(n=><option key={n} value={n}>{n} TUBS · ₹{(149*n).toLocaleString("en-IN")}</option>)}
  </select>
  </div>
- <div className="checkout-total"><span>TOTAL</span><strong>₹{149*quantity}</strong></div>
- <button className="pill checkout-pay" type="submit" disabled={busy}>{busy?"PROCESSING…":`PAY ₹${149*quantity} →`}</button>
+ <div className="checkout-total"><span>TOTAL · {quantity} TUBS</span><strong>₹{packTotal.toLocaleString("en-IN")}</strong></div>
+ <button className="pill checkout-pay" type="submit" disabled={busy}>{busy?"PROCESSING…":`PAY ₹${packTotal.toLocaleString("en-IN")} →`}</button>
  </form>
  </div>
  </div>}
