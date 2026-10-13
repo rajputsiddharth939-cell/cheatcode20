@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { stop11Config, campaignCount, dbRequest, hmac, readCookie, verifyVisitorId, signVisitorId, signAttempt, respond } from "./_stop11.js";
 function parseBody(req) {
   if (req.body && typeof req.body === "object") return Promise.resolve(req.body);
-  return new Promise(resolve => { let raw = ""; req.on("data", c => raw += c); req.on("end", () => { try { resolve(JSON.parse(raw || "{}")); } catch { resolve({}); } }); req.on("error", () => resolve({}); });
+  return new Promise(resolve => { let raw = ""; req.on("data", c => raw += c); req.on("end", () => { try { resolve(JSON.parse(raw || "{}")); } catch { resolve({}); } }); req.on("error", () => resolve({})); });
 }
 function cookie(res, value) { res.setHeader("Set-Cookie", `cc_stop11_id=${encodeURIComponent(value)}; Path=/; Max-Age=31536000; HttpOnly; Secure; SameSite=Lax`); }
 async function existingAttempt(config, visitorHash) {

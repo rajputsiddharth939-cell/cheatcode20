@@ -2,7 +2,7 @@ import crypto from "node:crypto";
 import { stop11Config, campaignCount, dbRequest, readCookie, verifyVisitorId, hmac, verifyAttempt, respond } from "./_stop11.js";
 async function getBody(req) {
   if (req.body && typeof req.body === "object") return req.body;
-  return new Promise(resolve => { let raw = ""; req.on("data", c => raw += c); req.on("end", () => { try { resolve(JSON.parse(raw || "{}")); } catch { resolve({}); } }); req.on("error", () => resolve({}); });
+  return new Promise(resolve => { let raw = ""; req.on("data", c => raw += c); req.on("end", () => { try { resolve(JSON.parse(raw || "{}")); } catch { resolve({}); } }); req.on("error", () => resolve({})); });
 }
 export default async function handler(req, res) {
   if (req.method === "OPTIONS") { res.statusCode = 204; res.setHeader("Access-Control-Allow-Origin", "*"); return res.end(); }
