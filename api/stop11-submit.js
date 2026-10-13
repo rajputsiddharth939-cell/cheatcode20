@@ -15,7 +15,7 @@ export default async function handler(req, res) {
     if (!payload || !visitorId || payload.visitor_hash !== hmac(config.secret, `visitor:${visitorId}`)) return respond(res, 400, { error: "Your signed attempt token is invalid or expired. Your attempt cannot be replayed." });
     const elapsed = Number(body.elapsed_ms);
     if (!Number.isFinite(elapsed) || elapsed < 0 || elapsed > 120000) return respond(res, 400, { error: "Invalid elapsed time." });
-    const code = `CC11-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
+    const code = `CC11-${crypto.randomBytes(8).toString("hex").toUpperCase()}`;
     const resultData = await dbRequest("rpc/submit_stop11_attempt", { ...config, method: "POST", body: { p_attempt_id: payload.id, p_visitor_hash: payload.visitor_hash, p_token_nonce: payload.nonce, p_elapsed_ms: elapsed, p_discount_code: code } });
     const result = Array.isArray(resultData) ? resultData[0] : resultData;
     const campaign = await campaignCount(config);
