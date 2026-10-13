@@ -18,7 +18,9 @@ function CheckoutButton(){
  const [open,setOpen]=useState(false);
  const [customer,setCustomer]=useState({name:"",phone:"",email:"",address:"",city:"Ahmedabad",state:"Gujarat",pincode:""});
  const [quantity,setQuantity]=useState(3);
-  const packTotal = 149 * quantity;
+ const [founderDelivery,setFounderDelivery]=useState(false);
+ const founderDeliveryAvailable=customer.city.trim().toLowerCase()==="ahmedabad";
+ const packTotal = 149 * quantity + (founderDelivery ? 5000 : 0);
  const [flavour,setFlavour]=useState("Belgian Chocolate");
 
  async function loadRazorpay(){
@@ -32,7 +34,7 @@ function CheckoutButton(){
  });
  }
 
- function update(e){setCustomer(c=>({...c,[e.target.name]:e.target.value}));}
+ function update(e){const {name,value}=e.target;setCustomer(c=>({...c,[name]:value}));if(name==="city"&&value.trim().toLowerCase()!=="ahmedabad")setFounderDelivery(false);}
 
  async function startPayment(e){
  e.preventDefault(); if(busy)return;
@@ -49,7 +51,7 @@ function CheckoutButton(){
 
  const orderResponse=await fetch("/api/create-order",{
  method:"POST",headers:{"Content-Type":"application/json"},
- body:JSON.stringify({customer,items:[{name:flavour,quantity}]})
+ body:JSON.stringify({customer,items:[{name:flavour,quantity}],founder_delivery:founderDelivery})
  });
  const order=await orderResponse.json().catch(()=>({}));
  if(!orderResponse.ok||!order.order_id)throw new Error(order.error||"Could not create your order.");
@@ -107,7 +109,7 @@ function CheckoutButton(){
  {[3,6,9,12].map(n=><option key={n} value={n}>{n} TUBS · ₹{(149*n).toLocaleString("en-IN")}</option>)}
  </select>
  </div>
- <div className="checkout-total"><span>TOTAL · {quantity} TUBS</span><strong>₹{packTotal.toLocaleString("en-IN")}</strong></div>
+ <div className="founder-delivery-option"><label className={!founderDeliveryAvailable?"unavailable":""}><input type="checkbox" checked={founderDelivery} disabled={!founderDeliveryAvailable} onChange={e=>setFounderDelivery(e.target.checked)}/><span><strong>HAND-DELIVERED BY THE FOUNDER</strong><small>{founderDeliveryAvailable?"Exclusively in Ahmedabad · Optional add-on":"Available exclusively in Ahmedabad"}</small></span><b>+₹5,000</b></label></div><div className="checkout-total"><span>TOTAL · {quantity} TUBS{founderDelivery?" + FOUNDER DELIVERY":""}</span><strong>₹{packTotal.toLocaleString("en-IN")}</strong></div>
  <button className="pill checkout-pay" type="submit" disabled={busy}>{busy?"PROCESSING…":`PAY ₹${packTotal.toLocaleString("en-IN")} →`}</button>
  </form>
  </div>
