@@ -1,196 +1,64 @@
-import React,{useEffect,useState} from "react";
+import React from "react";
 
-const flavours=[
-  {id:"vanilla",name:"Vanilla Crunch",tag:"Creamy vanilla. Cookie crunch.",image:"/images/vanilla-crunch.webp",note:"Classic, but upgraded."},
-  {id:"guava",name:"Guava Chilli",tag:"Sweet guava. Wild chilli.",image:"/images/guava-chilli.webp",note:"The unexpected one."},
-  {id:"belgian",name:"Belgian Chocolate",tag:"Deep chocolate. Zero added sugar.",image:"/images/belgian-chocolate.webp",note:"For serious chocolate people."},
-  {id:"blueberry",name:"Blueberry Cheesecake",tag:"Tangy. Creamy. Addictive.",image:"/images/blueberry-cheesecake.webp",note:"Dessert energy, upgraded."},
-  {id:"midnight",name:"Midnight Cookies",tag:"Dark cookies. Big crunch.",image:"/images/midnight-cookies.webp",note:"Your 11PM personality."}
-];
-const PRICE=149;
-
-function loadRazorpay(){
-  if(window.Razorpay)return Promise.resolve(true);
-  return new Promise(resolve=>{
-    const old=document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
-    if(old){old.addEventListener("load",()=>resolve(true),{once:true});old.addEventListener("error",()=>resolve(false),{once:true});return;}
-    const s=document.createElement("script");s.src="https://checkout.razorpay.com/v1/checkout.js";s.async=true;
-    s.onload=()=>resolve(true);s.onerror=()=>resolve(false);document.body.appendChild(s);
-  });
-}
-
-function ShopPage(){
-  const [cart,setCart]=useState([]);
-  const [open,setOpen]=useState(false);
-  const [search,setSearch]=useState(false);
-  const flavours=[
-    {name:"Vanilla Crunch",image:"/images/vanilla-crunch.webp",desc:"Creamy vanilla + cookie crunch."},
-    {name:"Guava Chilli",image:"/images/guava-chilli.webp",desc:"Sweet guava with a chilli kick."},
-    {name:"Belgian Chocolate",image:"/images/belgian-chocolate.webp",desc:"Rich Belgian chocolate."},
-    {name:"Blueberry Cheesecake",image:"/images/blueberry-cheesecake.webp",desc:"Tangy cheesecake, blueberry loaded."},
-    {name:"Midnight Cookies",image:"/images/midnight-cookies.webp",desc:"Dark cookies. Serious crunch."}
-  ];
-  const add=f=>setCart(x=>{const old=x.find(i=>i.name===f.name);return old?x.map(i=>i.name===f.name?{...i,q:i.q+1}:i):[...x,{...f,q:1}]});
-  const total=cart.reduce((s,i)=>s+i.q*149,0);
-  return <div className="ecom-shop-page">
-    <header className="ecom-nav">
-      <a href="/#/shop" className="ecom-wordmark">CHEATCODE<span>™</span></a>
-      <nav><a href="#/shop">SHOP</a><a href="#/build">BUILD YOUR BOX</a><a href="#/why">WHY CHEATCODE</a><a href="#/about">ABOUT</a></nav>
-      <div className="ecom-actions">
-        <button className="ecom-search" onClick={()=>setSearch(!search)} aria-label="Search">⌕</button>
-        <button className="ecom-cart" onClick={()=>setOpen(true)}>CART <b>{cart.reduce((s,i)=>s+i.q,0)}</b></button>
-      </div>
-    </header>
-    {search&&<div className="ecom-searchbar"><input autoFocus placeholder="Search flavours..." onChange={e=>setSearch(e.target.value)}/></div>}
-    <main>
-      <section className="ecom-shop-hero"><span>CHEATCODE / SHOP</span><h1>YOUR<br/><i>CHEAT.</i></h1><p>Premium high-protein ice cream. Made for cravings without the regret.</p></section>
-      <section className="ecom-products">
-        <div className="ecom-section-title"><span>01 / ALL FLAVOURS</span><h2>Pick your flavour.</h2><p>10g protein · 0 added sugar · high fibre · low carb</p></div>
-        <div className="ecom-product-grid">{flavours.map((f,i)=><article className="ecom-product-card" key={f.name}>
-          <div className="ecom-product-visual"><span>0{i+1}</span><img src={f.image} alt={f.name}/></div>
-          <div className="ecom-product-meta"><div><h3>{f.name}</h3><p>{f.desc}</p></div><strong>₹149</strong></div>
-          <button onClick={()=>add(f)}>ADD TO CART <b>+</b></button>
-        </article>)}</div>
-      </section>
-      <section className="ecom-box" id="build"><div><span>02 / BUILD YOUR BOX</span><h2>MAKE YOUR<br/><i>OWN MIX.</i></h2><p>Pick your favourites and build a box that matches your mood.</p></div><a href="#/shop">START BUILDING →</a></section>
-      <section className="ecom-why" id="why"><span>03 / WHY CHEATCODE</span><div><h2>ICE CREAM.<br/><i>UPGRADED.</i></h2><p>10g protein. 0 added sugar. High fibre. Low carb. All the fun stays.</p></div></section>
-    </main>
-    <footer className="ecom-footer" id="about"><div className="ecom-footer-brand">CHEAT<br/>WITHOUT<br/>REGRET.</div><div><b>SHOP</b><a href="#/shop">All flavours</a><a href="#/build">Build your box</a></div><div><b>CHEATCODE</b><a href="#/why">Why CHEATCODE</a><a href="#/about">About</a></div><div><b>HELP</b><a href="#/faq">FAQ</a><a href="mailto:hello@houseofcheatcode.com">Contact</a></div></footer>
-    {open&&<div className="ecom-cart-overlay" onMouseDown={e=>e.target===e.currentTarget&&setOpen(false)}><aside className="ecom-cart-drawer"><button onClick={()=>setOpen(false)}>×</button><span>YOUR CART</span><h2>THE CHEAT.</h2>{cart.length?cart.map(i=><div className="ecom-cart-row" key={i.name}><img src={i.image}/><div><b>{i.name}</b><small>₹149 × {i.q}</small><div><button onClick={()=>setCart(x=>x.map(v=>v.name===i.name?{...v,q:Math.max(0,v.q-1)}:v).filter(v=>v.q))}>−</button><button onClick={()=>add(i)}>+</button></div></div><strong>₹{i.q*149}</strong></div>):<p>Your cart is empty.</p>}<div className="ecom-cart-total"><span>TOTAL</span><b>₹{total}</b></div><button className="ecom-checkout" disabled={!cart.length}>CHECKOUT →</button></aside></div>}
-  </div>
-}
-
-function App(){
-  if(window.location.hash.startsWith("#/shop")||window.location.hash.startsWith("#/build")||window.location.hash.startsWith("#/why")||window.location.hash.startsWith("#/about")) return <ShopPage/>;
-  const [cart,setCart]=useState([]);
-  const [cartOpen,setCartOpen]=useState(false);
-  const [checkoutOpen,setCheckoutOpen]=useState(false);
-  const [busy,setBusy]=useState(false);
-  const [status,setStatus]=useState("");
-  const [customer,setCustomer]=useState({name:"",phone:"",email:"",address:"",city:"Ahmedabad",state:"Gujarat",pincode:""});
-  const total=cart.reduce((s,i)=>s+i.quantity*PRICE,0);
-  const count=cart.reduce((s,i)=>s+i.quantity,0);
-
-  function add(item){
-    setCart(c=>{
-      const found=c.find(x=>x.id===item.id);
-      return found?c.map(x=>x.id===item.id?{...x,quantity:x.quantity+1}:x):[...c,{...item,quantity:1}];
-    });
-    setCartOpen(true);
-  }
-  function change(id,delta){
-    setCart(c=>c.map(x=>x.id===id?{...x,quantity:x.quantity+delta}:x).filter(x=>x.quantity>0));
-  }
-  function update(e){setCustomer(c=>({...c,[e.target.name]:e.target.value}));}
-
-  async function pay(e){
-    e.preventDefault();if(busy||!cart.length)return;
-    setBusy(true);setStatus("");
-    try{
-      if(!/^[0-9]{10}$/.test(customer.phone))throw new Error("Enter a valid 10-digit phone number.");
-      if(!/^[0-9]{6}$/.test(customer.pincode))throw new Error("Enter a valid 6-digit pincode.");
-      const loaded=await loadRazorpay();if(!loaded)throw new Error("Payment checkout could not load. Please try again.");
-      let keyId=import.meta.env.VITE_RAZORPAY_KEY_ID;
-      if(!keyId){const r=await fetch("/api/razorpay-config");const d=await r.json().catch(()=>({}));keyId=d.key_id;}
-      if(!keyId)throw new Error("Razorpay is not configured.");
-      const orderRes=await fetch("/api/create-order",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({customer,items:cart.map(x=>({name:x.name,quantity:x.quantity}))})});
-      const order=await orderRes.json().catch(()=>({}));
-      if(!orderRes.ok||!order.order_id)throw new Error(order.error||"Could not create your order.");
-      const rzp=new window.Razorpay({
-        key:keyId,amount:order.amount,currency:order.currency,name:"CHEATCODE™",
-        description:cart.map(x=>x.name+" × "+x.quantity).join(", "),order_id:order.order_id,
-        theme:{color:"#ff1616"},prefill:{name:customer.name,email:customer.email,contact:customer.phone},
-        notes:{order_number:order.order_number},
-        handler:async response=>{
-          try{
-            const vr=await fetch("/api/verify-payment",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(response)});
-            const result=await vr.json().catch(()=>({}));
-            if(!vr.ok||!result.verified)throw new Error(result.error||"Payment verification failed.");
-            setStatus("ORDER CONFIRMED · #"+order.order_number);
-            setCart([]);setCheckoutOpen(false);setCartOpen(false);
-          }catch(err){setStatus(err.message||"Payment verification failed.");}
-          finally{setBusy(false);}
-        },
-        modal:{ondismiss:()=>{setBusy(false);setStatus("PAYMENT CANCELLED.");}}
-      });
-      rzp.on("payment.failed",r=>{setBusy(false);setStatus(r?.error?.description||"Payment failed. Please try again.");});
-      rzp.open();
-    }catch(err){setBusy(false);setStatus(err.message||"Something went wrong.");}
-  }
-
-  if(window.location.pathname==="/lab-report")return <main className="lab-report-page"><div className="lab-report-card"><span className="eyebrow redtext">CHEATCODE™ / LAB REPORT</span><h1>LAB REPORT</h1><p>Your CHEATCODE lab report will appear here.</p></div></main>;
-
-  return <div className="store">
-    <header className="store-header">
-      <a className="store-logo" href="#top">CHEATCODE<span>™</span></a>
-      <nav><a href="#shop">SHOP</a><a href="#why">WHY CHEATCODE</a><a href="#story">OUR STORY</a></nav>
-      <button className="store-cart" onClick={()=>setCartOpen(true)}>CART <b>{count}</b></button>
-    </header>
-
-    <main id="top">
-      <section className="store-hero">
-        <div className="store-hero-copy">
-          <span className="store-kicker">PREMIUM HIGH-PROTEIN ICE CREAM / AHMEDABAD</span>
-          <h1>CHEAT.<br/><i>WITHOUT</i><br/>REGRET.</h1>
-          <p>10g protein. 0 added sugar. Low carb. High fibre.<br/>Now delivering across Ahmedabad.</p>
-          <a href="#shop" className="store-primary">SHOP THE CHEAT <span>↓</span></a>
-          <div className="store-proof"><span><b>10g</b>PROTEIN</span><span><b>0</b>ADDED SUGAR</span><span><b>5</b>FLAVOURS</span></div>
+export default function App() {
+  return (
+    <main className="maintenance-page">
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap');
+        *{box-sizing:border-box}
+        html,body,#root{margin:0;min-height:100%;width:100%;background:#f5f2ed}
+        body{font-family:Inter,Arial,sans-serif}
+        .maintenance-page{min-height:100svh;background:#f5f2ed;color:#101010;display:flex;flex-direction:column;overflow:hidden}
+        .maintenance-header{height:82px;padding:0 clamp(22px,5vw,76px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d9d5cf}
+        .maintenance-logo{font-family:Anton,Impact,sans-serif;font-size:clamp(24px,3vw,34px);letter-spacing:-.025em;line-height:1}
+        .maintenance-logo span{color:#f10b0b}
+        .maintenance-status{font:500 10px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase;display:flex;align-items:center;gap:10px}
+        .maintenance-dot{width:8px;height:8px;border-radius:50%;background:#f10b0b;box-shadow:0 0 0 4px #f10b0b1c}
+        .maintenance-main{flex:1;display:grid;grid-template-columns:1fr;align-content:center;width:min(1100px,100%);margin:0 auto;padding:clamp(52px,9vh,100px) clamp(22px,7vw,90px) clamp(64px,10vh,110px);position:relative}
+        .maintenance-kicker{font:500 11px 'DM Mono',monospace;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:24px}
+        .maintenance-kicker:before{content:'';display:block;width:30px;height:2px;background:#f10b0b}
+        .maintenance-title{font-family:Anton,Impact,sans-serif;font-size:clamp(66px,12.2vw,158px);line-height:.86;letter-spacing:-.035em;text-transform:uppercase;margin:0;max-width:1000px}
+        .maintenance-title .red{color:#f10b0b;display:block}
+        .maintenance-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-top:clamp(36px,6vh,62px);padding-top:25px;border-top:1px solid #d9d5cf}
+        .maintenance-copy{max-width:440px}
+        .maintenance-copy h2{font-size:clamp(18px,2vw,24px);line-height:1.25;margin:0 0 10px;font-weight:800;letter-spacing:-.04em}
+        .maintenance-copy p{font-size:14px;line-height:1.7;color:#66615c;margin:0;max-width:410px}
+        .maintenance-stamp{width:112px;height:112px;flex:0 0 112px;border-radius:50%;background:#f10b0b;color:#fff;display:flex;align-items:center;justify-content:center;text-align:center;font-family:Anton,Impact,sans-serif;font-size:18px;line-height:1.05;transform:rotate(-10deg);box-shadow:5px 5px 0 #101010}
+        .maintenance-footer{padding:20px clamp(22px,5vw,76px);border-top:1px solid #d9d5cf;display:flex;justify-content:space-between;align-items:center;gap:16px;font:500 9px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:#77716b}
+        .maintenance-footer a{color:#101010;text-decoration:none}
+        .maintenance-footer a:hover{color:#f10b0b}
+        @media(max-width:600px){
+          .maintenance-header{height:68px;padding:0 20px}.maintenance-status{font-size:8px;letter-spacing:.08em;gap:7px}
+          .maintenance-main{padding:72px 22px 76px}.maintenance-title{font-size:clamp(62px,15.4vw,100px);line-height:.89}
+          .maintenance-bottom{align-items:flex-start;margin-top:42px;gap:18px}.maintenance-copy p{font-size:13px}
+          .maintenance-stamp{width:76px;height:76px;flex-basis:76px;font-size:13px;box-shadow:3px 3px 0 #101010}
+          .maintenance-footer{padding:18px 20px;align-items:flex-start;flex-direction:column;gap:8px;font-size:8px}
+        }
+        @media(prefers-reduced-motion:no-preference){.maintenance-main{animation:arrive .7s ease-out both}@keyframes arrive{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}}
+      `}</style>
+      <header className="maintenance-header">
+        <div className="maintenance-logo">CHEAT<span>CODE</span>™</div>
+        <div className="maintenance-status"><i className="maintenance-dot" /> TEMPORARILY OFFLINE</div>
+      </header>
+      <section className="maintenance-main" aria-labelledby="maintenance-heading">
+        <div className="maintenance-kicker">A little pause. A big comeback.</div>
+        <h1 className="maintenance-title" id="maintenance-heading">
+          ALL STOCKS
+          <span className="red">ARE OUT.</span>
+          BACK SOON.
+        </h1>
+        <div className="maintenance-bottom">
+          <div className="maintenance-copy">
+            <h2>WE’RE UNDER MAINTENANCE.</h2>
+            <p>Every good thing deserves a reset. We’re working behind the scenes to make your next CHEATCODE experience even better. Something new is coming. Stay close.</p>
+          </div>
+          <div className="maintenance-stamp" aria-label="Something new is coming">SOMETHING<br/>NEW<br/>IS COMING</div>
         </div>
-        <div className="store-hero-art"><div className="hero-orbit"></div><img src={flavours[2].image} alt="CHEATCODE Belgian Chocolate ice cream" /><div className="hero-badge">₹149<br/><small>125 ML</small></div></div>
       </section>
-
-      <section className="store-marquee"><div>CHEAT WITHOUT REGRET&nbsp; · &nbsp;10g PROTEIN&nbsp; · &nbsp;0 ADDED SUGAR&nbsp; · &nbsp;HIGH FIBRE&nbsp; · &nbsp;LOW CARB&nbsp; · &nbsp;</div><div aria-hidden="true">CHEAT WITHOUT REGRET&nbsp; · &nbsp;10g PROTEIN&nbsp; · &nbsp;0 ADDED SUGAR&nbsp; · &nbsp;HIGH FIBRE&nbsp; · &nbsp;LOW CARB&nbsp; · &nbsp;</div></section>
-
-      <section className="store-shop" id="shop">
-        <div className="store-section-head"><div><span className="store-kicker">01 / SHOP</span><h2>Pick your<br/><i>cheat.</i></h2></div><p>Every tub is ₹149.<br/>Choose your flavour. We'll handle the rest.</p></div>
-        <div className="product-grid">{flavours.map((f,i)=><article className="product-card" key={f.id}>
-          <div className="product-image"><span className="product-number">0{i+1}</span><img src={f.image} alt={f.name+" CHEATCODE ice cream"} /></div>
-          <div className="product-info"><div><h3>{f.name}</h3><p>{f.tag}</p></div><strong>₹{PRICE}</strong></div>
-          <button className="add-btn" onClick={()=>add(f)}>ADD TO CART <span>+</span></button>
-        </article>)}</div>
-      </section>
-
-      <section className="store-benefits" id="why">
-        <div><span>01</span><b>10g</b><small>PROTEIN / TUB</small></div>
-        <div><span>02</span><b>0g</b><small>ADDED SUGAR</small></div>
-        <div><span>03</span><b>HIGH</b><small>FIBRE</small></div>
-        <div><span>04</span><b>LOW</b><small>CARB</small></div>
-      </section>
-
-      <section className="store-story" id="story">
-        <div className="story-image"><img src="/images/Cheatcode Section 3.JPG" alt="CHEATCODE brand" /></div>
-        <div className="story-copy"><span className="store-kicker">02 / WHY CHEATCODE</span><h2>ICE CREAM<br/><i>grew up.</i></h2><p>We kept the part you crave and rethought the part you don't. CHEATCODE is indulgence with a better cheat sheet — made for people who refuse to choose between pleasure and better choices.</p><a href="#shop" className="store-text-link">SHOP ALL FLAVOURS →</a></div>
-      </section>
-
-      <section className="store-bottom">
-        <span className="store-kicker">03 / YOUR NEXT CRAVING</span><h2>GO AHEAD.<br/><i>CHEAT.</i></h2><button className="store-primary" onClick={()=>document.getElementById("shop")?.scrollIntoView({behavior:"smooth"})}>SHOP NOW <span>→</span></button>
-      </section>
+      <footer className="maintenance-footer">
+        <span>CHEATCODE™ — CHEAT WITHOUT REGRET.</span>
+        <a href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noreferrer">@HOUSEOFCHEATCODE ↗</a>
+      </footer>
     </main>
-
-    <footer className="store-footer"><b>CHEATCODE™</b><span>YOU CAN CHEAT WITHOUT REGRET.</span><span>© 2026 CHEATCODE</span></footer>
-
-    {cartOpen&&<div className="store-overlay" onMouseDown={e=>e.target===e.currentTarget&&setCartOpen(false)}>
-      <aside className="cart-drawer"><div className="drawer-head"><div><span className="store-kicker">YOUR ORDER</span><h2>THE CHEAT.</h2></div><button onClick={()=>setCartOpen(false)}>×</button></div>
-        {cart.length?<><div className="cart-items">{cart.map(x=><div className="cart-item" key={x.id}><img src={x.image} alt=""/><div><b>{x.name}</b><small>₹{PRICE} / tub</small><div className="qty"><button onClick={()=>change(x.id,-1)}>−</button><span>{x.quantity}</span><button onClick={()=>change(x.id,1)}>+</button></div></div><strong>₹{x.quantity*PRICE}</strong></div>)}</div>
-        <div className="cart-foot"><div><span>SUBTOTAL</span><b>₹{total}</b></div><p>Cold delivery across Ahmedabad.</p><button className="store-primary full" onClick={()=>{setCheckoutOpen(true);setCartOpen(false)}}>CHECKOUT →</button></div></>
-        :<div className="empty-cart"><div>YOUR CART IS<br/><i>EMPTY.</i></div><button className="store-primary" onClick={()=>{setCartOpen(false);document.getElementById("shop")?.scrollIntoView({behavior:"smooth"})}}>SHOP FLAVOURS →</button></div>}
-      </aside>
-    </div>}
-
-    {checkoutOpen&&<div className="store-overlay" onMouseDown={e=>e.target===e.currentTarget&&!busy&&setCheckoutOpen(false)}>
-      <div className="checkout-ecom"><button className="checkout-x" disabled={busy} onClick={()=>setCheckoutOpen(false)}>×</button><span className="store-kicker">CHECKOUT / AHMEDABAD</span><h2>YOUR DETAILS.<br/><i>THEN WE CHEAT.</i></h2>
-        <div className="checkout-summary">{cart.map(x=><div key={x.id}><span>{x.name} × {x.quantity}</span><b>₹{x.quantity*PRICE}</b></div>)}<div className="checkout-grand"><span>TOTAL</span><b>₹{total}</b></div></div>
-        <form onSubmit={pay} className="ecom-form">
-          <input name="name" value={customer.name} onChange={update} placeholder="FULL NAME" required/>
-          <input name="phone" value={customer.phone} onChange={update} placeholder="10-DIGIT PHONE" inputMode="numeric" maxLength="10" required/>
-          <input name="email" value={customer.email} onChange={update} type="email" placeholder="EMAIL ADDRESS"/>
-          <input name="address" value={customer.address} onChange={update} placeholder="FULL DELIVERY ADDRESS" required/>
-          <div><input name="city" value={customer.city} onChange={update} placeholder="CITY" required/><input name="pincode" value={customer.pincode} onChange={update} placeholder="PINCODE" inputMode="numeric" maxLength="6" required/></div>
-          <button className="store-primary full" disabled={busy}>{busy?"PROCESSING…":"PAY ₹"+total+" →"}</button>
-          {status&&<p className="checkout-status">{status}</p>}
-        </form>
-      </div>
-    </div>}
-  </div>
+  );
 }
-export default App;
