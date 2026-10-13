@@ -15,22 +15,6 @@
     {
       "source": "/admin/orders/",
       "destination": "/orders.html"
-    },
-    {
-      "source": "/about",
-      "destination": "/"
-    },
-    {
-      "source": "/about/",
-      "destination": "/"
-    },
-    {
-      "source": "/why-cheatcode",
-      "destination": "/"
-    },
-    {
-      "source": "/why-cheatcode/",
-      "destination": "/"
     }
   ]
 }
