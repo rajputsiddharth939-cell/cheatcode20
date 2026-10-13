@@ -26,7 +26,7 @@ function CheckoutButton(){
  const packTotal=productSubtotal-discountAmount+(founderDelivery?5000:0);
  const [flavour,setFlavour]=useState("Belgian Chocolate");
   useEffect(()=>{try{const saved=localStorage.getItem("cc_stop11_discount_code");if(saved)setDiscountCode(saved)}catch{}const apply=e=>setDiscountCode(String(e.detail?.code||""));window.addEventListener("stop11:discount",apply);return()=>window.removeEventListener("stop11:discount",apply)},[]);
-  useEffect(()=>{if(!open)return;const body=document.body;const previous=body.style.overflow;const viewport=window.visualViewport;const updateViewport=()=>{body.style.setProperty("--checkout-viewport-height",`${viewport?.height||window.innerHeight}px`)};body.style.overflow="hidden";updateViewport();viewport?.addEventListener("resize",updateViewport);window.addEventListener("resize",updateViewport);return()=>{body.style.overflow=previous;body.style.removeProperty("--checkout-viewport-height");viewport?.removeEventListener("resize",updateViewport);window.removeEventListener("resize",updateViewport)}},[open]);
+  useEffect(()=>{if(!open)return;const body=document.body;const previous=body.style.overflow;const viewport=window.visualViewport;const updateViewport=()=>{body.style.setProperty("--checkout-viewport-height",`${viewport?.height||window.innerHeight}px`);body.style.setProperty("--checkout-viewport-offset-top",`${viewport?.offsetTop||0}px`)};body.style.overflow="hidden";updateViewport();viewport?.addEventListener("resize",updateViewport);window.addEventListener("resize",updateViewport);return()=>{body.style.overflow=previous;body.style.removeProperty("--checkout-viewport-height");body.style.removeProperty("--checkout-viewport-offset-top");viewport?.removeEventListener("resize",updateViewport);window.removeEventListener("resize",updateViewport)}},[open]);
 
  async function loadRazorpay(){
  if(window.Razorpay)return true;
@@ -79,10 +79,10 @@ function CheckoutButton(){
  }catch(error){setStatus(error.message||"Payment verification failed.");}
  finally{setBusy(false);}
  },
- modal:{ondismiss:()=>{setBusy(false);setStatus("PAYMENT CANCELLED.");}},
+ modal:{ondismiss:()=>{if(discountCode.trim())fetch("/api/release-stop11-discount",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:order.order_id})}).catch(()=>{});setBusy(false);setStatus("PAYMENT CANCELLED.");}},
  };
  const rzp=new window.Razorpay(options);
- rzp.on("payment.failed",response=>{setBusy(false);setStatus(response?.error?.description||"Payment failed. Please try again.");});
+ rzp.on("payment.failed",response=>{if(discountCode.trim())fetch("/api/release-stop11-discount",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:order.order_id})}).catch(()=>{});setBusy(false);setStatus(response?.error?.description||"Payment failed. Please try again.");});
  rzp.open();
  }catch(error){setBusy(false);setStatus(error.message||"Something went wrong. Please try again.");}
  }
