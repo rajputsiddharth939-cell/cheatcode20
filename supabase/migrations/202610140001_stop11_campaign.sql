@@ -65,7 +65,9 @@ begin
   set status = 'submitted', elapsed_ms = p_elapsed_ms, submitted_at = now()
   where id = p_attempt_id;
 
-  qualifies := c.enabled and abs(p_elapsed_ms - 11000) <= c.tolerance_ms;
+  qualifies := c.enabled
+    and abs(p_elapsed_ms - 11000) <= c.tolerance_ms
+    and abs((extract(epoch from (now() - a.created_at)) * 1000) - p_elapsed_ms) <= 1500;
   if not qualifies then return jsonb_build_object('ok', true, 'won', false, 'reason', 'timing'); end if;
   if c.claimed_count >= c.max_winners then return jsonb_build_object('ok', true, 'won', false, 'reason', 'sold_out'); end if;
 

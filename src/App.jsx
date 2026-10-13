@@ -82,7 +82,7 @@ function CheckoutButton(){
  modal:{ondismiss:()=>{if(discountCode.trim())fetch("/api/release-stop11-discount",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:order.order_id})}).catch(()=>{});setBusy(false);setStatus("PAYMENT CANCELLED.");}},
  };
  const rzp=new window.Razorpay(options);
- rzp.on("payment.failed",response=>{if(discountCode.trim())fetch("/api/release-stop11-discount",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:order.order_id})}).catch(()=>{});setBusy(false);setStatus(response?.error?.description||"Payment failed. Please try again.");});
+ rzp.on("payment.failed",response=>{setBusy(false);setStatus(response?.error?.description||"Payment failed. Please try again.");});
  rzp.open();
  }catch(error){setBusy(false);setStatus(error.message||"Something went wrong. Please try again.");}
  }
