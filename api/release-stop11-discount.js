@@ -12,7 +12,7 @@ async function getBody(req) {
     let raw = "";
     req.on("data", c => raw += c);
     req.on("end", () => { try { resolve(JSON.parse(raw || "{}")); } catch { resolve({}); } });
-    req.on("error", () => resolve({})); });
+    req.on("error", () => resolve({}));
   });
 }
 export default async function handler(req, res) {
