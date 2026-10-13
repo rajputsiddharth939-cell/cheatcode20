@@ -1,150 +1,83 @@
 import React, { useEffect, useRef, useState } from "react";
 
-export default function App() {
-  const [phase, setPhase] = useState("ready");
-  const [reaction, setReaction] = useState(null);
-  const [best, setBest] = useState(null);
-  const [countdown, setCountdown] = useState(0);
-  const timeoutRef = useRef(null);
-  const startRef = useRef(0);
+const STORE={timer:"cc_arcade_timer_best",catch:"cc_arcade_catch_best",quiz:"cc_arcade_quiz_best"};
+const QUESTIONS=[
+{clue:"Rich cocoa flavour. Chocolate lovers, this one's yours.",emoji:"🍫",answer:"Belgian Chocolate",options:["Belgian Chocolate","Guava Chilli","Blueberry Cheesecake","Vanilla Crunch"],why:"A rich chocolate profile is the giveaway."},
+{clue:"Classic, creamy and made for a little crunch.",emoji:"🍦",answer:"Vanilla Crunch",options:["Midnight Cookies","Vanilla Crunch","Guava Chilli","Belgian Chocolate"],why:"Classic vanilla meets a crunchy twist."},
+{clue:"Sweet tropical fruit meets a little heat.",emoji:"🌶️",answer:"Guava Chilli",options:["Blueberry Cheesecake","Vanilla Crunch","Guava Chilli","Midnight Cookies"],why:"Guava brings the fruit; chilli brings the kick."},
+{clue:"Berry-led flavour inspired by a dessert-counter classic.",emoji:"🫐",answer:"Blueberry Cheesecake",options:["Guava Chilli","Belgian Chocolate","Blueberry Cheesecake","Vanilla Crunch"],why:"Blueberry and cheesecake are the clues."},
+{clue:"Cookies, chocolatey bites and after-dark energy.",emoji:"🍪",answer:"Midnight Cookies",options:["Vanilla Crunch","Midnight Cookies","Blueberry Cheesecake","Guava Chilli"],why:"Cookie lovers know exactly what time it is."}
+];
+const getBest=(key)=>{try{const x=localStorage.getItem(key);return x===null?null:JSON.parse(x)}catch{return null}};
+const putBest=(key,val)=>{try{localStorage.setItem(key,JSON.stringify(val))}catch{}};
+const mix=(a)=>[...a].sort(()=>Math.random()-.5);
+const timerRank=(ms)=>ms<=10?"PERFECT CHEAT.":ms<=50?"ALMOST ILLEGAL.":ms<=150?"CLOSE ENOUGH, LEGEND.":ms<=400?"NICE TRY, CHAMP.":"SKILL ISSUE.";
+const quizRank=(n)=>n<=1?"FOODIE IN TRAINING.":n<=3?"YOU KNOW A LITTLE SOMETHING.":n===4?"CERTIFIED FOODIE.":"CHEATCODE FLAVOUR LEGEND.";
+const catchRank=(n)=>n<=20?"DIET STARTED TOMORROW.":n<=50?"CASUAL CHEATER.":n<=100?"CERTIFIED CHEAT.":"CHEATCODE MATERIAL.";
+const wa="https://wa.me/917984492735?text=Hey%20CHEATCODE!%20I%20just%20played%20the%20arcade%20and%20wanted%20to%20say%20hi.";
 
-  useEffect(() => () => window.clearTimeout(timeoutRef.current), []);
-
-  const startGame = () => {
-    window.clearTimeout(timeoutRef.current);
-    setReaction(null);
-    setCountdown(0);
-    setPhase("waiting");
-    const delay = 1400 + Math.random() * 2600;
-    timeoutRef.current = window.setTimeout(() => {
-      startRef.current = performance.now();
-      setPhase("go");
-    }, delay);
-  };
-
-  const tapTarget = () => {
-    if (phase === "waiting") {
-      window.clearTimeout(timeoutRef.current);
-      setPhase("early");
-      return;
-    }
-    if (phase === "go") {
-      const result = Math.round(performance.now() - startRef.current);
-      setReaction(result);
-      setBest((previous) => previous === null ? result : Math.min(previous, result));
-      setPhase("result");
-    }
-  };
-
-  const resetGame = () => {
-    window.clearTimeout(timeoutRef.current);
-    setPhase("ready");
-    setReaction(null);
-    setCountdown(0);
-  };
-
-  return (
-    <main className="maintenance-page">
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800;900&display=swap');
-        *{box-sizing:border-box}
-        html,body,#root{margin:0;min-height:100%;width:100%;background:#f4f1eb}
-        body{font-family:Inter,Arial,sans-serif}
-        a{color:inherit}
-        .maintenance-page{min-height:100svh;background:#f4f1eb;color:#101010;display:flex;flex-direction:column;overflow:hidden}
-        .maintenance-header{height:84px;padding:0 clamp(24px,6vw,84px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d8d4cd}
-        .maintenance-logo{font-family:Anton,Impact,sans-serif;font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;line-height:1}
-        .maintenance-logo span{color:#f10b0b}
-        .maintenance-status{font:500 10px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:9px}
-        .maintenance-dot{width:8px;height:8px;border-radius:50%;background:#f10b0b;box-shadow:0 0 0 4px #f10b0b1a}
-        .maintenance-main{width:min(1240px,100%);margin:0 auto;padding:clamp(62px,9vh,104px) clamp(24px,6vw,76px) 76px;flex:1}
-        .maintenance-kicker{font:500 10px 'DM Mono',monospace;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:13px;margin-bottom:30px}
-        .maintenance-kicker:before{content:'';display:block;width:27px;height:2px;background:#f10b0b}
-        .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 170px;align-items:end;gap:42px}
-        .maintenance-title{font:clamp(72px,11.5vw,148px)/.9 Anton,Impact,sans-serif;letter-spacing:-.035em;text-transform:uppercase;margin:0;max-width:920px}
-        .maintenance-title .out-of-stock-line{display:block;color:#f10b0b;background:transparent;position:relative;margin:.035em 0}
-        .hero-side{padding-bottom:10px;max-width:170px}
-        .hero-side-mark{width:112px;height:112px;border:1.5px solid #101010;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font:18px/.98 Anton,Impact,sans-serif;transform:rotate(8deg);margin-bottom:25px}
-        .hero-side p{font:10px/1.6 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:#68645e;margin:0}
-        .intro-row{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;border-top:1px solid #d8d4cd;margin-top:62px;padding-top:30px}
-        .intro-row h2{font-size:clamp(22px,2.8vw,32px);line-height:1.08;letter-spacing:-.055em;margin:0 0 14px;font-weight:900}
-        .intro-row p{max-width:590px;font-size:15px;line-height:1.85;color:#65615b;margin:0}
-        .game-section{margin-top:72px;display:grid;grid-template-columns:.86fr 1.14fr;background:#101010;color:#fff;min-height:360px;box-shadow:8px 8px 0 #f10b0b}
-        .game-info{padding:clamp(30px,4.5vw,52px);display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #3c3c3c}
-        .game-eyebrow{font:500 10px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#ff3838}
-        .game-info h2{font:clamp(42px,5.8vw,72px)/.94 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:-.02em;margin:30px 0 18px}
-        .game-info p{font-size:14px;line-height:1.8;color:#b8b8b8;margin:0;max-width:330px}
-        .game-area{padding:clamp(28px,4.5vw,50px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:360px}
-        .game-instruction{font:500 10px 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#a7a7a7;margin-bottom:18px}
-        .reaction-target{width:min(200px,48vw);height:min(200px,48vw);max-width:200px;max-height:200px;border-radius:50%;border:0;background:#2b2b2b;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background .15s,transform .15s;box-shadow:inset 0 0 0 1px #484848}
-        .reaction-target:active{transform:scale(.97)}
-        .reaction-target.waiting{background:#f4b400;color:#101010;box-shadow:0 0 0 8px #f4b40020}
-        .reaction-target.go{background:#f10b0b;color:white;box-shadow:0 0 0 10px #f10b0b26,0 0 50px #f10b0b40}
-        .reaction-target.early{background:#555}
-        .reaction-target strong{font:clamp(24px,4vw,36px)/.95 Anton,Impact,sans-serif;text-transform:uppercase}
-        .reaction-target small{font:9px 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase}
-        .game-result{margin-top:17px;font-weight:800;font-size:14px;line-height:1.5}
-        .game-result span{color:#ff3838}
-        .game-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
-        .game-button{border:1px solid #fff;background:#fff;color:#101010;padding:12px 18px;font:16px Anton,Impact,sans-serif;text-transform:uppercase;cursor:pointer;min-height:44px}
-        .game-button.secondary{background:transparent;color:white}
-        .game-record{font:10px 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-top:14px}
-        .maintenance-footer{padding:30px clamp(24px,6vw,84px);background:#101010;color:#888;display:flex;justify-content:space-between;align-items:center;gap:30px;font:500 9px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
-        .footer-contact{display:flex;flex-direction:column;gap:8px;letter-spacing:0;text-transform:none}
-        .footer-contact strong{color:#fff;font:500 9px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
-        .footer-contact a{color:#d8d8d8;text-decoration:none;font:12px Inter,Arial,sans-serif}
-        .footer-contact a:hover{color:#ff3838}
-        .maintenance-footer .social-link{color:#fff;text-decoration:none}
-        .whatsapp-float{position:fixed;right:18px;bottom:18px;z-index:999;background:#25D366;color:#062b14;border:1.5px solid #101010;border-radius:999px;padding:13px 17px;display:flex;align-items:center;gap:9px;text-decoration:none;font:800 11px Inter,Arial,sans-serif;box-shadow:3px 3px 0 #101010}
-        .whatsapp-float svg{width:19px;height:19px;fill:currentColor}
-        @media(max-width:700px){
-          .maintenance-header{height:66px;padding:0 18px}.maintenance-status{font-size:8px;letter-spacing:.07em;gap:7px}
-          .maintenance-main{padding:58px 20px 54px}.hero-grid{grid-template-columns:1fr;gap:0}.maintenance-title{font-size:clamp(61px,14.7vw,100px);line-height:.92;letter-spacing:-.04em}
-          .hero-side{display:flex;align-items:center;gap:18px;padding:0;margin-top:28px;max-width:none}.hero-side-mark{width:70px;height:70px;flex:0 0 70px;font-size:12px;margin:0}.hero-side p{max-width:220px}
-          .intro-row{margin-top:38px;display:block;padding-top:24px}.intro-row p{font-size:14px;line-height:1.8}
-          .game-section{margin-top:46px;grid-template-columns:1fr;min-height:0;box-shadow:5px 5px 0 #f10b0b}.game-info{border-right:0;border-bottom:1px solid #3c3c3c;padding:26px 24px}.game-info h2{margin:20px 0 14px;font-size:52px}.game-area{padding:30px 18px;min-height:330px}
-          .maintenance-footer{padding:28px 20px 92px;align-items:flex-start;flex-direction:column;gap:22px}.footer-contact a{font-size:12px}
-          .whatsapp-float{right:12px;bottom:12px;padding:11px 14px}
-        }
-        @media(prefers-reduced-motion:no-preference){.maintenance-main{animation:arrive .6s ease-out both}@keyframes arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}}
-      `}</style>
-      <header className="maintenance-header">
-        <div className="maintenance-logo">CHEAT<span>CODE</span>™</div>
-        <div className="maintenance-status"><i className="maintenance-dot" /> SOMETHING IS BREWING</div>
-      </header>
-      <section className="maintenance-main" aria-labelledby="maintenance-heading">
-        <div className="maintenance-kicker">Not gone. Just getting better.</div>
-        <div className="hero-grid">
-          <h1 className="maintenance-title" id="maintenance-heading">ALL STOCKS<span className="out-of-stock-line">ARE OUT.</span>BACK SOON.</h1>
-          <aside className="hero-side"><div className="hero-side-mark">NO SPOILERS<br/>JUST SURPRISES</div><p>The next scoop is worth the wait. Keep your eyes here.</p></aside>
-        </div>
-        <div className="intro-row">
-          <div><h2>WE’RE COOKING UP SOMETHING NEW.</h2><p>We’ve hit pause while we make the next CHEATCODE experience even better. The freezer’s quiet for now. The ideas aren’t. Stay close.</p></div>
-        </div>
-        <section className="game-section" aria-label="Catch the Cheat reaction game">
-          <div className="game-info">
-            <div className="game-eyebrow">01 / The comeback challenge</div>
-            <div><h2>CATCH<br/>THE CHEAT.</h2><p>Wait for the circle to turn red. Tap it as fast as you can. Tap too early and you’re out. What’s your reaction time?</p></div>
-          </div>
-          <div className="game-area">
-            <div className="game-instruction">{phase === "ready" ? "Ready when you are" : phase === "waiting" ? "Wait for RED…" : phase === "go" ? "TAP NOW!" : phase === "early" ? "Too early. Patience, boss." : "Nice reflexes."}</div>
-            <button className={`reaction-target ${phase}`} onClick={phase === "ready" || phase === "result" || phase === "early" ? startGame : tapTarget} aria-label="Reaction game target">
-              <strong>{phase === "ready" ? "READY?" : phase === "waiting" ? "WAIT…" : phase === "go" ? "TAP!" : phase === "early" ? "FALSE START" : `${reaction} MS`}</strong>
-              <small>{phase === "ready" ? "Start challenge" : phase === "waiting" ? "Don't tap yet" : phase === "go" ? "Hit it now" : phase === "early" ? "Tap to retry" : "Tap to play again"}</small>
-            </button>
-            {phase === "result" && <div className="game-result">{reaction < 220 ? "LIGHTNING FAST." : reaction < 320 ? "NICE REFLEXES." : "YOU CAN GO FASTER."} <span>{reaction} ms</span></div>}
-            {phase === "early" && <div className="game-result">You jumped the gun. <span>Try again.</span></div>}
-            <div className="game-record">{best === null ? "PERSONAL BEST: —" : `PERSONAL BEST: ${best} MS`}</div>
-            <div className="game-actions"><button className="game-button" onClick={startGame}>{phase === "ready" ? "START GAME" : "PLAY AGAIN"}</button><button className="game-button secondary" onClick={resetGame}>RESET</button></div>
-          </div>
-        </section>
-      </section>
-      <footer className="maintenance-footer">
-        <span>CHEATCODE™ — CHEAT WITHOUT REGRET.</span>
-        <div className="footer-contact"><strong>CONTACT US</strong><a href="mailto:hello@houseofcheatcode.com">hello@houseofcheatcode.com</a><a href="https://wa.me/917984492735?text=Hey%20CHEATCODE%2C%20I%20want%20to%20know%20what%E2%80%99s%20coming%20next!" target="_blank" rel="noreferrer">WhatsApp: +91 79844 92735 ↗</a></div>
-        <a className="social-link" href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noreferrer">@HOUSEOFCHEATCODE ↗</a>
-      </footer>
-      <a className="whatsapp-float" href="https://wa.me/917984492735?text=Hey%20CHEATCODE%2C%20I%20want%20to%20know%20what%E2%80%99s%20coming%20next!" target="_blank" rel="noreferrer" aria-label="Chat with CHEATCODE on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.82 11.82 0 0 0 12.08 0C5.5 0 .15 5.35.15 11.93c0 2.1.55 4.15 1.6 5.96L0 24l6.27-1.64a11.9 11.9 0 0 0 5.8 1.48h.01c6.58 0 11.93-5.35 11.93-11.93 0-3.19-1.24-6.19-3.49-8.43ZM12.08 21.8a9.87 9.87 0 0 1-5.03-1.38l-.36-.21-3.72.98.99-3.63-.24-.37a9.85 9.85 0 1 1 8.36 4.61Zm5.41-7.38c-.3-.15-1.75-.86-2.02-.96-.27-.1-.47-.15-.67.15-.2.3-.77.96-.94 1.16-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.38-1.47-.88-.78-1.47-1.75-1.64-2.05-.17-.15-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.08-.15-.67-1.61-.92-2.2-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.79.37-.27.3-1.04 1.02-1.04 2.48s1.07 2.88 1.22 3.08c.15.2 2.1 3.2 5.09 4.49.71.31 1.27.2 1.87.12.57-.08 1.75-.72 2-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35Z"/></svg>CHAT WITH US</a>
-    </main>
-  );
+export default function App(){
+ const [game,setGame]=useState("");
+ const [timerMode,setTimerMode]=useState("ready"),[timerValue,setTimerValue]=useState(0),[timerResult,setTimerResult]=useState(null),[timerBest,setTimerBest]=useState(()=>getBest(STORE.timer));
+ const timerStart=useRef(0),timerFrame=useRef(0);
+ const [catchMode,setCatchMode]=useState("intro"),[items,setItems]=useState([]),[catchScore,setCatchScore]=useState(0),[seconds,setSeconds]=useState(30),[lives,setLives]=useState(3),[catchBest,setCatchBest]=useState(()=>getBest(STORE.catch));
+ const catchFrame=useRef(0),catchStart=useRef(0),lastSpawn=useRef(0),lastPaint=useRef(0),itemsRef=useRef([]),scoreRef=useRef(0),livesRef=useRef(3),idRef=useRef(0);
+ const [quizMode,setQuizMode]=useState("intro"),[questions,setQuestions]=useState([]),[qIndex,setQIndex]=useState(0),[qScore,setQScore]=useState(0),[choice,setChoice]=useState(null),[quizBest,setQuizBest]=useState(()=>getBest(STORE.quiz));
+ const stopTimer=()=>{cancelAnimationFrame(timerFrame.current);timerFrame.current=0};
+ const stopCatch=()=>{cancelAnimationFrame(catchFrame.current);catchFrame.current=0};
+ useEffect(()=>()=>{cancelAnimationFrame(timerFrame.current);cancelAnimationFrame(catchFrame.current)},[]);
+ const resetCatch=()=>{stopCatch();itemsRef.current=[];scoreRef.current=0;livesRef.current=3;setItems([]);setCatchScore(0);setSeconds(30);setLives(3);setCatchMode("intro")};
+ const open=(which)=>{stopTimer();resetCatch();setTimerMode("ready");setTimerValue(0);setTimerResult(null);setQuizMode("intro");setQuestions([]);setQIndex(0);setQScore(0);setChoice(null);setGame(which)};
+ const close=()=>{stopTimer();resetCatch();setGame("")};
+ const startTimer=()=>{stopTimer();timerStart.current=performance.now();setTimerValue(0);setTimerResult(null);setTimerMode("run");const tick=(now)=>{const val=(now-timerStart.current)/1000;setTimerValue(val);if(val<60)timerFrame.current=requestAnimationFrame(tick)};timerFrame.current=requestAnimationFrame(tick)};
+ const finishTimer=()=>{if(timerMode!=="run")return;const elapsed=(performance.now()-timerStart.current)/1000,off=Math.round(Math.abs(elapsed-11)*1000);stopTimer();setTimerValue(elapsed);setTimerResult({elapsed,off});setTimerMode("result");setTimerBest(old=>{const n=old===null||off<old?off:old;putBest(STORE.timer,n);return n})};
+ const startCatch=()=>{stopCatch();itemsRef.current=[];scoreRef.current=0;livesRef.current=3;setItems([]);setCatchScore(0);setSeconds(30);setLives(3);setCatchMode("playing");catchStart.current=performance.now();lastSpawn.current=catchStart.current;lastPaint.current=0;const tick=(now)=>{const elapsed=(now-catchStart.current)/1000,left=Math.max(0,30-elapsed);if(now-lastSpawn.current>Math.max(330,850-elapsed*15)){lastSpawn.current=now;const r=Math.random(),it=r<.13?{emoji:"💣",points:-10,hazard:true}:r<.30?{emoji:"🍫",points:20}:r<.48?{emoji:"🥜",points:15}:r<.66?{emoji:"🍪",points:15}:{emoji:"🍦",points:10};itemsRef.current=[...itemsRef.current,{...it,id:++idRef.current,x:7+Math.random()*82,y:8+Math.random()*76,born:now,ttl:1300+Math.random()*500}]}
+ itemsRef.current=itemsRef.current.filter(it=>now-it.born<it.ttl);
+ if(now-lastPaint.current>80){lastPaint.current=now;setItems([...itemsRef.current]);setSeconds(Math.ceil(left))}
+ if(left<=0||livesRef.current<=0){setSeconds(left<=0?0:Math.ceil(left));itemsRef.current=[];setItems([]);setCatchMode("result");const final=scoreRef.current;setCatchBest(old=>{const n=old===null||final>old?final:old;putBest(STORE.catch,n);return n});catchFrame.current=0;return}
+ catchFrame.current=requestAnimationFrame(tick)};catchFrame.current=requestAnimationFrame(tick)};
+ const catchOne=(it)=>{if(catchMode!=="playing"||!itemsRef.current.some(x=>x.id===it.id))return;itemsRef.current=itemsRef.current.filter(x=>x.id!==it.id);if(it.hazard){livesRef.current=Math.max(0,livesRef.current-1);setLives(livesRef.current)}else{scoreRef.current+=it.points;setCatchScore(scoreRef.current)}setItems([...itemsRef.current])};
+ const startQuiz=()=>{setQuestions(mix(QUESTIONS).map(q=>({...q,options:mix(q.options)})));setQIndex(0);setQScore(0);setChoice(null);setQuizMode("play")};
+ const answer=(a)=>{if(choice!==null)return;setChoice(a);if(a===questions[qIndex].answer)setQScore(n=>n+1)};
+ const nextQ=()=>{if(qIndex<4){setQIndex(n=>n+1);setChoice(null)}else{const final=qScore+(choice===questions[qIndex].answer?1:0);setQScore(final);setQuizMode("result");setQuizBest(old=>{const n=old===null||final>old?final:old;putBest(STORE.quiz,n);return n})}};
+ const share=async(text)=>{const message=text+" Play CHEATCODE ARCADE: https://houseofcheatcode.com/";try{if(navigator.share)await navigator.share({title:"CHEATCODE ARCADE",text:message});else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(message);window.alert("Score copied! Send it to your group chat.")}else window.prompt("Copy your score:",message)}catch(e){if(e?.name!=="AbortError")window.prompt("Copy your score:",message)}};
+ return <main className="cc-arcade">
+ <style>{\`
+ @import url('https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800;900&display=swap');
+ .cc-arcade{--r:#ff0000;--k:#0a0a0a;--w:#fff;background:var(--r);color:var(--k);min-height:100svh;font-family:Inter,Arial,sans-serif;overflow:clip}
+ .cc-arcade *{box-sizing:border-box}.cc-arcade button,.cc-arcade a{-webkit-tap-highlight-color:transparent}.cc-arcade button{font:inherit}.cc-arcade a{color:inherit}
+ .cc-header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:20px clamp(18px,5vw,68px);border-bottom:1px solid #0003}.cc-logo{font:34px/.95 Anton,Impact,sans-serif;letter-spacing:-.03em}.cc-logo span{color:white}.cc-status{font:10px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase}.cc-status:before{content:'●';margin-right:8px}
+ .cc-wrap{width:min(1240px,100%);margin:auto;padding-left:clamp(18px,5vw,64px);padding-right:clamp(18px,5vw,64px)}.cc-hero{padding-top:clamp(58px,9vw,120px);padding-bottom:clamp(60px,8vw,100px)}
+ .cc-eyebrow,.cc-label{font:500 10px 'DM Mono',monospace;letter-spacing:.17em;text-transform:uppercase}.cc-label{display:flex;align-items:center;gap:12px;margin-bottom:28px}.cc-label:before{content:'';height:2px;width:28px;background:#0a0a0a}
+ .cc-hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 180px;gap:34px;align-items:end}.cc-hero h1{font:clamp(68px,11.2vw,145px)/.87 Anton,Impact,sans-serif;letter-spacing:-.04em;margin:0;text-transform:uppercase}.cc-hero h1 span{display:block;color:white}
+ .cc-aside{border-left:2px solid #0a0a0a;padding:4px 0 6px 16px}.cc-aside b{font:24px/.98 Anton,Impact,sans-serif;display:block;margin-bottom:12px}.cc-aside p{font:10px/1.7 'DM Mono',monospace;text-transform:uppercase;margin:0}
+ .cc-copy{font-size:15px;line-height:1.8;max-width:590px;margin:30px 0 24px}.cc-cta{display:flex;align-items:center;gap:18px;flex-wrap:wrap}.cc-btn{min-height:48px;border:1.5px solid #0a0a0a;padding:13px 20px;background:#0a0a0a;color:white;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font:18px/1 Anton,Impact,sans-serif;text-transform:uppercase;cursor:pointer;transition:transform .16s,background .16s,color .16s;touch-action:manipulation}.cc-btn:hover{transform:translateY(-2px);background:white;color:#0a0a0a}.cc-btn.light{background:white;color:#0a0a0a}.cc-btn.light:hover{background:#0a0a0a;color:white}.cc-btn:focus-visible,.cc-arcade a:focus-visible,.cc-arcade button:focus-visible{outline:3px solid white;outline-offset:3px}.cc-micro{font:10px 'DM Mono',monospace;letter-spacing:.1em}
+ .cc-marquee{background:#0a0a0a;color:white;padding:14px 0;white-space:nowrap;overflow:hidden;font:20px Anton,Impact,sans-serif;letter-spacing:.04em}.cc-marquee span{display:inline-block;padding-left:24px}
+ .cc-arcade-section{padding-top:clamp(56px,8vw,98px);padding-bottom:clamp(65px,9vw,110px);scroll-margin-top:12px}.cc-section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:30px}.cc-section-head h2{font:clamp(48px,8vw,90px)/.9 Anton,Impact,sans-serif;letter-spacing:-.03em;margin:12px 0 0}.cc-section-head p{font-size:13px;line-height:1.7;max-width:290px;margin:0}
+ .cc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.cc-card{background:white;border:1.5px solid #0a0a0a;padding:20px;display:flex;flex-direction:column;min-width:0;min-height:300px;box-shadow:5px 5px 0 #0a0a0a;transition:transform .18s,box-shadow .18s}.cc-card:hover{transform:translateY(-4px);box-shadow:8px 9px 0 #0a0a0a}.cc-card-top{display:flex;justify-content:space-between;gap:8px;font:10px 'DM Mono',monospace;letter-spacing:.08em}.cc-icon{height:105px;background:#f4f1eb;display:grid;place-items:center;font-size:62px;margin:16px 0 13px;border:1px solid #e5e0d8}.cc-card h3{font:32px/.95 Anton,Impact,sans-serif;margin:0 0 10px}.cc-card p{font-size:12px;line-height:1.7;color:#555;margin:0 0 18px;min-height:40px}.cc-best{font:9px 'DM Mono',monospace;color:#555;margin-top:auto;margin-bottom:12px}.cc-card .cc-btn{width:100%}
+ .cc-rules{background:#0a0a0a;color:white;margin-bottom:clamp(60px,8vw,100px);padding:clamp(25px,4vw,42px);display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}.cc-rules h2{font:clamp(34px,5vw,54px)/.95 Anton,Impact,sans-serif;margin:12px 0}.cc-rules p{font-size:13px;line-height:1.8;color:#ccc;margin:0}.cc-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.cc-step{border-top:1px solid #555;padding-top:12px;font:10px/1.6 'DM Mono',monospace;text-transform:uppercase}.cc-step b{display:block;color:var(--r);font:26px Anton,Impact,sans-serif;margin-bottom:7px}
+ .cc-footer{background:#0a0a0a;color:white;padding:35px clamp(18px,5vw,64px);display:flex;justify-content:space-between;align-items:center;gap:24px}.cc-footer h2{font:clamp(30px,5vw,54px)/.9 Anton,Impact,sans-serif;margin:10px 0}.cc-footer p{font-size:12px;color:#bbb;line-height:1.7;margin:0}.cc-links{display:flex;flex-direction:column;align-items:flex-start;gap:13px}.cc-links a{font-size:12px;color:white;text-decoration:none;border-bottom:1px solid #777;padding-bottom:4px}.cc-links a:hover{color:var(--r)}
+ .cc-backdrop{position:fixed;inset:0;z-index:1000;background:#000c;display:flex;align-items:center;justify-content:center;padding:16px}.cc-modal{background:white;color:#0a0a0a;width:min(760px,100%);max-height:min(90dvh,900px);overflow:auto;border:2px solid #0a0a0a;box-shadow:8px 8px 0 #ff0000}.cc-modal-head{display:flex;justify-content:space-between;align-items:center;padding:15px 20px;border-bottom:1px solid #ddd;gap:12px;position:sticky;top:0;background:white;z-index:2}.cc-modal-head span{font:10px 'DM Mono',monospace;letter-spacing:.13em}.cc-close{border:1px solid #111;background:white;width:38px;height:38px;font-size:24px;cursor:pointer}.cc-modal-body{padding:clamp(18px,4vw,34px)}.cc-modal-title{font:clamp(38px,7vw,66px)/.9 Anton,Impact,sans-serif;text-transform:uppercase;margin:0 0 14px}.cc-muted{font-size:13px;line-height:1.7;color:#555}.cc-timer{font:clamp(58px,13vw,110px)/1 Anton,Impact,sans-serif;letter-spacing:-.04em;text-align:center;margin:28px 0}.cc-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:18px}.cc-actions .cc-btn{flex:1;min-width:130px}.cc-result{text-align:center;padding:20px;background:#f4f1eb;margin-top:20px}.cc-result strong{display:block;font:clamp(28px,5vw,44px)/1 Anton,Impact,sans-serif;margin:10px 0}.cc-stats{display:flex;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:14px;font:10px 'DM Mono',monospace;text-transform:uppercase}
+ .cc-board{height:min(390px,48dvh);min-height:250px;position:relative;background:#0a0a0a;overflow:hidden;touch-action:manipulation;border:1px solid #333;margin-top:18px}.cc-item{position:absolute;transform:translate(-50%,-50%);width:52px;height:52px;border:0;border-radius:50%;background:white;font-size:28px;display:grid;place-items:center;cursor:pointer;box-shadow:0 4px 0 #999;touch-action:manipulation;animation:cc-pop .16s ease-out}.cc-hud{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font:11px 'DM Mono',monospace;text-transform:uppercase}.cc-clue{background:#f4f1eb;padding:22px;text-align:center;margin:18px 0}.cc-emoji{font-size:54px;display:block;margin-bottom:12px}.cc-options{display:grid;grid-template-columns:1fr 1fr;gap:10px}.cc-option{background:white;border:1.5px solid #111;padding:14px;text-align:left;font-weight:700;min-height:52px;cursor:pointer}.cc-option:hover:not(:disabled){background:#f4f1eb}.cc-option.correct{background:#d8f5dc}.cc-option.wrong{background:#ffe0e0}.cc-option:disabled{cursor:default}.cc-feedback{font-size:12px;font-weight:700;margin-top:12px;line-height:1.6}
+ @keyframes cc-pop{from{opacity:0;scale:.7}to{opacity:1;scale:1}}@media(prefers-reduced-motion:reduce){.cc-arcade *, .cc-arcade *:before,.cc-arcade *:after{animation:none!important;transition:none!important}}
+ @media(max-width:760px){.cc-header{padding:16px 18px}.cc-logo{font-size:29px}.cc-status{font-size:8px;letter-spacing:.04em;text-align:right;max-width:155px}.cc-hero{padding-top:60px;padding-bottom:62px}.cc-hero-grid{grid-template-columns:1fr;gap:24px}.cc-hero h1{font-size:clamp(60px,14.5vw,105px);line-height:.91}.cc-aside{max-width:280px}.cc-copy{margin-top:24px}.cc-section-head{display:block}.cc-section-head p{margin-top:13px}.cc-grid{grid-template-columns:1fr;gap:18px}.cc-card{min-height:0;padding:18px}.cc-icon{height:90px;font-size:54px;margin:13px 0}.cc-card h3{font-size:30px}.cc-card p{min-height:0}.cc-rules{grid-template-columns:1fr;gap:24px}.cc-footer{align-items:flex-start;flex-direction:column;gap:25px;padding:32px 20px 44px}.cc-backdrop{padding:8px}.cc-modal{max-height:calc(100dvh - 16px);box-shadow:4px 4px 0 #ff0000}.cc-modal-head{padding:12px 14px}.cc-modal-body{padding:18px 14px}.cc-timer{font-size:clamp(52px,14vw,78px);margin:24px 0}.cc-actions{flex-direction:column}.cc-actions .cc-btn{width:100%;min-height:50px}.cc-options{grid-template-columns:1fr}.cc-board{height:40dvh;min-height:240px}.cc-item{width:48px;height:48px;font-size:25px}}
+ @media(max-width:360px){.cc-hero h1{font-size:clamp(53px,14vw,68px)}.cc-cta{align-items:stretch;flex-direction:column}.cc-cta .cc-btn{width:100%}}
+ \`}</style>
+ <header className="cc-header"><div className="cc-logo">CHEAT<span>CODE</span>™</div><div className="cc-status">MAIN SITE TAKING A SCOOP BREAK</div></header>
+ <section className="cc-wrap cc-hero"><div className="cc-label">CHEATCODE PRESENTS</div><div className="cc-hero-grid"><h1>THE WEBSITE<br/>IS COOKING.<span>SO WE MADE<br/>YOU SOMETHING<br/>TO PLAY WITH.</span></h1><aside className="cc-aside"><b>NO SCOOP.<br/>NO PROBLEM.</b><p>A tiny arcade for your very important snack break.</p></aside></div><p className="cc-copy">We’re cooking up something delicious. Kill some time, challenge your friends, and prove you’ve got what it takes.</p><div className="cc-cta"><button className="cc-btn light" onClick={()=>document.getElementById("cheatcode-arcade")?.scrollIntoView({behavior:"smooth"})}>PLAY THE ARCADE ↓</button><span className="cc-micro">3 GAMES. UNLIMITED BRAGGING RIGHTS.</span></div></section>
+ <div className="cc-marquee" aria-hidden="true"><span>CHEAT WITHOUT REGRET ✳ PLAY WITHOUT MERCY ✳ CHEAT WITHOUT REGRET ✳ PLAY WITHOUT MERCY ✳</span></div>
+ <section className="cc-wrap cc-arcade-section" id="cheatcode-arcade"><div className="cc-section-head"><div><div className="cc-eyebrow">THE COMEBACK ARCADE / 001</div><h2>PICK YOUR POISON.</h2></div><p>Three games. One mission. Don’t embarrass yourself.</p></div>
+ <div className="cc-grid">
+ <article className="cc-card"><div className="cc-card-top"><span>GAME 01 / TIMING</span><span>◉ PLAY</span></div><div className="cc-icon">⏱️</div><h3>STOP AT 11:00:00</h3><p>Perfect timing is a skill. Missing by 12 ms is a personality trait.</p><div className="cc-best">PERSONAL BEST: {timerBest===null?"NOT SET":timerBest+" MS OFF"}</div><button className="cc-btn" onClick={()=>open("timer")}>PLAY NOW ↗</button></article>
+ <article className="cc-card"><div className="cc-card-top"><span>GAME 02 / REFLEX</span><span>◉ PLAY</span></div><div className="cc-icon">🍦</div><h3>CATCH THE CHEAT</h3><p>Catch the good stuff. Avoid the disasters. Thirty seconds. Go.</p><div className="cc-best">PERSONAL BEST: {catchBest===null?"NOT SET":catchBest+" POINTS"}</div><button className="cc-btn" onClick={()=>open("catch")}>PLAY NOW ↗</button></article>
+ <article className="cc-card"><div className="cc-card-top"><span>GAME 03 / FLAVOUR</span><span>◉ PLAY</span></div><div className="cc-icon">🧠</div><h3>GUESS THE FLAVOUR</h3><p>Five flavours. Four choices. Prove you know your scoop.</p><div className="cc-best">PERSONAL BEST: {quizBest===null?"NOT SET":quizBest+"/5 CORRECT"}</div><button className="cc-btn" onClick={()=>open("quiz")}>PLAY NOW ↗</button></article>
+ </div></section>
+ <section className="cc-wrap"><div className="cc-rules"><div><div className="cc-eyebrow">THE HOUSE RULES</div><h2>NO LOGIN.<br/>JUST BRAGGING RIGHTS.</h2><p>Your personal bests stay on this device. No account, no fake global leaderboard, no nonsense. Play it, beat it, send the score to your group chat.</p></div><div className="cc-steps"><div className="cc-step"><b>01</b>Pick a game.</div><div className="cc-step"><b>02</b>Set a score.</div><div className="cc-step"><b>03</b>Talk your talk.</div></div></div></section>
+ <footer className="cc-footer"><div><div className="cc-eyebrow">UNTIL THE REAL CHEAT ARRIVES.</div><h2>GOOD THINGS TAKE TIME.</h2><p>Great ice cream takes a little more.</p></div><div className="cc-links"><a href="mailto:hello@houseofcheatcode.com">CONTACT US · hello@houseofcheatcode.com</a><a href={wa} target="_blank" rel="noopener noreferrer">WHATSAPP SUPPORT · +91 79844 92735 ↗</a><a href="https://www.instagram.com/houseofcheatcode/" target="_blank" rel="noopener noreferrer">INSTAGRAM · @HOUSEOFCHEATCODE ↗</a></div></footer>
+ {game&&<div className="cc-backdrop" role="presentation" onMouseDown={e=>{if(e.target===e.currentTarget)close()}}><section className="cc-modal" role="dialog" aria-modal="true" aria-label="CHEATCODE arcade game"><div className="cc-modal-head"><span>CHEATCODE ARCADE / {game==="timer"?"GAME 01":game==="catch"?"GAME 02":"GAME 03"}</span><button className="cc-close" onClick={close} aria-label="Close game">×</button></div><div className="cc-modal-body">
+ {game==="timer"&&<><div className="cc-eyebrow">SIGNATURE CHALLENGE</div><h2 className="cc-modal-title">STOP AT 11:00:00</h2><p className="cc-muted">Think you’ve got perfect timing? Stop the clock at exactly 11.000 seconds.</p><div className="cc-timer">{timerValue.toFixed(3)}<span style={{fontSize:".34em",marginLeft:8}}>SEC</span></div>{timerMode==="ready"&&<div className="cc-actions"><button className="cc-btn" onClick={startTimer}>START CHALLENGE</button></div>}{timerMode==="run"&&<div className="cc-actions"><button className="cc-btn" onClick={finishTimer}>STOP THE CLOCK</button></div>}{timerMode==="result"&&timerResult&&<div className="cc-result"><div className="cc-eyebrow">YOUR TIME: {timerResult.elapsed.toFixed(3)} SECONDS</div><strong>{timerResult.off} MS OFF</strong><b>{timerRank(timerResult.off)}</b><div className="cc-stats"><span>Target: 11.000 sec</span><span>Accuracy: {timerResult.off} ms off</span></div><div className="cc-actions"><button className="cc-btn" onClick={startTimer}>PLAY AGAIN</button><button className="cc-btn light" onClick={()=>share("I stopped the CHEATCODE timer "+timerResult.off+" ms off 11.000 seconds. "+timerRank(timerResult.off))}>SHARE YOUR SCORE</button><button className="cc-btn light" onClick={close}>BACK TO ARCADE</button></div></div>}</>}
+ {game==="catch"&&<><div className="cc-eyebrow">30 SECONDS / THREE LIVES</div><h2 className="cc-modal-title">CATCH THE CHEAT.</h2><p className="cc-muted">Catch scoops, chocolate, almonds and cookies. Avoid bombs. Good stuff scores points; bombs cost a life.</p>{catchMode==="intro"&&<div className="cc-actions"><button className="cc-btn" onClick={startCatch}>START SCOOPING</button></div>}{catchMode==="playing"&&<><div className="cc-hud"><span>SCORE: {catchScore}</span><span>TIME: {seconds}s</span><span>LIVES: {"❤️".repeat(lives)}</span></div><div className="cc-board" aria-label="Tap food items to score">{items.map(it=><button key={it.id} className="cc-item" style={{left:it.x+"%",top:it.y+"%"}} onClick={()=>catchOne(it)} aria-label={it.hazard?"Bomb, avoid":it.emoji+", plus "+it.points+" points"}>{it.emoji}</button>)}</div><div className="cc-actions"><button className="cc-btn light" onClick={()=>{stopCatch();setCatchMode("intro")}}>QUIT ROUND</button></div></>}{catchMode==="result"&&<div className="cc-result"><div className="cc-eyebrow">FINAL SCORE</div><strong>{catchScore} POINTS</strong><b>{catchRank(catchScore)}</b><div className="cc-actions"><button className="cc-btn" onClick={startCatch}>PLAY AGAIN</button><button className="cc-btn light" onClick={()=>share("I scored "+catchScore+" in CATCH THE CHEAT. "+catchRank(catchScore)+". Think you can beat me?")}>SHARE SCORE</button><button className="cc-btn light" onClick={close}>BACK TO ARCADE</button></div></div>}</>}
+ {game==="quiz"&&<><div className="cc-eyebrow">FIVE ROUNDS / ONE FOODIE</div><h2 className="cc-modal-title">THINK YOU KNOW YOUR ICE CREAM?</h2>{quizMode==="intro"&&<><p className="cc-muted">Let’s see if you’re a real foodie or just pretending. Five flavour clues, four choices each.</p><div className="cc-actions"><button className="cc-btn" onClick={startQuiz}>START THE QUIZ</button></div></>}{quizMode==="play"&&questions[qIndex]&&<><div className="cc-stats"><span>ROUND {qIndex+1}/5</span><span>SCORE: {qScore}</span></div><div className="cc-clue"><span className="cc-emoji">{questions[qIndex].emoji}</span><p className="cc-muted">{questions[qIndex].clue}</p></div><div className="cc-options">{questions[qIndex].options.map(option=><button key={option} className={"cc-option "+(choice!==null&&option===questions[qIndex].answer?"correct":"")+(choice===option&&option!==questions[qIndex].answer?" wrong":"")} onClick={()=>answer(option)} disabled={choice!==null}>{option}</button>)}</div>{choice!==null&&<><div className="cc-feedback">{choice===questions[qIndex].answer?"CORRECT. ":"NOT QUITE. "}{questions[qIndex].why}</div><div className="cc-actions"><button className="cc-btn" onClick={nextQ}>{qIndex===4?"SEE MY RESULT":"NEXT QUESTION →"}</button></div></>}</>}{quizMode==="result"&&<div className="cc-result"><div className="cc-eyebrow">YOUR RESULT</div><strong>{qScore}/5 CORRECT</strong><b>{quizRank(qScore)}</b><div className="cc-actions"><button className="cc-btn" onClick={startQuiz}>RETAKE THE QUIZ</button><button className="cc-btn light" onClick={()=>share("I scored "+qScore+"/5 in the CHEATCODE Flavour Challenge. "+quizRank(qScore)+". Can you beat that?")}>SHARE YOUR RESULT</button><button className="cc-btn light" onClick={close}>BACK TO ARCADE</button></div></div>}</>}
+ </div></section></div>}
+ </main>
 }
