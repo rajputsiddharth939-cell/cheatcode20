@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const API = "https://script.google.com/macros/s/AKfycbzX2i0JOw5HED9JnEOEs3gwDKZgEfpvRHN1b2VS6VYlFDJVBZDrlCwCBjTEKD8EuCVipg/exec";
 const flavours = [
@@ -18,15 +18,8 @@ function CheckoutButton(){
  const [open,setOpen]=useState(false);
  const [customer,setCustomer]=useState({name:"",phone:"",email:"",address:"",city:"Ahmedabad",state:"Gujarat",pincode:""});
  const [quantity,setQuantity]=useState(3);
- const [founderDelivery,setFounderDelivery]=useState(false);
- const [discountCode,setDiscountCode]=useState("");
- const founderDeliveryAvailable=customer.city.trim().toLowerCase()==="ahmedabad";
- const productSubtotal=149*quantity;
- const discountAmount=discountCode.trim()?productSubtotal*0.5:0;
- const packTotal=productSubtotal-discountAmount+(founderDelivery?5000:0);
+  const packTotal = 149 * quantity;
  const [flavour,setFlavour]=useState("Belgian Chocolate");
-  useEffect(()=>{try{const saved=localStorage.getItem("cc_stop11_discount_code");if(saved)setDiscountCode(saved)}catch{}const apply=e=>setDiscountCode(String(e.detail?.code||""));window.addEventListener("stop11:discount",apply);return()=>window.removeEventListener("stop11:discount",apply)},[]);
-  useEffect(()=>{if(!open)return;const body=document.body;const previous=body.style.overflow;const viewport=window.visualViewport;const updateViewport=()=>{body.style.setProperty("--checkout-viewport-height",`${viewport?.height||window.innerHeight}px`);body.style.setProperty("--checkout-viewport-offset-top",`${viewport?.offsetTop||0}px`)};body.style.overflow="hidden";updateViewport();viewport?.addEventListener("resize",updateViewport);window.addEventListener("resize",updateViewport);return()=>{body.style.overflow=previous;body.style.removeProperty("--checkout-viewport-height");body.style.removeProperty("--checkout-viewport-offset-top");viewport?.removeEventListener("resize",updateViewport);window.removeEventListener("resize",updateViewport)}},[open]);
 
  async function loadRazorpay(){
  if(window.Razorpay)return true;
@@ -39,7 +32,7 @@ function CheckoutButton(){
  });
  }
 
- function update(e){const {name,value}=e.target;setCustomer(c=>({...c,[name]:value}));if(name==="city"&&value.trim().toLowerCase()!=="ahmedabad")setFounderDelivery(false);}
+ function update(e){setCustomer(c=>({...c,[e.target.name]:e.target.value}));}
 
  async function startPayment(e){
  e.preventDefault(); if(busy)return;
@@ -56,7 +49,7 @@ function CheckoutButton(){
 
  const orderResponse=await fetch("/api/create-order",{
  method:"POST",headers:{"Content-Type":"application/json"},
- body:JSON.stringify({customer,items:[{name:flavour,quantity}],founder_delivery:founderDelivery,discount_code:discountCode.trim()||null})
+ body:JSON.stringify({customer,items:[{name:flavour,quantity}]})
  });
  const order=await orderResponse.json().catch(()=>({}));
  if(!orderResponse.ok||!order.order_id)throw new Error(order.error||"Could not create your order.");
@@ -79,7 +72,7 @@ function CheckoutButton(){
  }catch(error){setStatus(error.message||"Payment verification failed.");}
  finally{setBusy(false);}
  },
- modal:{ondismiss:()=>{if(discountCode.trim())fetch("/api/release-stop11-discount",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({order_id:order.order_id})}).catch(()=>{});setBusy(false);setStatus("PAYMENT CANCELLED.");}},
+ modal:{ondismiss:()=>{setBusy(false);setStatus("PAYMENT CANCELLED.");}},
  };
  const rzp=new window.Razorpay(options);
  rzp.on("payment.failed",response=>{setBusy(false);setStatus(response?.error?.description||"Payment failed. Please try again.");});
@@ -92,7 +85,8 @@ function CheckoutButton(){
  {status&&<p className="payment-status" role="status">{status}</p>}
  {open&&<div className="checkout-overlay" role="dialog" aria-modal="true" aria-label="CHEATCODE checkout">
  <div className="checkout-card">
- <div className="checkout-header"><span className="eyebrow redtext">CHEATCODE / CHECKOUT</span><button className="checkout-close" type="button" onClick={()=>setOpen(false)} aria-label="Close checkout">×</button></div>
+ <button className="checkout-close" type="button" onClick={()=>setOpen(false)} aria-label="Close checkout">×</button>
+ <span className="eyebrow redtext">CHEATCODE / CHECKOUT</span>
  <h3>YOUR CHEAT.<br/>YOUR DETAILS.</h3>
  <form onSubmit={startPayment} className="checkout-form">
  <div className="checkout-row">
@@ -113,38 +107,13 @@ function CheckoutButton(){
  {[3,6,9,12].map(n=><option key={n} value={n}>{n} TUBS · ₹{(149*n).toLocaleString("en-IN")}</option>)}
  </select>
  </div>
- <div className="founder-delivery-option"><label className={!founderDeliveryAvailable?"unavailable":""}><input type="checkbox" checked={founderDelivery} disabled={!founderDeliveryAvailable} onChange={e=>setFounderDelivery(e.target.checked)}/><span><strong>HAND-DELIVERED BY THE FOUNDER</strong><small>Personally delivered by the founder, exclusively in Ahmedabad.</small></span><b>₹5,000.00</b></label></div>
- <div className="discount-code-field"><label htmlFor="stop11-code">STOP AT 11 DISCOUNT CODE</label><input id="stop11-code" value={discountCode} onChange={e=>setDiscountCode(e.target.value.toUpperCase().replace(/\s/g,""))} placeholder="ENTER YOUR WINNING CODE" autoCapitalize="characters"/>{discountCode.trim()&&<small>50% discount is confirmed by the server at checkout.</small>}</div>
- <div className="checkout-summary"><div className="checkout-summary-line"><span>PRODUCTS · {quantity} TUBS</span><strong>₹{productSubtotal.toLocaleString("en-IN")}</strong></div>{discountCode.trim()&&<div className="checkout-summary-line discount"><span>STOP AT 11 · 50% OFF</span><strong>−₹{discountAmount.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></div>}{founderDelivery&&<div className="checkout-summary-line"><span>FOUNDER DELIVERY</span><strong>₹5,000.00</strong></div>}<div className="checkout-total"><span>TOTAL TO PAY</span><strong>₹{packTotal.toLocaleString("en-IN",{minimumFractionDigits:discountCode.trim()?2:0,maximumFractionDigits:2})}</strong></div></div>
- <button className="pill checkout-pay" type="submit" disabled={busy}>{busy?"PROCESSING…":`PAY ₹${packTotal.toLocaleString("en-IN",{minimumFractionDigits:discountCode.trim()?2:0,maximumFractionDigits:2})} →`}</button>
+ <div className="checkout-total"><span>TOTAL · {quantity} TUBS</span><strong>₹{packTotal.toLocaleString("en-IN")}</strong></div>
+ <button className="pill checkout-pay" type="submit" disabled={busy}>{busy?"PROCESSING…":`PAY ₹${packTotal.toLocaleString("en-IN")} →`}</button>
  </form>
  </div>
  </div>}
  </div>;
 }
-
-
-function StopAt11(){
- const [phase,setPhase]=useState("loading");
- const [claimed,setClaimed]=useState(0);
- const [elapsed,setElapsed]=useState(0);
- const [token,setToken]=useState("");
- const [discountCode,setDiscountCode]=useState("");
- const [error,setError]=useState("");
- const startAt=useRef(0);
- const interval=useRef(null);
- const stopped=useRef(false);
- const formatTime=ms=>(Math.max(0,ms)/1000).toFixed(3).padStart(6,"0");
- useEffect(()=>{let active=true;const load=()=>fetch("/api/stop11-count").then(async r=>{const d=await r.json();if(!r.ok)throw new Error(d.error||"Campaign unavailable");if(!active)return;setClaimed(d.claimed_count||0);setPhase(p=>p==="loading"?(d.available?"idle":"soldout"):(!d.available&&p==="idle"?"soldout":p))}).catch(e=>{if(active){setError(e.message||"Campaign setup is incomplete.");setPhase(p=>p==="loading"?"unavailable":p)}});load();const poll=setInterval(()=>fetch("/api/stop11-count").then(r=>r.json()).then(d=>{if(!active)return;setClaimed(d.claimed_count||0);if(!d.available)setPhase(p=>p==="idle"?"soldout":p)}).catch(()=>{}),10000);return()=>{active=false;clearInterval(poll);if(interval.current)clearInterval(interval.current)}},[]);
- async function start(){
-  if(phase!=="idle")return;setPhase("starting");setError("");
-  try{const r=await fetch("/api/stop11-start",{method:"POST",headers:{"Content-Type":"application/json"},body:"{}"});const d=await r.json();if(!r.ok)throw new Error(d.error||"Could not start the game.");setClaimed(d.claimed_count??claimed);if(d.already_attempted){if(d.won&&d.discount_code){setDiscountCode(d.discount_code);setPhase("won")}else setPhase("used");return}if(d.sold_out){setPhase("soldout");return}setToken(d.attempt_token);stopped.current=false;setElapsed(0);startAt.current=performance.now();setPhase("running");interval.current=setInterval(()=>setElapsed(performance.now()-startAt.current),10)}catch(e){setError(e.message||"Please try again.");setPhase("unavailable")}
- }
- async function stop(){
-  if(phase!=="running"||stopped.current)return;stopped.current=true;const measured=performance.now()-startAt.current;setElapsed(measured);if(interval.current)clearInterval(interval.current);setPhase("submitting");
-  try{const r=await fetch("/api/stop11-submit",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({attempt_token:token,elapsed_ms:measured})});const d=await r.json();setClaimed(d.claimed_count??claimed);if(!r.ok)throw new Error(d.error||"Your attempt was recorded. Please refresh the claim count.");if(d.reason==="sold_out"){setPhase("soldout");return}if(d.won&&d.discount_code){setDiscountCode(d.discount_code);try{localStorage.setItem("cc_stop11_discount_code",d.discount_code)}catch{}window.dispatchEvent(new CustomEvent("stop11:discount",{detail:{code:d.discount_code}}));setPhase("won")}else setPhase("lost")}catch(e){setError(e.message||"Your attempt has been used.");setPhase("used")}
- }
- return <section className="stop11-section black" id="stop-at-11"><div className="wrap stop11-wrap"><div className="stop11-copy"><span className="eyebrow redtext">02 / THE TIMING GAME</span><h2>STOP AT 11.</h2><p className="stop11-sub">11 SECONDS. 50% OFF.</p><p className="stop11-description">Think you have perfect timing? Stop the timer at exactly 11.000 seconds and unlock 50% OFF your CHEATCODE order.</p><div className="stop11-meta"><span>ONE PERSON. ONE TRY. MAKE IT COUNT.</span><strong>ONLY 100 WINNERS.</strong></div><div className="stop11-claimed"><span>{String(claimed).padStart(2,"0")} / 100 DISCOUNTS CLAIMED</span><div className="stop11-progress"><i style={{width:`${Math.min(100,claimed)}%`}}/></div></div></div><div className="stop11-game"><div className="stop11-timer" aria-live="polite">{formatTime(elapsed)}</div><div className="stop11-target">TARGET <b>11.000</b></div>{phase==="idle"&&<button className="stop11-action" onClick={start}>START THE CLOCK ↗</button>}{phase==="starting"&&<button className="stop11-action" disabled>GETTING YOUR ONE TRY…</button>}{phase==="running"&&<button className="stop11-action stop" onClick={stop}>STOP</button>}{phase==="submitting"&&<button className="stop11-action" disabled>CHECKING YOUR TIMING…</button>}{phase==="loading"&&<button className="stop11-action" disabled>LOADING CAMPAIGN…</button>}{phase==="won"&&<div className="stop11-result win"><h3>YOU ACTUALLY DID IT.</h3><strong>50% OFF UNLOCKED.</strong><p>Welcome to the 11-second club.</p><div className="stop11-code">{discountCode}</div><small>YOUR CODE IS SINGLE-USE. ENTER IT AT CHECKOUT.</small></div>}{phase==="lost"&&<div className="stop11-result"><h3>{elapsed/1000>11.05?"YOU HAD ONE JOB.":elapsed/1000<10.95?"SO CLOSE. BUT NOT CLOSE ENOUGH.":"YOUR TIMING WASN’T IT."}</h3><p>YOUR TIME: <b>{formatTime(elapsed)}</b></p><strong>YOUR ATTEMPT HAS BEEN USED.</strong></div>}{phase==="used"&&<div className="stop11-result"><h3>ONE TRY. THAT’S THE RULE.</h3><p>YOUR ATTEMPT HAS BEEN USED.</p></div>}{phase==="soldout"&&<div className="stop11-result"><h3>100 DISCOUNTS. ALL CLAIMED.</h3><p>This round is officially closed.</p></div>}{phase==="unavailable"&&<div className="stop11-result"><h3>GAME TEMPORARILY UNAVAILABLE.</h3><p>The game is getting ready. Check back soon.</p></div>}{error&&phase!=="unavailable"&&<p className="stop11-error" role="status">{error}</p>}</div></div></section>}
 
 function Signup(){const [done,setDone]=useState(false),[busy,setBusy]=useState(false);async function submit(e){e.preventDefault();if(busy)return;setBusy(true);const data=Object.fromEntries(new FormData(e.currentTarget));const params=new URLSearchParams({name:String(data.name||""),email:String(data.email||""),phone:String(data.phone||"")});try{await fetch(API+"?"+params.toString(),{method:"GET",mode:"no-cors",keepalive:true});setDone(true);e.currentTarget.reset()}catch{setBusy(false)}}return <section className="black signup" id="signup"><div className="wrap signup-grid"><div><span className="eyebrow">07 / GET IN EARLY</span><h2>DON’T MISS<br/>THE DROP.</h2><p className="muted">Get launch-day news, first access and the occasional CHEATCODE surprise.</p></div>{done?<div className="success">✓ YOU’RE ON THE LIST.<br/><span>SEE YOU ON LAUNCH DAY.</span></div>:<form onSubmit={submit}><input name="name" placeholder="YOUR NAME" required/><input name="email" type="email" placeholder="EMAIL ADDRESS" required/><input name="phone" placeholder="PHONE NUMBER" required/><button disabled={busy}>{busy?"JOINING…":"GET NOTIFIED →"}</button></form>}</div></section>}
 function LabReport(){return <main className="lab-report-page"><div className="lab-report-card"><span className="eyebrow redtext">CHEATCODE™ / LAB REPORT</span><h1>LAB REPORT</h1><p>Scan complete. Your CHEATCODE lab report will appear here.</p><div className="lab-report-pdf"><div className="lab-report-placeholder">PDF REPORT<br/><small>COMING SOON</small></div></div></div></main>}
@@ -211,10 +180,9 @@ function AboutPage(){return <div className="deep-page about-page"><PageHeader ac
 <section className="page-section white about-future"><div className="wrap founder-grid"><div><span className="eyebrow">05 / THE FUTURE</span><h2>ICE CREAM<br/>IS ONLY<br/><em>THE START.</em></h2></div><div><p>We are not building CHEATCODE to be one more ice cream sitting in one more freezer.</p><p>The bigger vision is a modern indulgence brand. More products, more flavours, more ways to enjoy the things you already love while making smarter choices feel normal.</p><p>Ahmedabad is our first playground. The ambition is much bigger. We want CHEATCODE to grow from a local launch into a brand people across India recognise for taste, attitude and better formulated indulgence.</p><strong>START SMALL. THINK LOUD. BUILD THE CATEGORY WE WISH EXISTED.</strong></div></div></section>
 <section className="page-section black about-final"><div className="wrap"><span className="eyebrow redtext">06 / THE PROMISE</span><h2>YOU CAN<br/><span>CHEAT</span><br/>WITHOUT<br/>REGRET.</h2><p>That is not permission to stop caring. It is an invitation to stop believing that caring means giving up the things you love.</p><a className="pill" href="/#launch">EXPLORE CHEATCODE <b>↗</b></a></div></section>
 </main><footer><b>CHEATCODE™</b><span>You Can Cheat Without Regret.</span><a href="mailto:hello@houseofcheatcode.com">HELLO@HOUSEOFCHEATCODE.COM</a></footer></div>}
-
-export default function App(){const path=window.location.pathname;if(path==="/why-cheatcode"){return <><SEO/><WhyCheatcode/></>}if(path==="/about"){return <><SEO/><AboutPage/></>}if(path==="/lab-report"){return <LabReport/>}if(path==="/admin/orders"){return <AdminOrders/>}return <><SEO/><div className="site"><header><a href="/" className="brand-mark">CHEATCODE™</a><nav aria-label="Primary navigation"><a href="/why-cheatcode">WHY CHEATCODE</a><a href="/about">OUR STORY</a><a href="#flavours">FLAVOURS</a><a href="#launch">LAUNCH</a></nav><a className="header-btn" href="#signup">GET NOTIFIED ↗</a></header><div className="ticker" aria-label="CHEATCODE highlights"><div className="ticker-track"><span>YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span><span aria-hidden="true">YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span></div></div><main>
+\nexport default function App(){const path=window.location.pathname;if(path==="/why-cheatcode"){return <><SEO/><WhyCheatcode/></>}if(path==="/about"){return <><SEO/><AboutPage/></>}if(path==="/lab-report"){return <LabReport/>}if(path==="/admin/orders"){return <AdminOrders/>}return <><SEO/><div className="site"><header><a href="/" className="brand-mark">CHEATCODE™</a><nav aria-label="Primary navigation"><a href="/why-cheatcode">WHY CHEATCODE</a><a href="/about">OUR STORY</a><a href="#flavours">FLAVOURS</a><a href="#launch">LAUNCH</a></nav><a className="header-btn" href="#signup">GET NOTIFIED ↗</a></header><div className="ticker" aria-label="CHEATCODE highlights"><div className="ticker-track"><span>YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span><span aria-hidden="true">YOU CAN CHEAT WITHOUT REGRET · 10g PROTEIN · 0 ADDED SUGAR · HIGH FIBRE · LOW CARB · LAUNCHING 11.10.26 ·</span></div></div><main>
 <section className="hero red"><div className="wrap hero-grid"><div className="hero-copy"><span className="eyebrow">01 / PREMIUM HIGH-PROTEIN ICE CREAM</span><h1>CHEAT<br/>WITHOUT<br/>REGRET.</h1><p className="hero-tag">Same pleasure.<br/>Better choices.</p><a className="pill" href="#flavours">DISCOVER CHEATCODE <b>↗</b></a><div className="stats"><span><b>10g</b>PROTEIN</span><span><b>0</b>ADDED SUGAR</span><span><b>HIGH</b>FIBRE</span><span><b>LOW</b>CARB</span></div></div><div className="hero-product"><HeroProduct/></div></div></section>
-<StopAt11/><section className="black flavours-sec" id="flavours"><div className="wrap"><div className="center"><span className="eyebrow redtext">02 / THE LINE-UP</span><h2>5 WAYS TO CHEAT.</h2><p className="muted">Different moods. Same CHEATCODE.</p></div><div className="flavour-row">{flavours.map((f,i)=><article key={f.name+"-"+f.sub}><img className="mini-pack" src={f.image} alt={f.name+" "+f.sub+" CHEATCODE ice cream"} loading="lazy" decoding="async"/><span>0{i+1}</span><h3>{f.name}<br/>{f.sub}</h3></article>)}</div><div className="benefits">{[["10g","Protein"],["0","Added Sugar"],["High","Fibre"],["Low","Carb"]].map(([t,l])=><div key={l}><i>◉</i><b>{t}</b><small>{l}</small></div>)}</div></div></section>
+<section className="black flavours-sec" id="flavours"><div className="wrap"><div className="center"><span className="eyebrow redtext">02 / THE LINE-UP</span><h2>5 WAYS TO CHEAT.</h2><p className="muted">Different moods. Same CHEATCODE.</p></div><div className="flavour-row">{flavours.map((f,i)=><article key={f.name+"-"+f.sub}><img className="mini-pack" src={f.image} alt={f.name+" "+f.sub+" CHEATCODE ice cream"} loading="lazy" decoding="async"/><span>0{i+1}</span><h3>{f.name}<br/>{f.sub}</h3></article>)}</div><div className="benefits">{[["10g","Protein"],["0","Added Sugar"],["High","Fibre"],["Low","Carb"]].map(([t,l])=><div key={l}><i>◉</i><b>{t}</b><small>{l}</small></div>)}</div></div></section>
 <section className="black split"><div className="image-panel"><img className="section3-image" src="/images/Cheatcode Section 3.JPG" alt="CHEATCODE ice cream brand visual" loading="lazy" decoding="async"/></div><div className="copy-panel"><span className="eyebrow redtext">03 / THE BETTER INDULGENCE</span><h2>DESSERT<br/>THAT WORKS<br/>FOR YOU.</h2><p>Creamy texture. Bold flavours. Thought-through nutrition. Built for the moments when you want dessert and still want to feel good about the choice.</p><a className="outline" href="#story">READ OUR STORY ↗</a></div></section>
 <section className="white story" id="story"><div className="wrap story-grid"><div><span className="eyebrow">04 / THE CHEATCODE</span><h2>WE DIDN’T<br/>WANT TO MAKE<br/>ANOTHER<br/><span>"HEALTHY"</span><br/>ICE CREAM.</h2></div><div><p className="big">We wanted the kind of ice cream you’d actually crave.</p><p>So we built CHEATCODE for the moments when you want to indulge without feeling like you abandoned your goals.</p><strong>THAT’S THE CHEAT.</strong></div></div></section>
 <section className="red launch" id="launch"><div className="wrap"><span className="eyebrow">05 / LAUNCHING ON</span><h2>11.10.26</h2><Count/><p className="launch-note">THE WAIT IS ALMOST OVER.<br/>SEE YOU ON LAUNCH DAY.</p></div><div className="launch-product"><HeroProduct/></div></section>
@@ -229,7 +197,7 @@ export default function App(){const path=window.location.pathname;if(path==="/wh
 ["When can I finally get my hands on it?","11 October 2026. That’s launch day. Set the reminder. Tell your group chat."],
 ["Where can I order CHEATCODE?","Right here on the CHEATCODE website from launch day. We’re starting with delivery across Ahmedabad."],
 ["How quick is delivery in Ahmedabad?","We’re planning around 30-minute delivery across Ahmedabad from the website, depending on delivery availability at your location."],
-["So… is CHEATCODE a \"healthy\" ice cream?","We’d call it a more thoughtful way to do dessert. You get 10g protein, 0 added sugar, high fibre and low-carb positioning without pretending ice cream has to stop being fun."],
+["So… is CHEATCODE a "healthy" ice cream?","We’d call it a more thoughtful way to do dessert. You get 10g protein, 0 added sugar, high fibre and low-carb positioning without pretending ice cream has to stop being fun."],
 ["Where do I follow the chaos?","@houseofcheatcode on Instagram. That’s where we’re dropping flavours, behind-the-scenes stuff, launch updates and everything happening before the first scoop."],
 ].map(([q,a],i)=><details key={q}><summary><span>{String(i+1).padStart(2,"0")}</span><h3>{q}</h3><b>+</b></summary><p>{a}</p></details>)}
 </div></div></section><section className="red final"><div className="wrap"><span className="eyebrow">10 / CHEATCODE™</span><h2>YOUR NEXT<br/>CHEAT IS<br/>ALMOST HERE.</h2><p>11.10.26</p></div></section></main><button className="back-to-top" onClick={()=>window.scrollTo({top:0,behavior:"smooth"})} aria-label="Back to top">↑</button><footer><b>CHEATCODE™</b><span>You Can Cheat Without Regret.</span><a href="mailto:hello@houseofcheatcode.com">HELLO@HOUSEOFCHEATCODE.COM</a></footer></div></>}
