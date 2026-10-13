@@ -18,7 +18,7 @@ export default function App() {
         .maintenance-kicker{font:500 11px 'DM Mono',monospace;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:12px;margin-bottom:24px}
         .maintenance-kicker:before{content:'';display:block;width:30px;height:2px;background:#f10b0b}
         .maintenance-title{font-family:Anton,Impact,sans-serif;font-size:clamp(66px,12.2vw,158px);line-height:.86;letter-spacing:-.035em;text-transform:uppercase;margin:0;max-width:1000px}
-        .maintenance-title .red{color:#f10b0b;display:block}
+        .maintenance-title .out-of-stock-line{color:#101010 !important;background:transparent !important;display:block;position:relative;z-index:1;box-shadow:none !important}
         .maintenance-bottom{display:flex;justify-content:space-between;align-items:flex-end;gap:32px;margin-top:clamp(36px,6vh,62px);padding-top:25px;border-top:1px solid #d9d5cf}
         .maintenance-copy{max-width:440px}
         .maintenance-copy h2{font-size:clamp(18px,2vw,24px);line-height:1.25;margin:0 0 10px;font-weight:800;letter-spacing:-.04em}
@@ -44,7 +44,7 @@ export default function App() {
         <div className="maintenance-kicker">A little pause. A big comeback.</div>
         <h1 className="maintenance-title" id="maintenance-heading">
           ALL STOCKS
-          <span className="red">ARE OUT.</span>
+          <span className="out-of-stock-line">ARE OUT.</span>
           BACK SOON.
         </h1>
         <div className="maintenance-bottom">
