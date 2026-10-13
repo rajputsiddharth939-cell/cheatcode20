@@ -42,7 +42,8 @@ export default async function handler(req, res) {
     const customer = body.customer || {};
     const items = Array.isArray(body.items) ? body.items : [];
     const founderDelivery = body.founder_delivery === true;
-    const city = String(customer.city || "Ahmedabad").trim();
+    const discountCode = String(body.discount_code || "").trim().toUpperCase();
+    const city = String(customer.city || "").trim();
     if (founderDelivery && city.toLowerCase() !== "ahmedabad") {
       return respond(res, 400, { error: "Founder hand-delivery is available exclusively in Ahmedabad." });
     }
@@ -62,8 +63,9 @@ export default async function handler(req, res) {
     });
 
     const subtotal = normalized.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const discountAmount = discountCode ? Math.round(subtotal * 0.5) : 0;
     const deliveryCharge = founderDelivery ? 5000 : 0;
-    const total = subtotal + deliveryCharge;
+    const total = subtotal - discountAmount + deliveryCharge;
     const storedItems = founderDelivery ? [...normalized, { name: "Hand-delivered by the Founder", quantity: 1, price: 5000 }] : normalized;
     const amount = total * 100;
     const orderNumber = "CC" + Date.now().toString().slice(-7);
@@ -83,7 +85,20 @@ export default async function handler(req, res) {
       });
     }
 
-    const saved = await supabaseRequest("orders", {
+    if (discountCode) {
+      let reservation;
+      try {
+        const result = await supabaseRequest("rpc/reserve_stop11_discount", { method: "POST", body: JSON.stringify({ p_code: discountCode, p_order_id: data.id }) });
+        reservation = Array.isArray(result) ? result[0] : result;
+      } catch (error) {
+        return respond(res, 400, { error: "This STOP AT 11 code is invalid, already used, or the campaign is not configured." });
+      }
+      if (!reservation?.ok) return respond(res, 400, { error: "This STOP AT 11 code is invalid, already used, or already reserved." });
+    }
+
+    let saved;
+    try {
+      saved = await supabaseRequest("orders", {
       method: "POST",
       body: JSON.stringify({
         order_number: orderNumber,
@@ -96,7 +111,7 @@ export default async function handler(req, res) {
         pincode: String(customer.pincode).trim(),
         items: storedItems,
         subtotal,
-        discount: 0,
+        discount: discountAmount,
         delivery_charge: deliveryCharge,
         total_amount: total,
         razorpay_order_id: data.id,
@@ -104,12 +119,21 @@ export default async function handler(req, res) {
         order_status: "pending"
       })
     });
+    } catch (saveError) {
+      if (discountCode) { try { await supabaseRequest("rpc/release_stop11_discount", { method: "POST", body: JSON.stringify({ p_order_id: data.id }) }); } catch {} }
+      throw saveError;
+    }
 
     return respond(res, 200, {
       order_id: data.id,
       order_number: orderNumber,
       amount: data.amount,
       currency: data.currency,
+      subtotal,
+      discount: discountAmount,
+      delivery_charge: deliveryCharge,
+      total_amount: total,
+      discount_code: discountCode || null,
       db_order_id: saved?.[0]?.id || null
     });
   } catch (error) {

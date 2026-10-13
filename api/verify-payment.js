@@ -115,6 +115,42 @@ async function saveOrder(orderData, payment) {
   return { saved: true, duplicate: false, order_number: orderNumber };
 }
 
+
+async function finalizeExistingOrder(payment, orderData) {
+  const { url, key } = supabaseConfig();
+  if (!url || !key) return orderData ? saveOrder(orderData, payment) : { saved: false, skipped: true };
+  const headers = { apikey: key, Authorization: `Bearer ${key}`, "Content-Type": "application/json" };
+  const duplicateRes = await fetch(`${url}/rest/v1/orders?select=id,order_number&razorpay_payment_id=eq.${encodeURIComponent(payment.payment_id)}&limit=1`, { headers });
+  if (!duplicateRes.ok) throw new Error("Could not check existing payment.");
+  const duplicate = await duplicateRes.json();
+  if (duplicate[0]) return { saved: true, duplicate: true, order_number: duplicate[0].order_number };
+  const pendingRes = await fetch(`${url}/rest/v1/orders?select=id,order_number,discount&razorpay_order_id=eq.${encodeURIComponent(payment.order_id)}&limit=1`, { headers });
+  if (!pendingRes.ok) throw new Error("Could not check pending order.");
+  const pending = await pendingRes.json();
+  if (!pending[0]?.id) {
+    if (orderData) return saveOrder(orderData, payment);
+    throw new Error("The pending order could not be found. Please contact support with your payment ID.");
+  }
+  const updateRes = await fetch(`${url}/rest/v1/orders?id=eq.${encodeURIComponent(pending[0].id)}`, {
+    method: "PATCH", headers: { ...headers, Prefer: "return=representation" },
+    body: JSON.stringify({ razorpay_payment_id: payment.payment_id, payment_status: "paid", order_status: "new" }),
+  });
+  if (!updateRes.ok) {
+    const detail = await updateRes.text();
+    throw new Error(`Order could not be finalized: ${detail.slice(0, 300)}`);
+  }
+  if (Number(pending[0].discount) > 0) {
+    const redemptionRes = await fetch(`${url}/rest/v1/rpc/redeem_stop11_discount`, {
+      method: "POST", headers, body: JSON.stringify({ p_order_id: payment.order_id }),
+    });
+    if (!redemptionRes.ok) throw new Error("Payment was received, but discount redemption could not be confirmed. Please contact support.");
+    const redemption = await redemptionRes.json().catch(() => ({}));
+    const result = Array.isArray(redemption) ? redemption[0] : redemption;
+    if (!result?.ok) throw new Error("Payment was received, but discount redemption could not be confirmed. Please contact support.");
+  }
+  return { saved: true, duplicate: false, order_number: pending[0].order_number };
+}
+
 export default async function handler(req) {
   if (req.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders });
   if (req.method !== "POST") return json({ error: "Method not allowed" }, 405);
@@ -147,10 +183,10 @@ export default async function handler(req) {
   }
 
   try {
-    const saved = await saveOrder(order_data, {
+    const saved = await finalizeExistingOrder({
       order_id: razorpay_order_id,
       payment_id: razorpay_payment_id,
-    });
+    }, order_data);
     return json({ verified: true, order_saved: saved.saved, order_number: saved.order_number || null });
   } catch (error) {
     return json({ verified: false, error: error?.message || "Payment verified, but the order could not be saved. Please contact support." }, 500);

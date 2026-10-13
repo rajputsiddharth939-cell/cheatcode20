@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Inter:wght@500;700;800;900&display=swap');
 
 :root{
   --red:#ff1616;
@@ -343,12 +343,12 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
 .checkout-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);backdrop-filter:blur(12px);z-index:5000;display:grid;place-items:center;padding:20px}
 .checkout-card{position:relative;width:min(720px,100%);max-height:92vh;overflow:auto;background:#fff;color:#050505;padding:clamp(28px,5vw,52px);box-shadow:0 24px 80px #0008}
 .checkout-card h3{font-size:clamp(48px,7vw,82px);line-height:.84;letter-spacing:-.075em;margin:16px 0 30px}
-.checkout-close{position:absolute;right:18px;top:15px;border:0;background:transparent;font-size:34px;line-height:1;cursor:pointer;color:#050505}
+.checkout-header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;min-width:0}.checkout-header>.eyebrow{display:block;min-width:0;overflow-wrap:anywhere;padding-top:2px}.checkout-close{position:relative;flex:0 0 40px;width:40px;height:40px;margin:-8px -8px 0 0;border:0;background:transparent;font-size:34px;line-height:1;cursor:pointer;color:#050505;display:grid;place-items:center}
 .checkout-form{display:flex;flex-direction:column;gap:12px}
 .checkout-form input,.checkout-form select{width:100%;border:1px solid #d7d7d7;background:#f7f7f7;color:#050505;padding:15px 14px;font:600 12px Inter,sans-serif;letter-spacing:.02em;outline:none}
 .checkout-form input:focus,.checkout-form select:focus{border-color:#ff1616}
 .checkout-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.checkout-total{display:flex;justify-content:space-between;align-items:center;border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding:18px 0;margin-top:6px;font:700 12px "DM Mono",monospace}
+.checkout-summary{display:flex;flex-direction:column;gap:8px;margin-top:4px}.checkout-summary-line{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;font:700 10px "DM Mono",monospace;line-height:1.4}.checkout-summary-line span{min-width:0;overflow-wrap:anywhere}.checkout-summary-line strong{white-space:nowrap;font:800 12px Inter,sans-serif}.checkout-summary-line.discount{color:#16803c}.discount-code-field{display:flex;flex-direction:column;gap:7px;min-width:0}.discount-code-field label{font:700 9px "DM Mono",monospace;letter-spacing:.08em}.discount-code-field small{font-size:10px;line-height:1.35;color:#16803c}.checkout-total{display:flex;justify-content:space-between;align-items:center;gap:12px;border-top:1px solid #ddd;border-bottom:1px solid #ddd;padding:18px 0;margin-top:6px;font:700 12px "DM Mono",monospace}.checkout-total span{min-width:0;overflow-wrap:anywhere}
 .checkout-total strong{font-size:24px;font-family:Inter,sans-serif}
 .checkout-pay{border:0;cursor:pointer;background:#ff1616!important;color:#fff!important;width:100%;justify-content:center;margin-top:4px}
 .checkout-pay:disabled{opacity:.6;cursor:wait}
@@ -416,14 +416,12 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
     display:flex;
     align-items:flex-start;
     justify-content:center;
-    padding:12px;
-    padding-top:max(12px,env(safe-area-inset-top));
-    padding-bottom:max(12px,env(safe-area-inset-bottom));
+    padding: max(12px,env(safe-area-inset-top)) 12px max(12px,env(safe-area-inset-bottom));
   }
   .checkout-card{
     width:100%;
     max-width:430px;
-    max-height:calc(100dvh - 24px);
+    max-height:calc(var(--checkout-viewport-height, 100dvh) - max(24px, env(safe-area-inset-top)) - max(24px, env(safe-area-inset-bottom)));
     height:auto;
     margin:0;
     padding:24px 16px 20px;
@@ -498,3 +496,36 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
 .founder-delivery-option small{font:500 10px Inter,sans-serif;color:#666;line-height:1.35}
 .founder-delivery-option label>b{font:800 12px Inter,sans-serif;white-space:nowrap}
 @media(max-width:380px){.founder-delivery-option{padding:11px}.founder-delivery-option label{gap:8px}.founder-delivery-option strong{font-size:9px}.founder-delivery-option label>b{font-size:11px}}
+
+
+/* STOP AT 11 — isolated campaign section */
+.stop11-section{padding:clamp(72px,9vw,132px) 0;border-top:1px solid #252525;border-bottom:1px solid #252525;position:relative;overflow:hidden;background:#050505;color:#fff}
+.stop11-wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(28px,7vw,100px);align-items:center}
+.stop11-copy .eyebrow{font-family:"DM Mono",monospace}
+.stop11-copy h2{font-family:"Anton",Impact,sans-serif;font-size:clamp(72px,10vw,150px);line-height:.82;letter-spacing:-.025em;margin:20px 0;color:#ff1616}
+.stop11-sub{font:900 clamp(20px,2.5vw,34px)/1 Inter,sans-serif;letter-spacing:-.045em;margin:25px 0 18px}
+.stop11-description{font-size:clamp(15px,1.4vw,18px);line-height:1.55;max-width:560px;color:#c7c7c7}
+.stop11-meta{display:flex;flex-direction:column;gap:10px;margin:30px 0;font:500 9px "DM Mono",monospace;letter-spacing:.09em}
+.stop11-meta strong{color:#ff1616;font-size:11px}
+.stop11-claimed{max-width:440px;font:500 10px "DM Mono",monospace;letter-spacing:.06em}
+.stop11-progress{height:5px;background:#2a2a2a;margin-top:11px;overflow:hidden}
+.stop11-progress i{display:block;height:100%;background:#ff1616;transition:width .35s ease}
+.stop11-game{min-width:0;padding:clamp(24px,4vw,45px);border:1px solid #383838;background:radial-gradient(ellipse at top,#251010 0%,#090909 64%);text-align:center}
+.stop11-timer{font:500 clamp(58px,8vw,100px)/1 "DM Mono",monospace;letter-spacing:-.09em;font-variant-numeric:tabular-nums;color:#fff;white-space:nowrap}
+.stop11-target{margin:17px 0 25px;color:#9a9a9a;font:500 10px "DM Mono",monospace;letter-spacing:.12em}
+.stop11-target b{color:#ff1616;margin-left:8px}
+.stop11-action{width:100%;min-height:58px;border:0;background:#ff1616;color:#fff;font:900 12px Inter,sans-serif;letter-spacing:.08em;cursor:pointer;transition:transform .2s ease,background .2s ease}
+.stop11-action:hover:not(:disabled){transform:translateY(-2px);background:#df0000}
+.stop11-action:disabled{opacity:.65;cursor:wait}
+.stop11-action.stop{background:#fff;color:#050505}
+.stop11-result{padding:22px 0 0}
+.stop11-result h3{font:900 clamp(20px,2.5vw,32px)/.98 Inter,sans-serif;letter-spacing:-.05em;margin:0 0 12px}
+.stop11-result>strong{display:block;color:#ff1616;font:900 12px Inter,sans-serif;letter-spacing:.05em;margin:12px 0}
+.stop11-result p{font-size:13px;line-height:1.45;color:#c7c7c7}
+.stop11-result.win h3{color:#fff}
+.stop11-result.win>strong{font-size:16px}
+.stop11-code{display:inline-block;margin:12px 0;padding:12px 16px;background:#fff;color:#050505;font:900 16px "DM Mono",monospace;letter-spacing:.05em;overflow-wrap:anywhere}
+.stop11-result small{display:block;color:#aaa;font:500 9px/1.5 "DM Mono",monospace}
+.stop11-error{font-size:11px;line-height:1.45;color:#ff7777}
+@media(max-width:900px){.stop11-wrap{grid-template-columns:1fr;gap:36px}.stop11-copy h2{font-size:clamp(76px,13vw,120px)}.stop11-game{width:100%;max-width:620px;margin:auto}}
+@media(max-width:600px){.stop11-section{padding:72px 0}.stop11-copy h2{font-size:clamp(70px,19vw,100px);margin:18px 0}.stop11-sub{font-size:22px}.stop11-meta{font-size:8px}.stop11-game{padding:24px 16px}.stop11-timer{font-size:clamp(54px,17vw,78px)}.stop11-action{min-height:56px}.stop11-result h3{font-size:23px}}
