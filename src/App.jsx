@@ -52,31 +52,31 @@ export default function App() {
         body{font-family:Inter,Arial,sans-serif}
         a{color:inherit}
         .maintenance-page{min-height:100svh;background:#f4f1eb;color:#101010;display:flex;flex-direction:column;overflow:hidden}
-        .maintenance-header{height:76px;padding:0 clamp(20px,5vw,72px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d8d4cd}
+        .maintenance-header{height:84px;padding:0 clamp(24px,6vw,84px);display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #d8d4cd}
         .maintenance-logo{font-family:Anton,Impact,sans-serif;font-size:clamp(25px,3vw,34px);letter-spacing:-.035em;line-height:1}
         .maintenance-logo span{color:#f10b0b}
         .maintenance-status{font:500 10px 'DM Mono',monospace;letter-spacing:.12em;text-transform:uppercase;display:flex;align-items:center;gap:9px}
         .maintenance-dot{width:8px;height:8px;border-radius:50%;background:#f10b0b;box-shadow:0 0 0 4px #f10b0b1a}
-        .maintenance-main{width:min(1180px,100%);margin:0 auto;padding:clamp(48px,8vh,88px) clamp(20px,5vw,60px) 48px;flex:1}
-        .maintenance-kicker{font:500 10px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;display:flex;align-items:center;gap:11px;margin-bottom:22px}
+        .maintenance-main{width:min(1240px,100%);margin:0 auto;padding:clamp(62px,9vh,104px) clamp(24px,6vw,76px) 76px;flex:1}
+        .maintenance-kicker{font:500 10px 'DM Mono',monospace;letter-spacing:.18em;text-transform:uppercase;display:flex;align-items:center;gap:13px;margin-bottom:30px}
         .maintenance-kicker:before{content:'';display:block;width:27px;height:2px;background:#f10b0b}
-        .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 180px;align-items:end;gap:20px}
-        .maintenance-title{font:clamp(70px,12vw,154px)/.82 Anton,Impact,sans-serif;letter-spacing:-.035em;text-transform:uppercase;margin:0;max-width:900px}
-        .maintenance-title .out-of-stock-line{display:block;color:#f10b0b;background:transparent;position:relative}
-        .hero-side{padding-bottom:8px}
-        .hero-side-mark{width:100px;height:100px;border:1.5px solid #101010;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font:17px/.95 Anton,Impact,sans-serif;transform:rotate(8deg);margin-bottom:22px}
+        .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) 170px;align-items:end;gap:42px}
+        .maintenance-title{font:clamp(72px,11.5vw,148px)/.9 Anton,Impact,sans-serif;letter-spacing:-.035em;text-transform:uppercase;margin:0;max-width:920px}
+        .maintenance-title .out-of-stock-line{display:block;color:#f10b0b;background:transparent;position:relative;margin:.035em 0}
+        .hero-side{padding-bottom:10px;max-width:170px}
+        .hero-side-mark{width:112px;height:112px;border:1.5px solid #101010;border-radius:50%;display:flex;align-items:center;justify-content:center;text-align:center;font:18px/.98 Anton,Impact,sans-serif;transform:rotate(8deg);margin-bottom:25px}
         .hero-side p{font:10px/1.6 'DM Mono',monospace;text-transform:uppercase;letter-spacing:.08em;color:#68645e;margin:0}
-        .intro-row{display:flex;justify-content:space-between;align-items:flex-start;gap:28px;border-top:1px solid #d8d4cd;margin-top:44px;padding-top:22px}
-        .intro-row h2{font-size:clamp(20px,2.5vw,29px);line-height:1.1;letter-spacing:-.055em;margin:0 0 10px;font-weight:900}
-        .intro-row p{max-width:520px;font-size:14px;line-height:1.75;color:#65615b;margin:0}
-        .game-section{margin-top:58px;display:grid;grid-template-columns:.78fr 1.22fr;background:#101010;color:#fff;min-height:290px}
-        .game-info{padding:clamp(24px,4vw,42px);display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #3c3c3c}
+        .intro-row{display:flex;justify-content:space-between;align-items:flex-start;gap:32px;border-top:1px solid #d8d4cd;margin-top:62px;padding-top:30px}
+        .intro-row h2{font-size:clamp(22px,2.8vw,32px);line-height:1.08;letter-spacing:-.055em;margin:0 0 14px;font-weight:900}
+        .intro-row p{max-width:590px;font-size:15px;line-height:1.85;color:#65615b;margin:0}
+        .game-section{margin-top:72px;display:grid;grid-template-columns:.86fr 1.14fr;background:#101010;color:#fff;min-height:360px;box-shadow:8px 8px 0 #f10b0b}
+        .game-info{padding:clamp(30px,4.5vw,52px);display:flex;flex-direction:column;justify-content:space-between;border-right:1px solid #3c3c3c}
         .game-eyebrow{font:500 10px 'DM Mono',monospace;letter-spacing:.16em;text-transform:uppercase;color:#ff3838}
-        .game-info h2{font:clamp(38px,5.5vw,66px)/.9 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:-.02em;margin:24px 0 14px}
-        .game-info p{font-size:13px;line-height:1.7;color:#b8b8b8;margin:0;max-width:310px}
-        .game-area{padding:clamp(22px,4vw,42px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:290px}
+        .game-info h2{font:clamp(42px,5.8vw,72px)/.94 Anton,Impact,sans-serif;text-transform:uppercase;letter-spacing:-.02em;margin:30px 0 18px}
+        .game-info p{font-size:14px;line-height:1.8;color:#b8b8b8;margin:0;max-width:330px}
+        .game-area{padding:clamp(28px,4.5vw,50px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:360px}
         .game-instruction{font:500 10px 'DM Mono',monospace;letter-spacing:.13em;text-transform:uppercase;color:#a7a7a7;margin-bottom:18px}
-        .reaction-target{width:min(190px,48vw);height:min(190px,48vw);max-width:190px;max-height:190px;border-radius:50%;border:0;background:#2b2b2b;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;cursor:pointer;transition:background .15s,transform .15s;box-shadow:inset 0 0 0 1px #484848}
+        .reaction-target{width:min(200px,48vw);height:min(200px,48vw);max-width:200px;max-height:200px;border-radius:50%;border:0;background:#2b2b2b;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:background .15s,transform .15s;box-shadow:inset 0 0 0 1px #484848}
         .reaction-target:active{transform:scale(.97)}
         .reaction-target.waiting{background:#f4b400;color:#101010;box-shadow:0 0 0 8px #f4b40020}
         .reaction-target.go{background:#f10b0b;color:white;box-shadow:0 0 0 10px #f10b0b26,0 0 50px #f10b0b40}
@@ -89,7 +89,7 @@ export default function App() {
         .game-button{border:1px solid #fff;background:#fff;color:#101010;padding:12px 18px;font:16px Anton,Impact,sans-serif;text-transform:uppercase;cursor:pointer;min-height:44px}
         .game-button.secondary{background:transparent;color:white}
         .game-record{font:10px 'DM Mono',monospace;letter-spacing:.08em;text-transform:uppercase;color:#888;margin-top:14px}
-        .maintenance-footer{padding:22px clamp(20px,5vw,72px);background:#101010;color:#888;display:flex;justify-content:space-between;align-items:center;gap:24px;font:500 9px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
+        .maintenance-footer{padding:30px clamp(24px,6vw,84px);background:#101010;color:#888;display:flex;justify-content:space-between;align-items:center;gap:30px;font:500 9px 'DM Mono',monospace;letter-spacing:.1em;text-transform:uppercase}
         .footer-contact{display:flex;flex-direction:column;gap:8px;letter-spacing:0;text-transform:none}
         .footer-contact strong{color:#fff;font:500 9px 'DM Mono',monospace;letter-spacing:.14em;text-transform:uppercase}
         .footer-contact a{color:#d8d8d8;text-decoration:none;font:12px Inter,Arial,sans-serif}
@@ -99,11 +99,11 @@ export default function App() {
         .whatsapp-float svg{width:19px;height:19px;fill:currentColor}
         @media(max-width:700px){
           .maintenance-header{height:66px;padding:0 18px}.maintenance-status{font-size:8px;letter-spacing:.07em;gap:7px}
-          .maintenance-main{padding:54px 18px 34px}.hero-grid{grid-template-columns:1fr}.maintenance-title{font-size:clamp(65px,15.4vw,105px);line-height:.86}
-          .hero-side{display:flex;align-items:center;gap:16px;padding:0;margin-top:22px}.hero-side-mark{width:64px;height:64px;flex:0 0 64px;font-size:12px;margin:0}.hero-side p{max-width:190px}
-          .intro-row{margin-top:30px;display:block;padding-top:18px}.intro-row p{font-size:13px}
-          .game-section{margin-top:38px;grid-template-columns:1fr}.game-info{border-right:0;border-bottom:1px solid #3c3c3c;padding:22px}.game-info h2{margin:15px 0 10px;font-size:48px}.game-area{padding:24px 18px;min-height:285px}
-          .maintenance-footer{padding:22px 18px 86px;align-items:flex-start;flex-direction:column;gap:20px}.footer-contact a{font-size:12px}
+          .maintenance-main{padding:58px 20px 54px}.hero-grid{grid-template-columns:1fr;gap:0}.maintenance-title{font-size:clamp(61px,14.7vw,100px);line-height:.92;letter-spacing:-.04em}
+          .hero-side{display:flex;align-items:center;gap:18px;padding:0;margin-top:28px;max-width:none}.hero-side-mark{width:70px;height:70px;flex:0 0 70px;font-size:12px;margin:0}.hero-side p{max-width:220px}
+          .intro-row{margin-top:38px;display:block;padding-top:24px}.intro-row p{font-size:14px;line-height:1.8}
+          .game-section{margin-top:46px;grid-template-columns:1fr;min-height:0;box-shadow:5px 5px 0 #f10b0b}.game-info{border-right:0;border-bottom:1px solid #3c3c3c;padding:26px 24px}.game-info h2{margin:20px 0 14px;font-size:52px}.game-area{padding:30px 18px;min-height:330px}
+          .maintenance-footer{padding:28px 20px 92px;align-items:flex-start;flex-direction:column;gap:22px}.footer-contact a{font-size:12px}
           .whatsapp-float{right:12px;bottom:12px;padding:11px 14px}
         }
         @media(prefers-reduced-motion:no-preference){.maintenance-main{animation:arrive .6s ease-out both}@keyframes arrive{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}}
