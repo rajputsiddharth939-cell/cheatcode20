@@ -41,6 +41,11 @@ export default async function handler(req, res) {
     const body = await getRequestBody(req);
     const customer = body.customer || {};
     const items = Array.isArray(body.items) ? body.items : [];
+    const founderDelivery = body.founder_delivery === true;
+    const city = String(customer.city || "Ahmedabad").trim();
+    if (founderDelivery && city.toLowerCase() !== "ahmedabad") {
+      return respond(res, 400, { error: "Founder hand-delivery is available exclusively in Ahmedabad." });
+    }
 
     if (!customer.name || !customer.phone || !customer.address || !customer.pincode) {
       return respond(res, 400, { error: "Name, phone, address and pincode are required." });
@@ -57,7 +62,10 @@ export default async function handler(req, res) {
     });
 
     const subtotal = normalized.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const amount = subtotal * 100;
+    const deliveryCharge = founderDelivery ? 5000 : 0;
+    const total = subtotal + deliveryCharge;
+    const storedItems = founderDelivery ? [...normalized, { name: "Hand-delivered by the Founder", quantity: 1, price: 5000 }] : normalized;
+    const amount = total * 100;
     const orderNumber = "CC" + Date.now().toString().slice(-7);
     const receipt = "cc_" + Date.now();
 
@@ -83,14 +91,14 @@ export default async function handler(req, res) {
         phone: String(customer.phone).trim(),
         email: customer.email ? String(customer.email).trim() : null,
         address: String(customer.address).trim(),
-        city: customer.city ? String(customer.city).trim() : "Ahmedabad",
+        city,
         state: customer.state ? String(customer.state).trim() : "Gujarat",
         pincode: String(customer.pincode).trim(),
-        items: normalized,
+        items: storedItems,
         subtotal,
         discount: 0,
-        delivery_charge: 0,
-        total_amount: subtotal,
+        delivery_charge: deliveryCharge,
+        total_amount: total,
         razorpay_order_id: data.id,
         payment_status: "pending",
         order_status: "pending"
