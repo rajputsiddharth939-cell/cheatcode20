@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Anton&family=DM+Mono:wght@400;500&family=Inter:wght@500;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@500;700;800;900&display=swap');
 
 :root{
   --red:#ff1616;
@@ -534,4 +534,6 @@ html,body,#root,.site,main{width:100%;max-width:100%;min-width:0}
 @media(max-width:600px){.stop11-section{padding:72px 0}.stop11-copy h2{font-size:clamp(70px,19vw,100px);margin:18px 0}.stop11-sub{font-size:22px}.stop11-meta{font-size:8px}.stop11-game{padding:24px 16px}.stop11-timer{font-size:clamp(54px,17vw,78px)}.stop11-action{min-height:56px}.stop11-result h3{font-size:23px}}
 
 /* Keep the modal inside the live visual viewport when the iOS keyboard is open. */
-.checkout-overlay{top:var(--checkout-viewport-offset-top,0px);bottom:auto;height:var(--checkout-viewport-height,100dvh)}
+@media(max-width:600px){
+  .checkout-overlay{top:var(--checkout-viewport-offset-top,0px);bottom:auto;height:var(--checkout-viewport-height,100dvh)}
+}
