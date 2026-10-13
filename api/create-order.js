@@ -63,7 +63,7 @@ export default async function handler(req, res) {
     });
 
     const subtotal = normalized.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const discountAmount = discountCode ? Math.round(subtotal * 0.5) : 0;
+    const discountAmount = discountCode ? subtotal / 2 : 0;
     const deliveryCharge = founderDelivery ? 5000 : 0;
     const total = subtotal - discountAmount + deliveryCharge;
     const storedItems = founderDelivery ? [...normalized, { name: "Hand-delivered by the Founder", quantity: 1, price: 5000 }] : normalized;

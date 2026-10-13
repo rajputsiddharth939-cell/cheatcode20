@@ -22,7 +22,7 @@ function CheckoutButton(){
  const [discountCode,setDiscountCode]=useState("");
  const founderDeliveryAvailable=customer.city.trim().toLowerCase()==="ahmedabad";
  const productSubtotal=149*quantity;
- const discountAmount=discountCode.trim()?Math.round(productSubtotal*0.5):0;
+ const discountAmount=discountCode.trim()?productSubtotal*0.5:0;
  const packTotal=productSubtotal-discountAmount+(founderDelivery?5000:0);
  const [flavour,setFlavour]=useState("Belgian Chocolate");
   useEffect(()=>{try{const saved=localStorage.getItem("cc_stop11_discount_code");if(saved)setDiscountCode(saved)}catch{}const apply=e=>setDiscountCode(String(e.detail?.code||""));window.addEventListener("stop11:discount",apply);return()=>window.removeEventListener("stop11:discount",apply)},[]);
@@ -115,7 +115,7 @@ function CheckoutButton(){
  </div>
  <div className="founder-delivery-option"><label className={!founderDeliveryAvailable?"unavailable":""}><input type="checkbox" checked={founderDelivery} disabled={!founderDeliveryAvailable} onChange={e=>setFounderDelivery(e.target.checked)}/><span><strong>HAND-DELIVERED BY THE FOUNDER</strong><small>Personally delivered by the founder, exclusively in Ahmedabad.</small></span><b>₹5,000.00</b></label></div>
  <div className="discount-code-field"><label htmlFor="stop11-code">STOP AT 11 DISCOUNT CODE</label><input id="stop11-code" value={discountCode} onChange={e=>setDiscountCode(e.target.value.toUpperCase().replace(/\s/g,""))} placeholder="ENTER YOUR WINNING CODE" autoCapitalize="characters"/>{discountCode.trim()&&<small>50% discount is confirmed by the server at checkout.</small>}</div>
- <div className="checkout-summary"><div className="checkout-summary-line"><span>PRODUCTS · {quantity} TUBS</span><strong>₹{productSubtotal.toLocaleString("en-IN")}</strong></div>{discountCode.trim()&&<div className="checkout-summary-line discount"><span>STOP AT 11 · 50% OFF</span><strong>−₹{discountAmount.toLocaleString("en-IN")}</strong></div>}{founderDelivery&&<div className="checkout-summary-line"><span>FOUNDER DELIVERY</span><strong>₹5,000.00</strong></div>}<div className="checkout-total"><span>TOTAL TO PAY</span><strong>₹{packTotal.toLocaleString("en-IN")}</strong></div></div>
+ <div className="checkout-summary"><div className="checkout-summary-line"><span>PRODUCTS · {quantity} TUBS</span><strong>₹{productSubtotal.toLocaleString("en-IN")}</strong></div>{discountCode.trim()&&<div className="checkout-summary-line discount"><span>STOP AT 11 · 50% OFF</span><strong>−₹{discountAmount.toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2})}</strong></div>}{founderDelivery&&<div className="checkout-summary-line"><span>FOUNDER DELIVERY</span><strong>₹5,000.00</strong></div>}<div className="checkout-total"><span>TOTAL TO PAY</span><strong>₹{packTotal.toLocaleString("en-IN",{minimumFractionDigits:discountCode.trim()?2:0,maximumFractionDigits:2})}</strong></div></div>
  <button className="pill checkout-pay" type="submit" disabled={busy}>{busy?"PROCESSING…":`PAY ₹${packTotal.toLocaleString("en-IN")} →`}</button>
  </form>
  </div>
