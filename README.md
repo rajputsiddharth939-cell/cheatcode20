@@ -17,6 +17,7 @@ Premium high-protein ice cream launch website for CHEATCODE.
 ```bash
 npm install
 npm run dev
+npm run start
 ```
 
 ## Build
