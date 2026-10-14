@@ -308,7 +308,6 @@ main.enter{animation:pageIn .45s var(--ease)}
 .chip{font-size:12px;font-weight:600;line-height:1.2;padding:5px 9px;border-radius:4px;background:var(--soft);color:var(--ink);white-space:nowrap}
 .card-buy{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-top:auto;padding-top:var(--s1)}
 .card-price{font-family:var(--display);font-size:28px;line-height:1}
-.card-price small{display:block;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink-3);margin-top:6px;letter-spacing:0}
 .card .btn{min-height:52px;padding:0 var(--s4);font-size:17px}
 
 /* quantity selector */
@@ -1212,7 +1211,7 @@ function cardHTML(p) {
       <div class="card-macros"><span class="chip">10g protein</span><span class="chip">No added sugar</span><span class="chip">High fiber</span></div>
       ${qtyHTML(p.slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
-        <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
+        <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s></span>
         ${soldOut(p.slug) ? soldOutBtn() : `<button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>`}
       </div>
     </div>
@@ -1422,7 +1421,7 @@ function panelHTML(p, i) {
       <p class="fp-desc">${esc(p.short)}</p>
       ${qtyHTML(p.slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
-        <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
+        <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s></span>
         ${soldOut(p.slug) ? soldOutBtn() : `<button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>`}
       </div>
     </div>
@@ -1477,7 +1476,7 @@ function spotlightHTML(slug = 'midnight-cookies') {
       </div>
       ${qtyHTML(slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
-        <span class="card-price" data-price="${slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
+        <span class="card-price" data-price="${slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s></span>
         ${soldOut(slug) ? soldOutBtn() : `<button class="btn btn-red" data-action="add-pack" data-slug="${slug}"><span>Add ${q} tubs</span></button>`}
       </div>
     </div>
@@ -1567,7 +1566,7 @@ ${finalHTML()}`
       ${stockTag(p)}
       <p class="pdp-desc t-bl t-muted">${esc(p.desc)}</p>
       <div class="pdp-trio" aria-label="In every tub"><div><strong>10G</strong><span>Protein per tub</span></div><div><strong>0G</strong><span>Added sugar</span></div><div><strong>HIGH</strong><span>Fiber</span></div></div>
-      <div class="pdp-price"><span class="t-dm" data-price="${slug}">${money(packPrice(q))}</span><span class="t-bs t-muted" data-pricenote="${slug}">${money(packComparePrice(q))} crossed out · ₹99/tub pre-order price · valid till ${CONFIG.preOrderEnds}</span></div>
+      <div class="pdp-price"><span class="t-dm" data-price="${slug}">${money(packPrice(q))}</span><s class="t-bs t-muted" data-pricenote="${slug}">${money(packComparePrice(q))}</s></div>
       <div class="pdp-buy" id="pdp-buy">
         <p class="qty-hint">Choose your pack. Minimum 3 tubs.</p>
         ${qtyHTML(slug, q, { lg: true, label: `Pack size for ${p.name}` })}
@@ -2298,7 +2297,7 @@ function setQtyUI(slug, q) {
     el.firstChild.textContent = money(packPrice(q));
     const was = $('s', el); if (was) was.textContent = money(packComparePrice(q));
   });
-  $$(`[data-pricenote="${slug}"]`).forEach(el => el.textContent = `${money(packComparePrice(q))} crossed out · ₹99/tub pre-order price · valid till ${CONFIG.preOrderEnds}`);
+  $$(`[data-pricenote="${slug}"]`).forEach(el => el.textContent = money(packComparePrice(q)));
   $$(`main [data-action="add-pack"][data-slug="${slug}"] span`).forEach(s => s.textContent = s.closest('.pdp-buy') ? `Add ${q} tubs to cart` : `Add ${q} tubs`);
   updateSticky();
 }
