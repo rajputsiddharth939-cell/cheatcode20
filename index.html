@@ -2294,7 +2294,10 @@ function setQtyUI(slug, q) {
     const ind = $('.qty-ind', g); ind.style.transform = `translateX(${PACKS.indexOf(q) * 100}%)`; ind.style.opacity = '';
     $$('[role="radio"]', g).forEach(b => { const on = +b.dataset.qty === q; b.setAttribute('aria-checked', on); b.tabIndex = on ? 0 : -1; });
   });
-  $$(`[data-price="${slug}"]`).forEach(el => { el.firstChild.textContent = money(packPrice(q)); });
+  $$(`[data-price="${slug}"]`).forEach(el => {
+    el.firstChild.textContent = money(packPrice(q));
+    const was = $('s', el); if (was) was.textContent = money(packComparePrice(q));
+  });
   $$(`[data-pricenote="${slug}"]`).forEach(el => el.textContent = `${money(packComparePrice(q))} crossed out · ₹99/tub pre-order price · valid till ${CONFIG.preOrderEnds}`);
   $$(`main [data-action="add-pack"][data-slug="${slug}"] span`).forEach(s => s.textContent = s.closest('.pdp-buy') ? `Add ${q} tubs to cart` : `Add ${q} tubs`);
   updateSticky();

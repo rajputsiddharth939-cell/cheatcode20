@@ -18,11 +18,16 @@ async function getRequestBody(req) {
   });
 }
 
-const PRICE = 149;
-const VALID_FLAVOURS = new Set([
-  "Vanilla Crunch", "Guava Chilli", "Belgian Chocolate",
-  "Blueberry Cheesecake", "Midnight Cookies"
-]);
+// Keep in sync with CONFIG in index.html
+const PRICE = 99;
+const PACK_SIZES = new Set([3, 6, 9, 12]);
+const DELIVERY_FEE = 60;
+const FREE_DELIVERY_FROM = 9;
+const FLAVOURS = {
+  "vanilla-crunch": "Vanilla Crunch", "guava-chilli": "Guava Chilli", "belgian-chocolate": "Belgian Chocolate",
+  "blueberry-cheesecake": "Blueberry Cheesecake", "midnight-cookies": "Midnight Cookies"
+};
+const VALID_FLAVOURS = new Set(Object.values(FLAVOURS));
 const OUT_OF_STOCK = { "vanilla-crunch": "Vanilla Crunch" };
 const hasOutOfStock = item =>
   Object.entries(OUT_OF_STOCK).some(([slug, name]) =>
@@ -53,16 +58,25 @@ export default async function handler(req, res) {
     if (items.some(hasOutOfStock)) return respond(res, 400, { error: "Vanilla Crunch is out of stock. Please remove it from your cart." });
 
     const normalized = items.map(item => {
-      const name = String(item.name || "").trim();
       const quantity = Number(item.quantity);
-      if (!VALID_FLAVOURS.has(name) || !Number.isInteger(quantity) || quantity < 1 || quantity > 20) {
-        throw new Error("Invalid product selection.");
+      if (!PACK_SIZES.has(quantity)) throw new Error("Invalid product selection.");
+      if (item.type === "box") {
+        const mix = Object.entries(item.items && typeof item.items === "object" ? item.items : {});
+        const valid = mix.length && mix.every(([slug, n]) => FLAVOURS[slug] && Number.isInteger(n) && n > 0)
+          && mix.reduce((sum, [, n]) => sum + n, 0) === quantity;
+        if (!valid) throw new Error("Invalid product selection.");
+        return { name: "Custom Box", quantity, price: PRICE, flavours: Object.fromEntries(mix.map(([slug, n]) => [FLAVOURS[slug], n])) };
       }
+      const name = String(item.name || "").trim();
+      if (!VALID_FLAVOURS.has(name)) throw new Error("Invalid product selection.");
       return { name, quantity, price: PRICE };
     });
 
-    const subtotal = normalized.reduce((sum, item) => sum + item.price * item.quantity, 0);
-    const amount = subtotal * 100;
+    const tubs = normalized.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = tubs * PRICE;
+    const deliveryCharge = tubs >= FREE_DELIVERY_FROM ? 0 : DELIVERY_FEE;
+    const total = subtotal + deliveryCharge;
+    const amount = total * 100;
     const orderNumber = "CC" + Date.now().toString().slice(-7);
     const receipt = "cc_" + Date.now();
 
@@ -94,8 +108,8 @@ export default async function handler(req, res) {
         items: normalized,
         subtotal,
         discount: 0,
-        delivery_charge: 0,
-        total_amount: subtotal,
+        delivery_charge: deliveryCharge,
+        total_amount: total,
         razorpay_order_id: data.id,
         payment_status: "pending",
         order_status: "pending"
