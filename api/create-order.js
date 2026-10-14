@@ -23,6 +23,10 @@ const VALID_FLAVOURS = new Set([
   "Vanilla Crunch", "Guava Chilli", "Belgian Chocolate",
   "Blueberry Cheesecake", "Midnight Cookies"
 ]);
+const OUT_OF_STOCK = { "vanilla-crunch": "Vanilla Crunch" };
+const hasOutOfStock = item =>
+  Object.entries(OUT_OF_STOCK).some(([slug, name]) =>
+    String(item.name || "").trim() === name || item.slug === slug || item.items?.[slug] > 0);
 
 export default async function handler(req, res) {
   if (req.method === "OPTIONS") {
@@ -46,6 +50,7 @@ export default async function handler(req, res) {
       return respond(res, 400, { error: "Name, phone, address and pincode are required." });
     }
     if (!items.length || items.length > 20) return respond(res, 400, { error: "Please select a valid product quantity." });
+    if (items.some(hasOutOfStock)) return respond(res, 400, { error: "Vanilla Crunch is out of stock. Please remove it from your cart." });
 
     const normalized = items.map(item => {
       const name = String(item.name || "").trim();

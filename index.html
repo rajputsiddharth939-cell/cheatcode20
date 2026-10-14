@@ -301,6 +301,10 @@ main.enter{animation:pageIn .45s var(--ease)}
 .card-name a:hover{color:var(--red)}
 .card-desc{color:var(--ink-2);font-size:15px;line-height:1.5;min-height:3em}
 .card-macros{display:flex;gap:6px;flex-wrap:wrap}
+.stock-tag{display:inline-block;width:fit-content;margin:6px 0 2px;font-size:11px;font-weight:800;line-height:1.2;letter-spacing:.06em;text-transform:uppercase;padding:4px 8px;border-radius:4px;border:1px solid currentColor;color:var(--red-ink);background:#fff}
+.stock-tag.out{background:var(--ink);border-color:var(--ink);color:#fff}
+.b-row.is-out{opacity:.6}
+.b-row .stock-tag{margin:4px 0}
 .chip{font-size:12px;font-weight:600;line-height:1.2;padding:5px 9px;border-radius:4px;background:var(--soft);color:var(--ink);white-space:nowrap}
 .card-buy{display:flex;align-items:center;justify-content:space-between;gap:var(--s2);margin-top:auto;padding-top:var(--s1)}
 .card-price{font-family:var(--display);font-size:28px;line-height:1}
@@ -987,10 +991,12 @@ const packComparePrice = tubs => tubs * CONFIG.comparePricePerTub;
 
 /* Facts below come from the packaging: 10g protein, 125 ml, high fiber,
    zero added sugar, low carb. Anything not on the pack is left null and
-   shows as "to be added" on the site rather than being invented. */
+   shows as "to be added" on the site rather than being invented.
+   stock: 'out' blocks buying the flavour, 'limited' shows a low-stock tag. */
 const PRODUCTS = [
   {
     slug: 'vanilla-crunch',
+    stock: 'out',
     name: 'Vanilla Crunch',
     short: 'Creamy vanilla with a buttery, golden crunch.',
     desc: 'The classic, upgraded. Smooth vanilla ice cream folded through with crunchy golden bits in every spoon.',
@@ -1001,6 +1007,7 @@ const PRODUCTS = [
   },
   {
     slug: 'belgian-chocolate',
+    stock: 'limited',
     name: 'Belgian Chocolate',
     short: 'Deep, dark and properly chocolatey.',
     desc: 'Rich chocolate ice cream for people who take chocolate seriously. Dense, dark, zero apologies.',
@@ -1011,6 +1018,7 @@ const PRODUCTS = [
   },
   {
     slug: 'guava-chilli',
+    stock: 'limited',
     name: 'Guava Chilli',
     short: 'Pink guava with a slow chilli kick.',
     desc: 'Sweet, fruity guava with a hit of chilli that shows up late and stays.',
@@ -1021,6 +1029,7 @@ const PRODUCTS = [
   },
   {
     slug: 'midnight-cookies',
+    stock: 'limited',
     name: 'Midnight Cookies',
     short: 'Cookies and cream for after hours.',
     desc: 'Creamy base loaded with dark cookie pieces. Built for 1 a.m. and every hour around it.',
@@ -1031,6 +1040,7 @@ const PRODUCTS = [
   },
   {
     slug: 'blueberry-cheesecake',
+    stock: 'limited',
     name: 'Blueberry Cheesecake',
     short: 'Tangy cheesecake, blueberry swirl, biscuit bits.',
     desc: 'Cheesecake ice cream rippled with blueberry and crumbly biscuit. Dessert inside a dessert.',
@@ -1077,6 +1087,11 @@ const PACKS = CONFIG.packSizes;
 const MAX = PACKS[PACKS.length - 1];
 const money = n => new Intl.NumberFormat(CONFIG.locale, { style: 'currency', currency: CONFIG.currency, maximumFractionDigits: 0 }).format(n);
 const P = slug => PRODUCTS.find(p => p.slug === slug);
+const soldOut = slug => P(slug)?.stock === 'out';
+const IN_STOCK = PRODUCTS.filter(p => p.stock !== 'out');
+const stockTag = p => p.stock === 'out' ? '<span class="stock-tag out">Out of stock</span>'
+  : p.stock === 'limited' ? '<span class="stock-tag">Limited stock available</span>' : '';
+const soldOutBtn = (cls = '') => `<button class="btn ${cls}" type="button" disabled><span>Out of stock</span></button>`;
 const sum = o => Object.values(o).reduce((a, b) => a + b, 0);
 const uid = () => Math.random().toString(36).slice(2, 9);
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -1104,8 +1119,8 @@ const Cart = {
   load() {
     const raw = store.get('cc_cart', []);
     this.items = (Array.isArray(raw) ? raw : []).filter(i => {
-      if (i.type === 'pack') return !!P(i.slug);
-      if (i.type === 'box' && i.items) { Object.keys(i.items).forEach(k => { if (!P(k) || !(i.items[k] > 0)) delete i.items[k]; }); return sum(i.items) > 0; }
+      if (i.type === 'pack') return !!P(i.slug) && !soldOut(i.slug);
+      if (i.type === 'box' && i.items) { Object.keys(i.items).forEach(k => { if (!P(k) || soldOut(k) || !(i.items[k] > 0)) delete i.items[k]; }); return sum(i.items) > 0; }
       return false;
     });
   },
@@ -1116,14 +1131,14 @@ const Cart = {
   subtotal() { return this.items.reduce((a, i) => a + this.lineTotal(i), 0); },
   invalid() { return this.items.filter(i => !Rules.isValid(this.tubs(i))); },
   addPack(slug, qty) {
-    if (!P(slug) || !Rules.isValid(qty)) return null;
+    if (!P(slug) || soldOut(slug) || !Rules.isValid(qty)) return null;
     const ex = this.items.find(i => i.type === 'pack' && i.slug === slug && i.qty + qty <= MAX);
     if (ex) { ex.qty += qty; this.save(); return ex.id; }
     const line = { id: uid(), type: 'pack', slug, qty };
     this.items.push(line); this.save(); return line.id;
   },
   addBox(items, replaceId) {
-    const clean = {}; Object.entries(items).forEach(([k, v]) => { if (P(k) && v > 0) clean[k] = v; });
+    const clean = {}; Object.entries(items).forEach(([k, v]) => { if (P(k) && !soldOut(k) && v > 0) clean[k] = v; });
     if (!Rules.isValid(sum(clean))) return null;
     const idx = replaceId ? this.items.findIndex(i => i.id === replaceId) : -1;
     const line = { id: replaceId && idx > -1 ? replaceId : uid(), type: 'box', items: clean };
@@ -1149,13 +1164,13 @@ const Box = {
   total() { return sum(this.items); },
   full() { return this.total() >= this.size; },
   ready() { return this.total() === this.size && Rules.isValid(this.total()); },
-  inc(slug) { if (this.full()) return false; this.items[slug] = (this.items[slug] || 0) + 1; this.last = slug; this.save(); return true; },
+  inc(slug) { if (this.full() || soldOut(slug)) return false; this.items[slug] = (this.items[slug] || 0) + 1; this.last = slug; this.save(); return true; },
   dec(slug) { if (!this.items[slug]) return; this.items[slug]--; if (!this.items[slug]) delete this.items[slug]; this.last = null; this.save(); },
   setSize(n) { if (!Rules.isValid(n) || n < this.total()) return false; this.size = n; this.save(); return true; },
   clear() { this.items = {}; this.editing = null; this.last = null; this.save(); },
-  fill() { while (!this.full()) { const p = PRODUCTS[Math.floor(Math.random() * PRODUCTS.length)].slug; this.items[p] = (this.items[p] || 0) + 1; } this.last = null; this.save(); }
+  fill() { while (!this.full()) { const p = IN_STOCK[Math.floor(Math.random() * IN_STOCK.length)].slug; this.items[p] = (this.items[p] || 0) + 1; } this.last = null; this.save(); }
 };
-Object.keys(Box.items).forEach(k => { if (!P(k)) delete Box.items[k]; });
+Object.keys(Box.items).forEach(k => { if (!P(k) || soldOut(k)) delete Box.items[k]; });
 if (!Rules.isValid(Box.size)) Box.size = PACKS[0];
 if (Box.total() > Box.size) Box.size = Rules.nextSize(Box.total());
 
@@ -1192,12 +1207,13 @@ function cardHTML(p) {
     </a>
     <div class="card-body">
       <h3 class="card-name"><a href="#/flavour/${p.slug}">${esc(p.name)}</a></h3>
+      ${stockTag(p)}
       <p class="card-desc">${esc(p.short)}</p>
       <div class="card-macros"><span class="chip">10g protein</span><span class="chip">No added sugar</span><span class="chip">High fiber</span></div>
       ${qtyHTML(p.slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
         <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
-        <button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>
+        ${soldOut(p.slug) ? soldOutBtn() : `<button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>`}
       </div>
     </div>
   </article>`;
@@ -1212,9 +1228,9 @@ function builderHTML() {
     <div class="b-pick">
       <p class="step"><span>1</span>Pick your flavours</p>
       <ul class="b-list">
-        ${PRODUCTS.map(p => `<li class="b-row" style="--tint:${p.tint}" data-brow="${p.slug}">
+        ${PRODUCTS.map(p => `<li class="b-row${soldOut(p.slug) ? ' is-out' : ''}" style="--tint:${p.tint}" data-brow="${p.slug}">
           <img class="b-thumb" src="${img(p.slug)}" alt="" loading="lazy" width="96" height="96">
-          <div><span class="b-name">${esc(p.name)}</span><span class="b-note">${esc(p.short)}</span></div>
+          <div><span class="b-name">${esc(p.name)}</span>${stockTag(p)}<span class="b-note">${esc(p.short)}</span></div>
           <div class="stepper">
             <button type="button" data-action="box-dec" data-slug="${p.slug}" aria-label="Remove one ${esc(p.name)}">${I.minus}</button>
             <output class="b-count" data-bcount="${p.slug}" aria-label="${esc(p.name)} in box">0</output>
@@ -1264,7 +1280,7 @@ function updateBuilder() {
     if (out.textContent !== String(n)) { out.textContent = n; out.classList.remove('bump'); void out.offsetWidth; out.classList.add('bump'); }
     $(`[data-brow="${p.slug}"]`, root).classList.toggle('has', n > 0);
     $(`[data-action="box-dec"][data-slug="${p.slug}"]`, root).disabled = n === 0;
-    $(`[data-action="box-inc"][data-slug="${p.slug}"]`, root).disabled = full;
+    $(`[data-action="box-inc"][data-slug="${p.slug}"]`, root).disabled = full || soldOut(p.slug);
   });
   $$('.b-size', root).forEach(b => {
     const n = +b.dataset.size, on = n === s;
@@ -1402,11 +1418,12 @@ function panelHTML(p, i) {
     </a>
     <div class="fp-body">
       <h3 class="fp-name"><a href="#/flavour/${p.slug}">${esc(p.name)}</a></h3>
+      ${stockTag(p)}
       <p class="fp-desc">${esc(p.short)}</p>
       ${qtyHTML(p.slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
         <span class="card-price" data-price="${p.slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
-        <button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>
+        ${soldOut(p.slug) ? soldOutBtn() : `<button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>`}
       </div>
     </div>
   </article>`;
@@ -1441,7 +1458,7 @@ const railHTML = (exclude, title = 'Meet your new obsession.') => {
 const buildSecHTML = (h = 'h2', pageTop = false) => `
 <section class="sec build-sec${pageTop ? ' page-top' : ''}" id="build" aria-labelledby="build-h">
   <div class="wrap">
-    ${secHead('Your craving. Your rules.', '<p class="t-bl t-muted">Mix any of the five flavours into one box of 3, 6, 9 or 12.</p>', { h, id: 'build-h' })}
+    ${secHead('Your craving. Your rules.', '<p class="t-bl t-muted">Mix any of the in-stock flavours into one box of 3, 6, 9 or 12.</p>', { h, id: 'build-h' })}
     ${builderHTML()}
   </div>
 </section>`;
@@ -1456,12 +1473,12 @@ function spotlightHTML(slug = 'midnight-cookies') {
       <h2 id="spot-h" class="t-dxl reveal">Built for 1&nbsp;a.m.</h2>
       <div class="spot-prod">
         <img src="${img(slug)}" alt="${esc(p.name)} tub" loading="lazy" width="641" height="800">
-        <div><p class="t-dm">${esc(p.name)}</p><p class="t-bm t-muted">${esc(p.short)}</p></div>
+        <div><p class="t-dm">${esc(p.name)}</p>${stockTag(p)}<p class="t-bm t-muted">${esc(p.short)}</p></div>
       </div>
       ${qtyHTML(slug, q, { label: `Pack size for ${p.name}` })}
       <div class="card-buy">
         <span class="card-price" data-price="${slug}"><strong>${money(packPrice(q))}</strong> <s>${money(packComparePrice(q))}</s><small>₹99 a tub · pre-order price</small></span>
-        <button class="btn btn-red" data-action="add-pack" data-slug="${slug}"><span>Add ${q} tubs</span></button>
+        ${soldOut(slug) ? soldOutBtn() : `<button class="btn btn-red" data-action="add-pack" data-slug="${slug}"><span>Add ${q} tubs</span></button>`}
       </div>
     </div>
   </div>
@@ -1530,7 +1547,7 @@ ${finalHTML()}`
       title: `${p.name} High Protein Ice Cream | CHEATCODE`,
       desc: `${p.name}: ${p.short} 10g protein per 125 ml tub, high fiber, zero added sugar. Buy in packs of 3, 6, 9 or 12.`,
       ld: { '@context': 'https://schema.org', '@type': 'Product', name: `CHEATCODE ${p.name}`, description: p.desc, brand: { '@type': 'Brand', name: 'CHEATCODE' }, size: '125 ml',
-        offers: { '@type': 'AggregateOffer', priceCurrency: CONFIG.currency, lowPrice: packPrice(PACKS[0]), highPrice: packPrice(MAX), offerCount: PACKS.length, availability: 'https://schema.org/InStock' } },
+        offers: { '@type': 'AggregateOffer', priceCurrency: CONFIG.currency, lowPrice: packPrice(PACKS[0]), highPrice: packPrice(MAX), offerCount: PACKS.length, availability: p.stock === 'out' ? 'https://schema.org/OutOfStock' : p.stock === 'limited' ? 'https://schema.org/LimitedAvailability' : 'https://schema.org/InStock' } },
       bar: 'pdp', slug,
       html: `<section class="page-top" style="padding-bottom:var(--sec)">
   <div class="wrap pdp" style="--tint:${p.tint}">
@@ -1547,15 +1564,16 @@ ${finalHTML()}`
     <div>
       <p class="crumb"><a href="#/shop">Shop</a> / ${esc(p.name)}</p>
       <h1 class="t-dl">${esc(p.name)}</h1>
+      ${stockTag(p)}
       <p class="pdp-desc t-bl t-muted">${esc(p.desc)}</p>
       <div class="pdp-trio" aria-label="In every tub"><div><strong>10G</strong><span>Protein per tub</span></div><div><strong>0G</strong><span>Added sugar</span></div><div><strong>HIGH</strong><span>Fiber</span></div></div>
       <div class="pdp-price"><span class="t-dm" data-price="${slug}">${money(packPrice(q))}</span><span class="t-bs t-muted" data-pricenote="${slug}">${money(packComparePrice(q))} crossed out · ₹99/tub pre-order price · valid till ${CONFIG.preOrderEnds}</span></div>
       <div class="pdp-buy" id="pdp-buy">
         <p class="qty-hint">Choose your pack. Minimum 3 tubs.</p>
         ${qtyHTML(slug, q, { lg: true, label: `Pack size for ${p.name}` })}
-        <button class="btn btn-red btn-block" data-action="add-pack" data-slug="${slug}"><span>Add ${q} tubs to cart</span></button>
+        ${soldOut(slug) ? soldOutBtn('btn-block') : `<button class="btn btn-red btn-block" data-action="add-pack" data-slug="${slug}"><span>Add ${q} tubs to cart</span></button>`}
       </div>
-      <a class="box-link" href="#/build" data-action="box-seed" data-slug="${slug}"><span>Want to mix flavours? Start a box with ${esc(p.name)}.</span>${I.arrow}</a>
+      ${soldOut(slug) ? '' : `<a class="box-link" href="#/build" data-action="box-seed" data-slug="${slug}"><span>Want to mix flavours? Start a box with ${esc(p.name)}.</span>${I.arrow}</a>`}
       <div class="acc-group">
         <details class="acc" open><summary>Nutrition<i></i></summary><div class="acc-body">
           <table class="ntable"><caption class="sr">Nutrition per tub</caption><tbody>
@@ -1826,7 +1844,7 @@ function updateSticky() {
   let html = '', show = false;
   if (route.bar === 'pdp') {
     const p = P(route.slug), q = getSel(route.slug);
-    html = `<div class="mbar-info"><b>${esc(p.name)}</b><span>${q} tubs, ${money(packPrice(q))}</span></div><button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>`;
+    html = `<div class="mbar-info"><b>${esc(p.name)}</b><span>${q} tubs, ${money(packPrice(q))}</span></div>${soldOut(p.slug) ? soldOutBtn() : `<button class="btn btn-red" data-action="add-pack" data-slug="${p.slug}"><span>Add ${q} tubs</span></button>`}`;
     show = !pdpVisible;
   } else if (route.bar === 'build' || builderVisible) {
     const t = Box.total(), c = boxCopy(), ok = Box.ready();
@@ -2300,13 +2318,14 @@ document.addEventListener('click', e => {
   const t = e.target.closest('[data-action]'); if (!t) return;
   switch (t.dataset.action) {
     case 'qty': pickQty(t); break;
-    case 'add-pack': { const slug = t.dataset.slug; newLineId = Cart.addPack(slug, getSel(slug)); confirmBtn(t, openCart); break; }
-    case 'box-inc': if (!Box.inc(t.dataset.slug)) toast(Box.size < MAX ? 'Box is full. Choose a bigger size to add more.' : '12 is the biggest box.'); updateBuilder(); break;
+    case 'add-pack': { const slug = t.dataset.slug; if (soldOut(slug)) { toast(`${P(slug).name} is out of stock.`); break; } newLineId = Cart.addPack(slug, getSel(slug)); confirmBtn(t, openCart); break; }
+    case 'box-inc': if (soldOut(t.dataset.slug)) { toast(`${P(t.dataset.slug).name} is out of stock.`); break; }
+      if (!Box.inc(t.dataset.slug)) toast(Box.size < MAX ? 'Box is full. Choose a bigger size to add more.' : '12 is the biggest box.'); updateBuilder(); break;
     case 'box-dec': Box.dec(t.dataset.slug); updateBuilder(); break;
     case 'box-size': if (!Box.setSize(+t.dataset.size)) toast(`Remove ${Box.total() - +t.dataset.size} tub${Box.total() - +t.dataset.size === 1 ? '' : 's'} first.`); updateBuilder(); break;
     case 'box-clear': Box.clear(); updateBuilder(); break;
     case 'box-fill': if (Box.full()) toast('Box is already full.'); else Box.fill(); updateBuilder(); break;
-    case 'box-seed': if (!Box.total()) { Box.items = { [t.dataset.slug]: 1 }; Box.save(); } break;
+    case 'box-seed': if (!Box.total() && !soldOut(t.dataset.slug)) { Box.items = { [t.dataset.slug]: 1 }; Box.save(); } break;
     case 'box-add': {
       if (!Box.ready()) { toast(boxCopy().status); break; }
       newLineId = Cart.addBox(Box.items, Box.editing);
