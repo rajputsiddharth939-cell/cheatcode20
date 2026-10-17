@@ -1549,8 +1549,8 @@ ${finalHTML()}`
     return {
       title: `${p.name} High Protein Ice Cream | CHEATCODE`,
       desc: `${p.name}: ${p.short} 10g protein per 125 ml tub, high fiber, zero added sugar. Buy in packs of 3, 6, 9 or 12.`,
-      ld: { '@context': 'https://schema.org', '@type': 'Product', name: `CHEATCODE ${p.name}`, description: p.desc, brand: { '@type': 'Brand', name: 'CHEATCODE' }, size: '125 ml',
-        offers: { '@type': 'AggregateOffer', priceCurrency: CONFIG.currency, lowPrice: packPrice(PACKS[0]), highPrice: packPrice(MAX), offerCount: PACKS.length, availability: p.stock === 'out' ? 'https://schema.org/OutOfStock' : p.stock === 'limited' ? 'https://schema.org/LimitedAvailability' : 'https://schema.org/InStock' } },
+      ld: { '@context': 'https://schema.org', '@type': 'Product', name: `CHEATCODE ${p.name}`, description: p.desc, image: [new URL(photo(slug), location.origin).href, new URL(img(slug), location.origin).href], sku: slug, brand: { '@type': 'Brand', name: 'CHEATCODE' }, size: '125 ml',
+        offers: { '@type': 'AggregateOffer', priceCurrency: CONFIG.currency, lowPrice: packPrice(PACKS[0]), highPrice: packPrice(MAX), offerCount: PACKS.length, availability: p.stock === 'out' ? 'https://schema.org/OutOfStock' : p.stock === 'limited' ? 'https://schema.org/LimitedAvailability' : 'https://schema.org/InStock', url: 'https://houseofcheatcode.com/' } },
       bar: 'pdp', slug,
       html: `<section class="page-top" style="padding-bottom:var(--sec)">
   <div class="wrap pdp" style="--tint:${p.tint}">
