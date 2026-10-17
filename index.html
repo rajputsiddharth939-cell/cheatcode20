@@ -1872,14 +1872,28 @@ function parse() {
 }
 function setMeta(page) {
   document.title = page.title;
-  const set = (sel, v) => { const m = $(sel); if (m && v) m.setAttribute('content', v); };
-  set('meta[name="description"]', page.desc);
+  const set = (sel, v) => { const m = $(sel); if (m && v != null) m.setAttribute('content', v); };
+  const canonicalFor = () => {
+    const { key, arg } = parse();
+    const routeName = ROUTES[key] || 'notfound';
+    const indexable = ['home','shop','product','why','about','faq','contact','privacy','terms','returns'].includes(routeName);
+    if (!indexable) return null;
+    // Hash routes are not distinct HTTP URLs. Keep one canonical URL per crawlable document
+    // until the application is server-rendered with real path-based routes.
+    return 'https://houseofcheatcode.com/';
+  };
+  set('meta[name="description"]', page.desc || '');
   set('meta[property="og:title"]', page.title);
-  set('meta[property="og:description"]', page.desc);
-  set('meta[property="og:url"]', location.href.split('#')[0] + (location.hash && location.hash !== '#/' ? location.hash : ''));
+  set('meta[property="og:description"]', page.desc || '');
+  set('meta[property="og:url"]', 'https://houseofcheatcode.com/');
+  set('meta[name="twitter:title"]', page.title);
+  set('meta[name="twitter:description"]', page.desc || '');
   const canonical = $('link[rel="canonical"]');
-  if (canonical) canonical.href = 'https://houseofcheatcode.com/';
-  $('#ld').textContent = page.ld ? JSON.stringify(page.ld) : JSON.stringify(baseSiteGraph());
+  const canonicalUrl = canonicalFor();
+  if (canonical && canonicalUrl) canonical.href = canonicalUrl;
+  const robots = $('meta[name="robots"]');
+  if (robots) robots.content = canonicalUrl ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' : 'noindex,follow';
+  $('#ld').textContent = JSON.stringify(page.ld ? page.ld : baseSiteGraph());
   const faqSchema = $('#site-faq-schema');
   if (faqSchema) faqSchema.textContent = JSON.stringify(page.ld && page.ld['@type'] === 'FAQPage' ? page.ld : {
     '@context':'https://schema.org','@type':'FAQPage','mainEntity':[]
@@ -1889,7 +1903,7 @@ function baseSiteGraph() {
   return {
     '@context': 'https://schema.org',
     '@graph': [
-      { '@type': 'Organization', '@id': 'https://houseofcheatcode.com/#organization', name: 'CHEATCODE', url: 'https://houseofcheatcode.com/', slogan: 'Cheat Without Regret', sameAs: ['https://instagram.com/houseofcheatcode'], contactPoint: [{ '@type': 'ContactPoint', contactType: 'customer support', email: 'hello@houseofcheatcode.com' }] },
+      { '@type': 'Organization', '@id': 'https://houseofcheatcode.com/#organization', name: 'CHEATCODE', url: 'https://houseofcheatcode.com/', logo: 'https://houseofcheatcode.com/favicon.svg', slogan: 'Cheat Without Regret', sameAs: ['https://www.instagram.com/houseofcheatcode/'], contactPoint: [{ '@type': 'ContactPoint', contactType: 'customer support', email: 'hello@houseofcheatcode.com' }] },
       { '@type': 'WebSite', '@id': 'https://houseofcheatcode.com/#website', url: 'https://houseofcheatcode.com/', name: 'CHEATCODE', publisher: { '@id': 'https://houseofcheatcode.com/#organization' }, inLanguage: 'en-IN' }
     ]
   };
