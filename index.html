@@ -981,7 +981,7 @@ const CONFIG = {
   currency: 'INR', locale: 'en-IN', pricePerTub: 99, comparePricePerTub: 149,
   packSizes: [3, 6, 9, 12], deliveryFee: 60, freeDeliveryFrom: 9,
   preOrderEnds: '11 October 2026', instagram: '@houseofcheatcode',
-  instagramUrl: 'https://instagram.com/houseofcheatcode', email: 'hello@houseofcheatcode.com'
+  instagramUrl: 'https://www.instagram.com/houseofcheatcode/', email: 'hello@houseofcheatcode.com'
 };
 const deliveryForTubs = tubs => tubs <= 0 ? 0 : (tubs >= CONFIG.freeDeliveryFrom ? 0 : CONFIG.deliveryFee);
 const deliveryLabel = tubs => deliveryForTubs(tubs) ? money(deliveryForTubs(tubs)) : 'FREE';
