@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Private order and administration interfaces are not public search content.
+Disallow: /admin/
+Disallow: /api/
+
 Sitemap: https://houseofcheatcode.com/sitemap.xml
