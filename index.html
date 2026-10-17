@@ -1894,9 +1894,11 @@ function setMeta(page) {
   set('meta[name="twitter:description"]', page.desc || '');
   const canonical = $('link[rel="canonical"]');
   const canonicalUrl = canonicalFor();
+  // Hash routes are client-side views, not independent crawlable HTML documents.
+  // Do not mark an important view noindex merely because its URL is a hash route.
   if (canonical && canonicalUrl) canonical.href = canonicalUrl;
   const robots = $('meta[name="robots"]');
-  if (robots) robots.content = canonicalUrl ? 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1' : 'noindex,follow';
+  if (robots) robots.content = 'index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1';
   $('#ld').textContent = JSON.stringify(page.ld ? page.ld : baseSiteGraph());
   const faqSchema = $('#site-faq-schema');
   if (faqSchema) faqSchema.textContent = JSON.stringify(page.ld && page.ld['@type'] === 'FAQPage' ? page.ld : {
